@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Mon espace — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
+    <nav>
+      <a href="#" onclick="logout()">Se déconnecter</a>
+    </nav>
+  </div>
+</header>
+
+<div class="dash-layout">
+  <aside class="dash-sidebar">
+    <a href="dashboard-client.html" class="actif">Vue d'ensemble</a>
+    <a href="#demandes">Mes demandes</a>
+    <a href="#factures">Factures</a>
+    <a href="#abonnement">Abonnement</a>
+  </aside>
+
+  <main class="dash-main">
+    <h2 id="titre-bienvenue">Bienvenue</h2>
+
+    <div class="grille-stats">
+      <div class="stat-tuile">
+        <div class="valeur" id="stat-statut">—</div>
+        <div class="label">Statut du compte</div>
+      </div>
+      <div class="stat-tuile">
+        <div class="valeur" id="stat-demandes-mois">—</div>
+        <div class="label">Demandes ce mois-ci</div>
+      </div>
+      <div class="stat-tuile">
+        <div class="valeur" id="stat-urgentes">—</div>
+        <div class="label">Urgentes en attente</div>
+      </div>
+      <div class="stat-tuile">
+        <div class="valeur" id="stat-plan">—</div>
+        <div class="label">Plan actuel</div>
+      </div>
+    </div>
+
+    <section id="abonnement">
+      <h3>Mes abonnements</h3>
+      <table class="donnees">
+        <thead>
+          <tr><th>Plan</th><th>Cycle de facturation</th><th>Statut</th></tr>
+        </thead>
+        <tbody id="tbody-abonnements">
+          <tr><td colspan="3">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="demandes" style="margin-top:32px;">
+      <h3>Dernières demandes</h3>
+      <table class="donnees">
+        <thead>
+          <tr><th>Date</th><th>Catégorie</th><th>Résumé</th><th>Contact</th><th>Statut</th></tr>
+        </thead>
+        <tbody id="tbody-demandes">
+          <tr><td colspan="5">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="factures" style="margin-top:32px;">
+      <h3>Factures</h3>
+      <table class="donnees">
+        <thead>
+          <tr><th>Date</th><th>Montant TTC</th><th>Statut</th><th>PDF</th></tr>
+        </thead>
+        <tbody id="tbody-factures">
+          <tr><td colspan="4">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/dashboard-client.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demande de devis — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><a href="index.html" style="color:inherit;"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</a></div>
+  </div>
+</header>
+
+<div class="carte au-scroll">
+  <h2>Demande de devis gratuit</h2>
+  <p style="color:var(--gris-texte); font-size:.9rem;">
+    Site web, secrétariat virtuel, ou les deux ? Décrivez votre besoin, on vous rappelle sous 24h — par téléphone, visio, ou en personne si vous préférez.
+  </p>
+
+  <form id="form-devis">
+    <div class="champ">
+      <label>Vous êtes intéressé(e) par</label>
+      <select id="interet" required>
+        <option value="site_web">Un site web</option>
+        <option value="saas">Le secrétariat virtuel (SaaS)</option>
+        <option value="les_deux">Les deux (Pack Lancement Digital)</option>
+      </select>
+    </div>
+    <div class="champ">
+      <label>Prénom</label>
+      <input type="text" id="prenom" required>
+    </div>
+    <div class="champ">
+      <label>Nom</label>
+      <input type="text" id="nom" required>
+    </div>
+    <div class="champ">
+      <label>Email</label>
+      <input type="email" id="email" required>
+    </div>
+    <div class="champ">
+      <label>Téléphone</label>
+      <input type="tel" id="telephone" required>
+    </div>
+    <div class="champ">
+      <label>Budget indicatif</label>
+      <select id="budget_indicatif">
+        <option value="< 500€">Moins de 500€</option>
+        <option value="500-1000€">500€ à 1000€</option>
+        <option value="1000-1500€">1000€ à 1500€</option>
+        <option value="je ne sais pas encore">Je ne sais pas encore</option>
+      </select>
+    </div>
+    <div class="champ">
+      <label>URL de votre site actuel <small>(si vous en avez déjà un, même à l'abandon)</small></label>
+      <input type="url" id="site_actuel_url" placeholder="https://...">
+    </div>
+    <div class="champ" style="display:flex; align-items:center; gap:10px;">
+      <input type="checkbox" id="rdv_physique_souhaite" style="width:auto;">
+      <label style="margin:0;" for="rdv_physique_souhaite">Je préfère un rendez-vous en personne plutôt qu'à distance</label>
+    </div>
+    <div class="champ" id="champ-code-postal-rdv" style="display:none;">
+      <label>Code postal <small>(pour vous mettre en contact avec un commercial proche de chez vous)</small></label>
+      <input type="text" id="code_postal_rdv" pattern="[0-9]{5}" maxlength="5">
+    </div>
+    <div class="champ">
+      <label>Décrivez votre projet</label>
+      <textarea id="message" rows="4" placeholder="Votre métier, ce que vous voulez sur votre site, vos délais..."></textarea>
+    </div>
+    <input type="hidden" id="code_affiliation">
+
+    <button type="submit" class="btn btn-primaire" style="width:100%;" id="btn-submit">Envoyer ma demande</button>
+    <p style="text-align:center; margin-top:12px;">
+      <a href="index.html#reserver">ou réservez directement un appel dans notre agenda →</a>
+    </p>
+    <div id="zone-message"></div>
+  </form>
+</div>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/devis.js"></script>
+<script src="js/chatbot-widget.js"></script>
+<script src="js/animations.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Connexion — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><a href="index.html" style="color:inherit;"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</a></div>
+  </div>
+</header>
+
+<div class="carte au-scroll">
+  <h2>Se connecter</h2>
+  <p style="color:var(--gris-texte); font-size:.9rem;">Accédez à votre espace client ou commercial.</p>
+
+  <form id="form-connexion">
+    <div class="champ">
+      <label>Email</label>
+      <input type="email" id="email" required>
+    </div>
+    <div class="champ">
+      <label>Mot de passe</label>
+      <input type="password" id="mot_de_passe" required>
+    </div>
+
+    <button type="submit" class="btn btn-primaire" style="width:100%;" id="btn-submit">Se connecter</button>
+    <div id="zone-message"></div>
+  </form>
+
+  <p style="text-align:center; margin-top:16px; font-size:.9rem;">
+    Pas encore de compte ? <a href="inscription.html">Créer un compte</a>
+  </p>
+</div>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/connexion.js"></script>
+<script src="js/chatbot-widget.js"></script>
+<script src="js/animations.js"></script>
+</body>
+</html>

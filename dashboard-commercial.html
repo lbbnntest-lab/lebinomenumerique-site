@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Espace commercial — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique — Espace commercial</div>
+    <nav>
+      <a href="#" onclick="logout()">Se déconnecter</a>
+    </nav>
+  </div>
+</header>
+
+<div class="dash-layout">
+  <aside class="dash-sidebar">
+    <a href="dashboard-commercial.html" class="actif">Vue d'ensemble</a>
+    <a href="#progression">Ma progression</a>
+    <a href="#pipeline">Pipeline de cash</a>
+    <a href="#versements">Mes versements</a>
+    <a href="#reseau">Mon réseau</a>
+    <a href="#ventes">Mes commissions</a>
+    <a href="#lien">Mon lien de parrainage</a>
+  </aside>
+
+  <main class="dash-main">
+    <div class="entete-bienvenue">
+      <h2 id="titre-bienvenue">Bienvenue</h2>
+      <span id="badge-niveau" class="badge-niveau">—</span>
+    </div>
+
+    <div id="alerte-siret" class="hidden"></div>
+
+    <div class="grille-stats">
+      <div class="stat-tuile">
+        <div class="valeur" id="stat-code">—</div>
+        <div class="label">Mon code d'affiliation</div>
+      </div>
+      <div class="stat-tuile">
+        <div class="valeur" id="stat-nb-ventes">—</div>
+        <div class="label">Contrats signés</div>
+      </div>
+      <div class="stat-tuile">
+        <div class="valeur" id="stat-commissions-attente">—</div>
+        <div class="label">Commissions en attente</div>
+      </div>
+      <div class="stat-tuile">
+        <div class="valeur" id="stat-commissions-payees">—</div>
+        <div class="label">Commissions payées (total)</div>
+      </div>
+    </div>
+
+    <!-- A. Jauge de progression MLM -->
+    <section id="progression" class="carte-section">
+      <h3>Ma progression</h3>
+      <div class="bloc-progression">
+        <div class="ligne-objectif">
+          <span id="titre-objectif">Chargement...</span>
+          <span id="texte-progression"></span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="barre-progression" style="width: 0%;"></div>
+        </div>
+        <div class="paliers-niveaux">
+          <span class="palier">Conseiller</span>
+          <span class="palier">Formateur</span>
+          <span class="palier">Manager</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- B. Pipeline de cash -->
+    <section id="pipeline" class="carte-section">
+      <h3>Pipeline de cash</h3>
+      <p class="sous-titre-section">L'argent qui vous attend, tranche par tranche — débloqué uniquement quand le client paie réellement.</p>
+      <div class="grille-stats">
+        <div class="stat-tuile stat-tuile-accent">
+          <div class="valeur" id="pipeline-en-attente">—</div>
+          <div class="label">Cashflow en attente</div>
+        </div>
+        <div class="stat-tuile stat-tuile-succes">
+          <div class="valeur" id="pipeline-encaisse">—</div>
+          <div class="label">Commissions encaissées</div>
+        </div>
+      </div>
+      <h4 class="sous-section-titre">Prochains versements</h4>
+      <div id="liste-prochains-versements" class="liste-versements-a-venir">
+        <p class="etat-vide">Chargement...</p>
+      </div>
+    </section>
+
+    <!-- Versements réels (Stripe Connect Express) -->
+    <section id="versements" class="carte-section">
+      <h3>Mes versements</h3>
+      <p class="sous-titre-section">Configurez votre compte de paiement pour recevoir vos commissions automatiquement, dès qu'elles sont débloquées — sans virement manuel de notre part.</p>
+      <div id="stripe-connect-non-configure">
+        <button class="btn btn-primaire" id="btn-configurer-versements" onclick="configurerVersementsStripe()">Configurer mes versements</button>
+        <p class="sous-titre-section" style="margin-top:10px;">Vous serez redirigé vers Stripe pour vérifier votre identité et renseigner votre IBAN — nous ne voyons ni ne stockons jamais ces informations.</p>
+      </div>
+      <p id="message-stripe-connect"></p>
+    </section>
+
+    <!-- C. Mon Réseau -->
+    <section id="reseau" class="carte-section">
+      <h3>Mon réseau</h3>
+      <p class="sous-titre-section">Vos filleuls directs et leurs ventes actives (base du calcul de votre promotion Manager).</p>
+      <table class="donnees">
+        <thead>
+          <tr><th>Filleul</th><th>Niveau</th><th>Ventes actives</th></tr>
+        </thead>
+        <tbody id="tbody-reseau">
+          <tr><td colspan="3">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="lien" class="carte-section">
+      <h3>Mon lien de parrainage</h3>
+      <p>Partagez ce lien : les inscriptions passant par ce lien vous sont automatiquement attribuées.</p>
+      <div class="champ">
+        <input type="text" id="lien-parrainage" readonly>
+      </div>
+      <button class="btn btn-secondaire" onclick="copierLien()">Copier le lien</button>
+    </section>
+
+    <!-- Identifiant juridique (NIR pour un VDI, SIRET pour un Auto-entrepreneur — cf statut_juridique, migration 12) -->
+    <section id="identifiant-juridique" class="carte-section">
+      <h3 id="titre-identifiant">Mon identifiant</h3>
+      <p id="sous-titre-identifiant" class="sous-titre-section"></p>
+      <div id="identifiant-deja-renseigne" class="hidden">
+        <p class="message-succes" id="message-deja-renseigne"></p>
+      </div>
+      <div id="identifiant-formulaire" class="champ">
+        <label id="label-identifiant" for="input-identifiant"></label>
+        <input type="text" id="input-identifiant" autocomplete="off">
+      </div>
+      <button id="btn-identifiant" class="btn btn-primaire" onclick="enregistrerIdentifiant()">Enregistrer</button>
+      <p id="message-identifiant"></p>
+
+      <div id="bloc-bascule-statut" style="margin-top:20px; padding-top:16px; border-top:1px solid #e5e7eb;">
+        <p id="texte-bascule-statut" class="sous-titre-section"></p>
+        <button id="btn-demander-bascule" class="btn btn-secondaire hidden" onclick="demanderBasculeStatut()">Demander la bascule</button>
+        <p id="message-bascule"></p>
+      </div>
+    </section>
+
+    <section id="ventes" class="carte-section">
+      <h3>Historique de mes commissions</h3>
+      <table class="donnees">
+        <thead>
+          <tr><th>Offre</th><th>Tranche</th><th>Montant</th><th>Éligible le</th><th>Statut</th></tr>
+        </thead>
+        <tbody id="tbody-ventes">
+          <tr><td colspan="5">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/dashboard-commercial.js"></script>
+</body>
+</html>
