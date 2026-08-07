@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Confirmez votre email — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><a href="index.html" style="color:inherit;"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</a></div>
+  </div>
+</header>
+
+<div class="carte au-scroll" style="text-align:center;">
+  <h2>Merci, votre paiement est confirmé !</h2>
+  <p style="color:var(--gris-texte);">
+    Pour accéder à votre espace, confirmez votre adresse email : cliquez sur le lien reçu par email
+    (pensez à vérifier vos spams). Cette page se met à jour automatiquement dès que c'est fait.
+  </p>
+
+  <p id="zone-attente" style="color:var(--gris-texte); font-size:.9rem;">
+    <span class="au-scroll">⏳ En attente de confirmation...</span>
+  </p>
+
+  <button type="button" class="btn btn-secondaire" id="btn-renvoyer">Renvoyer l'email de confirmation</button>
+  <div id="zone-message"></div>
+</div>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/confirmation-attente.js"></script>
+<script src="js/animations.js"></script>
+</body>
+</html>

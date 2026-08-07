@@ -57,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         telephone: document.getElementById("telephone").value,
         code_affiliation: document.getElementById("code_affiliation").value || null,
         cycle_facturation: document.getElementById("cycle_facturation").value,
+        plan_code: planInput.value,
         stripe_price_id: window.APP_CONFIG.STRIPE_PRICES[planInput.value]?.[document.getElementById("cycle_facturation").value],
         auth_user_id: authData.user?.id || null
       };

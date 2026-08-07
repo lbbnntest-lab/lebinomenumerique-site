@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // la lecture au compte de l'utilisateur, cf. utilisateurs_comptes)
   const { data: utilisateur } = await sb
     .from("utilisateurs_comptes")
-    .select("compte_client_id, prenom")
+    .select("compte_client_id, prenom, role")
     .eq("id", session.user.id)
     .single();
 
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // une ligne unique.
   const { data: abonnementsActifs } = await sb
     .from("abonnements")
-    .select("cycle_facturation, statut, plans_tarifaires(nom)")
+    .select("cycle_facturation, statut, plans_tarifaires(nom, code, nb_utilisateurs_inclus)")
     .eq("compte_client_id", utilisateur.compte_client_id)
     .eq("statut", "actif");
 
@@ -94,4 +94,78 @@ document.addEventListener("DOMContentLoaded", async () => {
           <td>${f.pdf_url ? `<a href="${f.pdf_url}" target="_blank">Télécharger</a>` : "—"}</td>
         </tr>`).join("")
     : `<tr><td colspan="4">Aucune facture pour le moment.</td></tr>`;
+
+  // ---------- Mon équipe (multi-utilisateurs B2B) ----------
+  const libelleRole = { owner: "Propriétaire", admin: "Administrateur", membre: "Membre" };
+
+  // Plan SaaS (B2B_*/B2C_*) parmi les abonnements actifs — un compte peut aussi
+  // avoir un abonnement Hébergement en parallèle, qui n'a pas de siège pertinent.
+  const planSaas = listeAbonnements.find(a => {
+    const code = a.plans_tarifaires?.code || "";
+    return code.startsWith("B2B_") || code.startsWith("B2C_");
+  });
+  const limiteSieges = planSaas?.plans_tarifaires?.nb_utilisateurs_inclus ?? 1;
+
+  async function chargerEquipe() {
+    const { data: equipe } = await sb
+      .from("utilisateurs_comptes")
+      .select("nom, prenom, email, role")
+      .eq("compte_client_id", utilisateur.compte_client_id);
+
+    const membres = equipe || [];
+    document.getElementById("texte-sieges").textContent =
+      `${membres.length} / ${limiteSieges} utilisateur${limiteSieges > 1 ? "s" : ""} inclus dans votre plan`;
+
+    document.getElementById("tbody-equipe").innerHTML = membres.length
+      ? membres.map(m => `
+          <tr>
+            <td>${m.prenom || ""} ${m.nom || ""}</td>
+            <td>${m.email}</td>
+            <td>${libelleRole[m.role] || m.role}</td>
+          </tr>`).join("")
+      : `<tr><td colspan="3">Aucun utilisateur.</td></tr>`;
+
+    return membres.length;
+  }
+
+  const nbMembres = await chargerEquipe();
+
+  // Seuls le propriétaire et les administrateurs peuvent inviter
+  const blocInviter = document.getElementById("bloc-inviter");
+  if (utilisateur.role === "owner" || utilisateur.role === "admin") {
+    blocInviter.classList.remove("hidden");
+  }
+
+  document.getElementById("form-inviter-utilisateur").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const messageEl = document.getElementById("message-invitation");
+    const btn = document.getElementById("btn-inviter");
+    messageEl.innerHTML = "";
+    btn.disabled = true;
+    btn.textContent = "Envoi...";
+
+    try {
+      const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/inviter-utilisateur-compte`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_token: session.access_token,
+          prenom: document.getElementById("invite-prenom").value,
+          nom: document.getElementById("invite-nom").value,
+          email: document.getElementById("invite-email").value
+        })
+      });
+      const result = await resp.json();
+      if (!resp.ok) throw new Error(result.erreur || "Échec de l'invitation.");
+
+      messageEl.innerHTML = `<p class="message-succes">Invitation envoyée avec succès.</p>`;
+      document.getElementById("form-inviter-utilisateur").reset();
+      await chargerEquipe();
+    } catch (err) {
+      messageEl.innerHTML = `<p class="message-erreur">${err.message}</p>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Envoyer l'invitation";
+    }
+  });
 });

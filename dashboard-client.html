@@ -24,6 +24,7 @@
     <a href="#demandes">Mes demandes</a>
     <a href="#factures">Factures</a>
     <a href="#abonnement">Abonnement</a>
+    <a href="#equipe">Mon équipe</a>
   </aside>
 
   <main class="dash-main">
@@ -82,6 +83,39 @@
           <tr><td colspan="4">Chargement...</td></tr>
         </tbody>
       </table>
+    </section>
+
+    <section id="equipe" style="margin-top:32px;">
+      <h3>Mon équipe</h3>
+      <p class="sous-titre-section" id="texte-sieges">Chargement...</p>
+      <table class="donnees">
+        <thead>
+          <tr><th>Nom</th><th>Email</th><th>Rôle</th></tr>
+        </thead>
+        <tbody id="tbody-equipe">
+          <tr><td colspan="3">Chargement...</td></tr>
+        </tbody>
+      </table>
+
+      <div id="bloc-inviter" class="hidden" style="max-width:420px; margin-top:20px;">
+        <p class="sous-section-titre">Inviter un utilisateur</p>
+        <form id="form-inviter-utilisateur">
+          <div class="champ">
+            <label>Prénom</label>
+            <input type="text" id="invite-prenom" required>
+          </div>
+          <div class="champ">
+            <label>Nom</label>
+            <input type="text" id="invite-nom" required>
+          </div>
+          <div class="champ">
+            <label>Email</label>
+            <input type="email" id="invite-email" required>
+          </div>
+          <button type="submit" class="btn btn-primaire" id="btn-inviter">Envoyer l'invitation</button>
+          <div id="message-invitation"></div>
+        </form>
+      </div>
     </section>
   </main>
 </div>

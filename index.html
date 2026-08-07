@@ -43,7 +43,8 @@
   </div>
 </section>
 
-<section id="comment-ca-marche" class="container">
+<section id="comment-ca-marche" class="section-navy">
+  <div class="container">
   <h2 style="text-align:center;">Comment ça marche</h2>
   <div class="grille-etapes">
     <div class="etape au-scroll">
@@ -61,6 +62,7 @@
       <h3>On vous appelle sous 24h</h3>
       <p>Un appel de 15 minutes (téléphone ou visio par défaut) pour paramétrer votre secrétariat virtuel — et si vous préférez un rendez-vous en personne, c'est possible aussi, sur simple demande.</p>
     </div>
+  </div>
   </div>
 </section>
 
@@ -91,7 +93,8 @@
   </div>
 </section>
 
-<section id="tarifs" class="container">
+<section id="tarifs" class="section-teintee">
+  <div class="container">
   <h2 style="text-align:center;">Nos formules complètes</h2>
   <div class="toggle-cible hidden">
     <!-- Focus B2B pour le moment (décision utilisateur 2026-07-31) — le
@@ -132,21 +135,50 @@
     <div class="carte-plan" data-chatbot-detail="Starter est idéal pour démarrer seul, avec un volume de demandes modéré — parfait pour un indépendant ou une petite structure qui commence à automatiser son secrétariat.">
       <h3>Starter</h3>
       <div class="prix">79€ <span>/ mois</span></div>
-      <ul><li>Triage email/tel</li><li>Devis automatisés</li><li>100 demandes / mois</li><li>1 utilisateur</li></ul>
+      <ul>
+        <li>Tri automatique des emails et appels entrants (RDV, Devis, Urgence, SAV)</li>
+        <li>Devis automatisés générés par IA</li>
+        <li>100 demandes traitées / mois <small style="color:var(--gris-texte); font-weight:400;">(au-delà : 0,50€/demande, jamais de blocage)</small></li>
+        <li>1 utilisateur inclus</li>
+      </ul>
+      <p style="margin:8px 0 16px; color:var(--gris-texte); font-size:.85rem;">Non inclus : facturation automatisée, intégration CRM, accès API, SLA.</p>
       <a class="btn btn-secondaire" href="inscription.html?type=B2B&plan=B2B_STARTER">Choisir</a>
     </div>
     <div class="carte-plan recommande" data-chatbot-detail="Business est notre plan le plus choisi par les équipes de 2 à 3 personnes — facturation automatisée et intégration CRM incluses, pour vraiment déléguer le secrétariat.">
       <h3>Business</h3>
       <div class="prix">149€ <span>/ mois</span></div>
-      <ul><li>Tout Starter</li><li>Facturation automatisée</li><li>Intégration CRM</li><li>3 utilisateurs, 400 demandes / mois</li></ul>
+      <ul>
+        <li>Tout Starter, plus :</li>
+        <li>Facturation automatisée</li>
+        <li>Intégration CRM / Airtable</li>
+        <li>3 utilisateurs inclus, 400 demandes / mois</li>
+        <li>Option : onboarding personnalisé <small style="color:var(--gris-texte); font-weight:400;">(149€ HT, paramétrage règles métier + import de vos contacts)</small></li>
+      </ul>
+      <p style="margin:8px 0 16px; color:var(--gris-texte); font-size:.85rem;">Non inclus : accès API, SLA dédié.</p>
       <a class="btn btn-primaire" href="inscription.html?type=B2B&plan=B2B_BUSINESS">Choisir</a>
     </div>
     <div class="carte-plan" data-chatbot-detail="Enterprise est pensé pour les structures plus grandes avec des besoins sur-mesure — accès API pour connecter vos propres outils, et un SLA dédié pour la fiabilité.">
       <h3>Enterprise</h3>
       <div class="prix">299€ <span>/ mois</span></div>
-      <ul><li>Tout Business</li><li>Accès API</li><li>SLA dédié</li><li>10 utilisateurs, demandes illimitées</li></ul>
+      <ul>
+        <li>Tout Business, plus :</li>
+        <li>Accès API</li>
+        <li>SLA dédié</li>
+        <li>10 utilisateurs inclus, demandes illimitées</li>
+      </ul>
       <a class="btn btn-secondaire" href="inscription.html?type=B2B&plan=B2B_ENTERPRISE">Choisir</a>
     </div>
+    <div class="carte-plan au-scroll" data-chatbot-detail="Pour les structures qui dépassent Enterprise : plusieurs sites, workflows métier spécifiques, volumes très élevés, ou intégrations non standard — on étudie votre besoin sur devis.">
+      <h3>Sur-Mesure</h3>
+      <div class="prix">Sur devis <span>&nbsp;</span></div>
+      <ul>
+        <li>Multi-sites / multi-établissements</li>
+        <li>Workflows métier spécifiques</li>
+        <li>Volumes très élevés, intégrations non standard</li>
+      </ul>
+      <a class="btn btn-secondaire" href="devis-site-web.html">Demander un devis</a>
+    </div>
+  </div>
   </div>
 </section>
 
@@ -161,21 +193,28 @@
       <div class="prix">490€ <span>création, paiement unique</span></div>
       <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.9rem;">+ 15€/mois d'hébergement</p>
       <ul><li>1 page, no-code</li><li>Formulaire de contact</li><li>Mise en ligne incluse</li></ul>
+      <p style="margin:8px 0 12px; color:var(--gris-texte); font-size:.85rem;">Non inclus : multi-pages, prise de RDV en ligne, vente en ligne.</p>
       <a class="btn btn-secondaire" href="checkout-siteweb.html?pack=SITE_ESSENTIEL" style="display:block; text-align:center; margin-top:12px;">Commander</a>
     </div>
     <div class="carte-plan recommande au-scroll au-scroll-delai-1" data-chatbot-detail="Le plus choisi par les indépendants et petites entreprises — la prise de RDV intégrée en plus des pages multiples fait souvent la différence.">
       <h3>Site Pro</h3>
       <div class="prix">890€ <span>création, paiement unique</span></div>
       <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.9rem;">+ 25€/mois d'hébergement</p>
-      <ul><li>Multi-pages</li><li>Prise de RDV intégrée</li><li>Référencement de base</li></ul>
+      <ul><li>Tout Essentiel, plus :</li><li>Multi-pages</li><li>Prise de RDV intégrée</li><li>Référencement de base</li></ul>
       <a class="btn btn-primaire" href="checkout-siteweb.html?pack=SITE_PRO" style="display:block; text-align:center; margin-top:12px;">Commander</a>
     </div>
     <div class="carte-plan au-scroll au-scroll-delai-2" data-chatbot-detail="Pour vendre en ligne directement, jusqu'à 30 produits, avec un paiement sécurisé déjà intégré — pas besoin d'ajouter un autre outil.">
       <h3>E-commerce Starter</h3>
       <div class="prix">1490€ <span>création, paiement unique</span></div>
       <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.9rem;">+ 45€/mois d'hébergement</p>
-      <ul><li>Jusqu'à 30 produits</li><li>Paiement en ligne Stripe</li><li>Gestion des commandes</li></ul>
+      <ul><li>Tout Pro, plus :</li><li>Jusqu'à 30 produits</li><li>Paiement en ligne Stripe</li><li>Gestion des commandes</li></ul>
       <a class="btn btn-secondaire" href="checkout-siteweb.html?pack=SITE_ECOMMERCE" style="display:block; text-align:center; margin-top:12px;">Commander</a>
+    </div>
+    <div class="carte-plan au-scroll au-scroll-delai-2" data-chatbot-detail="Pour les besoins qui dépassent l'E-commerce Starter : plus de 30 produits, réservation avancée, multi-langue, intégrations tierces spécifiques ou design plus poussé — on étudie votre projet sur devis.">
+      <h3>Site Sur-Mesure</h3>
+      <div class="prix">Sur devis <span>&nbsp;</span></div>
+      <ul><li>Au-delà de 30 produits</li><li>Réservation avancée, multi-langue</li><li>Intégrations tierces spécifiques</li></ul>
+      <a class="btn btn-secondaire" href="devis-site-web.html" style="display:block; text-align:center; margin-top:12px;">Demander un devis</a>
     </div>
   </div>
   <p style="text-align:center;">
