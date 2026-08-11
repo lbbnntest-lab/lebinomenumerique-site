@@ -76,7 +76,10 @@ document.addEventListener("DOMContentLoaded", () => {
         zoneMessage.innerHTML = `<p class="message-succes">Compte créé ! Vérifiez votre email pour confirmer votre inscription.</p>`;
       }
     } catch (err) {
-      zoneMessage.innerHTML = `<p class="message-erreur">${err.message || "Une erreur est survenue."}</p>`;
+      const dejaInscrit = /already registered|already exists|user_already_exists/i.test(err.message || "");
+      zoneMessage.innerHTML = dejaInscrit
+        ? `<p class="message-erreur">Cette adresse email est déjà associée à un compte. <a href="connexion.html">Connectez-vous</a> ou utilisez <a href="mot-de-passe-oublie.html">Mot de passe oublié</a> si besoin.</p>`
+        : `<p class="message-erreur">${err.message || "Une erreur est survenue."}</p>`;
       btn.disabled = false;
       btn.textContent = "Continuer vers le paiement";
     }
