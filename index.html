@@ -13,6 +13,7 @@
     <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
     <nav>
       <a href="#tarifs">Tarifs</a>
+      <a href="#telephonie">Accueil téléphonique IA</a>
       <a href="#site-web">Création de site web</a>
       <a href="#faq">Questions fréquentes</a>
       <a href="#reserver">Réserver un appel</a>
@@ -136,8 +137,9 @@
       <h3>Starter</h3>
       <div class="prix">79€ <span>/ mois</span></div>
       <ul>
-        <li>Tri automatique des emails et appels entrants (RDV, Devis, Urgence, SAV)</li>
+        <li>Tri automatique des emails par IA (RDV, Devis, Urgence, SAV)</li>
         <li>Devis automatisés générés par IA</li>
+        <li>Relance automatique si un numéro de rappel manque <small style="color:var(--gris-texte); font-weight:400;">(pas de standard téléphonique — tri par email)</small></li>
         <li>100 demandes traitées / mois <small style="color:var(--gris-texte); font-weight:400;">(au-delà : 0,50€/demande, jamais de blocage)</small></li>
         <li>1 utilisateur inclus</li>
       </ul>
@@ -159,7 +161,8 @@
     </div>
     <div class="carte-plan" data-chatbot-detail="Enterprise est pensé pour les structures plus grandes avec des besoins sur-mesure — accès API pour connecter vos propres outils, et un SLA dédié pour la fiabilité.">
       <h3>Enterprise</h3>
-      <div class="prix">299€ <span>/ mois</span></div>
+      <div class="prix"><span class="prix-ancien">379€</span>299€ <span>/ mois</span><span class="badge-lancement">Offre de lancement</span></div>
+      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.85rem;">Tarif de lancement valable 90 jours, puis 379€/mois.</p>
       <ul>
         <li>Tout Business, plus :</li>
         <li>Accès API</li>
@@ -170,7 +173,7 @@
     </div>
     <div class="carte-plan au-scroll" data-chatbot-detail="Pour les structures qui dépassent Enterprise : plusieurs sites, workflows métier spécifiques, volumes très élevés, ou intégrations non standard — on étudie votre besoin sur devis.">
       <h3>Sur-Mesure</h3>
-      <div class="prix">Sur devis <span>&nbsp;</span></div>
+      <div class="prix">Sur devis <span>à partir de 450€/mois</span></div>
       <ul>
         <li>Multi-sites / multi-établissements</li>
         <li>Workflows métier spécifiques</li>
@@ -180,6 +183,40 @@
     </div>
   </div>
   </div>
+</section>
+
+<section id="telephonie" class="container" style="padding: 48px 0;">
+  <h2 style="text-align:center;">Accueil téléphonique IA <span class="badge-bientot">Bientôt disponible</span></h2>
+  <p style="text-align:center; max-width:640px; margin:0 auto 28px; color:var(--gris-texte);">
+    Une IA qui décroche vos appels, répond aux questions de vos clients (horaires, tarifs, disponibilités) et prend leurs rendez-vous — en complément de votre secrétariat email. En cours de construction, ouverture prochaine à un nombre limité de clients pilotes.
+  </p>
+  <div class="grille-plans">
+    <div class="carte-plan" data-chatbot-detail="L'accueil téléphonique IA n'est pas encore disponible à la vente — vous pouvez réserver un appel pour être informé en priorité de l'ouverture.">
+      <h3>Essentiel</h3>
+      <div class="prix">49€ <span>/ mois (indicatif)</span></div>
+      <ul>
+        <li>Accueil vocal IA — questions horaires, tarifs, disponibilités</li>
+        <li>Prise de message structuré</li>
+        <li>Prise de RDV : créneau souhaité, confirmation sous 24h</li>
+        <li>60 appels inclus / mois</li>
+      </ul>
+      <a class="btn btn-secondaire" href="#reserver" style="display:block; text-align:center; margin-top:12px;">Être informé en priorité</a>
+    </div>
+    <div class="carte-plan recommande" data-chatbot-detail="La formule Pro inclut la prise de rendez-vous en temps réel pendant l'appel — pas encore disponible à la vente, réservez un appel pour être informé en priorité.">
+      <h3>Pro</h3>
+      <div class="prix">95€ <span>/ mois (indicatif)</span></div>
+      <ul>
+        <li>Tout Essentiel, plus :</li>
+        <li>Prise de RDV en temps réel pendant l'appel</li>
+        <li>Alertes SMS incluses</li>
+        <li>150 appels inclus / mois</li>
+      </ul>
+      <a class="btn btn-primaire" href="#reserver" style="display:block; text-align:center; margin-top:12px;">Être informé en priorité</a>
+    </div>
+  </div>
+  <p style="text-align:center; color:var(--gris-texte); font-size:.9rem;">
+    Options disponibles à l'ouverture, à activer selon votre métier : RDV en temps réel, alerte SMS, numéro dédié supplémentaire, accueil bilingue, horaires étendus, script de qualification métier. Le prix affiché est une base — personnalisable, sans surprise.
+  </p>
 </section>
 
 <section id="site-web" class="container" style="padding: 48px 0;">
@@ -198,21 +235,21 @@
     </div>
     <div class="carte-plan recommande au-scroll au-scroll-delai-1" data-chatbot-detail="Le plus choisi par les indépendants et petites entreprises — la prise de RDV intégrée en plus des pages multiples fait souvent la différence.">
       <h3>Site Pro</h3>
-      <div class="prix">890€ <span>création, paiement unique</span></div>
-      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.9rem;">+ 25€/mois d'hébergement</p>
+      <div class="prix"><span class="prix-ancien">1290€</span>890€ <span>création, paiement unique</span><span class="badge-lancement">Offre de lancement</span></div>
+      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.9rem;">Tarif de lancement valable 90 jours (puis 1290€) + 25€/mois d'hébergement</p>
       <ul><li>Tout Essentiel, plus :</li><li>Multi-pages</li><li>Prise de RDV intégrée</li><li>Référencement de base</li></ul>
       <a class="btn btn-primaire" href="checkout-siteweb.html?pack=SITE_PRO" style="display:block; text-align:center; margin-top:12px;">Commander</a>
     </div>
     <div class="carte-plan au-scroll au-scroll-delai-2" data-chatbot-detail="Pour vendre en ligne directement, jusqu'à 30 produits, avec un paiement sécurisé déjà intégré — pas besoin d'ajouter un autre outil.">
       <h3>E-commerce Starter</h3>
-      <div class="prix">1490€ <span>création, paiement unique</span></div>
-      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.9rem;">+ 45€/mois d'hébergement</p>
+      <div class="prix"><span class="prix-ancien">2190€</span>1490€ <span>création, paiement unique</span><span class="badge-lancement">Offre de lancement</span></div>
+      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.9rem;">Tarif de lancement valable 90 jours (puis 2190€) + 45€/mois d'hébergement</p>
       <ul><li>Tout Pro, plus :</li><li>Jusqu'à 30 produits</li><li>Paiement en ligne Stripe</li><li>Gestion des commandes</li></ul>
       <a class="btn btn-secondaire" href="checkout-siteweb.html?pack=SITE_ECOMMERCE" style="display:block; text-align:center; margin-top:12px;">Commander</a>
     </div>
     <div class="carte-plan au-scroll au-scroll-delai-2" data-chatbot-detail="Pour les besoins qui dépassent l'E-commerce Starter : plus de 30 produits, réservation avancée, multi-langue, intégrations tierces spécifiques ou design plus poussé — on étudie votre projet sur devis.">
       <h3>Site Sur-Mesure</h3>
-      <div class="prix">Sur devis <span>&nbsp;</span></div>
+      <div class="prix">Sur devis <span>à partir de 3000€</span></div>
       <ul><li>Au-delà de 30 produits</li><li>Réservation avancée, multi-langue</li><li>Intégrations tierces spécifiques</li></ul>
       <a class="btn btn-secondaire" href="devis-site-web.html" style="display:block; text-align:center; margin-top:12px;">Demander un devis</a>
     </div>

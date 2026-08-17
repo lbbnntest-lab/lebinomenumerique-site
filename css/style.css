@@ -191,6 +191,17 @@ header.site .cta:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgb
   background-size: contain; background-repeat: no-repeat;
 }
 .carte-plan ul small { display: block; margin-top: 2px; }
+.prix-ancien { font-size: 1.1rem; color: var(--gris-texte); text-decoration: line-through; font-weight: 600; margin-right: 8px; }
+.badge-lancement {
+  display: inline-block; background: var(--vert-succes); color: var(--blanc);
+  font-size: .68rem; font-weight: 700; padding: 3px 10px; border-radius: 999px;
+  margin-left: 6px; vertical-align: middle; white-space: nowrap;
+}
+.badge-bientot {
+  display: inline-block; background: var(--bleu-primaire); color: var(--blanc);
+  font-size: .68rem; font-weight: 700; padding: 3px 10px; border-radius: 999px;
+  margin-left: 6px; vertical-align: middle; white-space: nowrap;
+}
 .economie-realisee {
   background: #ecfdf3; color: var(--vert-succes); font-weight: 700; font-size: .82rem;
   padding: 7px 12px; border-radius: 8px; margin: 4px 0 16px; text-align: center;
