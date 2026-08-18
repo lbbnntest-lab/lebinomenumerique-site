@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validation du site — Le Binôme Numérique</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --couleur-principale: #1F6F78;
+    --couleur-texte: #1a1a1a;
+    --couleur-fond-clair: #f7f7f8;
+    --couleur-bordure: #e2e2e4;a
+    --couleur-danger: #B23A2E;
+    --couleur-ok: #2E7D32;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--couleur-texte);
+    background: var(--couleur-fond-clair);
+    line-height: 1.5;
+  }
+  header {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 20px 24px;
+  }
+  header h1 { margin: 0; font-size: 1.3rem; }
+  header p { margin: 4px 0 0; color: #ccc; font-size: 0.9rem; }
+  main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  .carte {
+    background: #fff;
+    border: 1px solid var(--couleur-bordure);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .carte h2 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--couleur-principale);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .champ { margin-bottom: 16px; }
+  .champ label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+  .champ input[type="text"],
+  .champ input[type="number"],
+  .champ input[type="url"],
+  .champ textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--couleur-bordure);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-family: inherit;
+  }
+  .champ textarea { resize: vertical; min-height: 64px; }
+  .grille-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .apercu-image {
+    margin-top: 8px;
+    max-width: 100%;
+    max-height: 160px;
+    border-radius: 6px;
+    border: 1px solid var(--couleur-bordure);
+    display: block;
+  }
+  .bloc-produit {
+    border: 1px solid var(--couleur-bordure);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: var(--couleur-fond-clair);
+  }
+  .bloc-produit h3 { margin: 0 0 12px; font-size: 0.95rem; }
+  ul.checklist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  ul.checklist li {
+    padding: 8px 0 8px 28px;
+    position: relative;
+    font-size: 0.92rem;
+    color: #333;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  ul.checklist li:last-child { border-bottom: none; }
+  ul.checklist li::before {
+    content: "☐";
+    position: absolute;
+    left: 0;
+    color: var(--couleur-principale);
+    font-size: 1.1rem;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    position: sticky;
+    bottom: 0;
+    background: var(--couleur-fond-clair);
+    padding: 16px 0;
+  }
+  .btn {
+    border: none;
+    border-radius: 6px;
+    padding: 12px 22px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-secondaire { background: #fff; border: 1px solid var(--couleur-bordure); color: var(--couleur-texte); }
+  .btn-primaire { background: var(--couleur-principale); color: #fff; }
+  .btn-valider { background: var(--couleur-ok); color: #fff; }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  .lien-apercu {
+    font-size: 0.9rem;
+    color: var(--couleur-principale);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .lien-apercu:hover { text-decoration: underline; }
+  #message {
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: none;
+  }
+  #message.ok { display: block; background: #e8f5e9; color: var(--couleur-ok); }
+  #message.err { display: block; background: #fdecea; color: var(--couleur-danger); }
+  #etat-chargement, #etat-erreur { max-width: 880px; margin: 60px auto; text-align: center; padding: 0 24px; }
+  #etat-erreur { color: var(--couleur-danger); display: none; }
+  #contenu-page { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Le Binôme Numérique — Validation du site</h1>
+  <p>Relisez, éditez si besoin, puis validez pour l'envoyer au prospect.</p>
+</header>
+
+<div id="etat-chargement">
+  <p>Chargement du site à valider…</p>
+</div>
+
+<div id="etat-erreur">
+  <h2>Lien invalide</h2>
+  <p>Ce lien est invalide, expiré ou déjà utilisé. Retournez à l'email d'origine ou contactez le support technique.</p>
+</div>
+
+<main id="contenu-page">
+  <div id="message"></div>
+
+  <div class="carte">
+    <h2>Site généré <span class="badge" id="badge-type"></span></h2>
+    <p style="margin-bottom:0;">Aperçu actuel : <a class="lien-apercu" id="lien-apercu" href="#" target="_blank" rel="noopener">ouvrir le site dans un nouvel onglet ↗</a></p>
+  </div>
+
+  <div class="carte">
+    <h2>Contenu du site</h2>
+
+    <div class="champ">
+      <label for="f-tagline">Accroche (tagline)</label>
+      <input type="text" id="f-tagline">
+    </div>
+
+    <div class="champ">
+      <label for="f-description">Description (section À propos)</label>
+      <textarea id="f-description"></textarea>
+    </div>
+
+    <div class="champ">
+      <label for="f-couleur">Couleur principale</label>
+      <input type="text" id="f-couleur" placeholder="ex: bleu, vert, rouge, orange, jaune, violet, rose, noir, gris, marron, turquoise">
+    </div>
+
+    <div class="champ">
+      <label for="f-hero-image">Image de fond (URL)</label>
+      <input type="url" id="f-hero-image" placeholder="https://...">
+      <img id="apercu-hero" class="apercu-image" style="display:none;">
+    </div>
+
+    <div id="bloc-services" style="display:none;">
+      <div class="grille-2">
+        <div class="champ"><label for="f-service-1-titre">Service 1 — titre</label><input type="text" id="f-service-1-titre"></div>
+        <div class="champ"><label for="f-service-1-description">Service 1 — description</label><input type="text" id="f-service-1-description"></div>
+      </div>
+      <div class="grille-2">
+        <div class="champ"><label for="f-service-2-titre">Service 2 — titre</label><input type="text" id="f-service-2-titre"></div>
+        <div class="champ"><label for="f-service-2-description">Service 2 — description</label><input type="text" id="f-service-2-description"></div>
+      </div>
+      <div class="grille-2">
+        <div class="champ"><label for="f-service-3-titre">Service 3 — titre</label><input type="text" id="f-service-3-titre"></div>
+        <div class="champ"><label for="f-service-3-description">Service 3 — description</label><input type="text" id="f-service-3-description"></div>
+      </div>
+    </div>
+
+    <div id="bloc-produits" style="display:none;">
+      <div class="bloc-produit">
+        <h3>Produit 1</h3>
+        <div class="grille-2">
+          <div class="champ"><label for="f-produit-1-nom">Nom</label><input type="text" id="f-produit-1-nom"></div>
+          <div class="champ"><label for="f-produit-1-prix">Prix (€)</label><input type="number" step="0.01" id="f-produit-1-prix"></div>
+        </div>
+        <div class="champ"><label for="f-produit-1-description">Description</label><input type="text" id="f-produit-1-description"></div>
+        <div class="champ"><label for="f-produit-1-image">Image (URL)</label><input type="url" id="f-produit-1-image"></div>
+      </div>
+      <div class="bloc-produit">
+        <h3>Produit 2</h3>
+        <div class="grille-2">
+          <div class="champ"><label for="f-produit-2-nom">Nom</label><input type="text" id="f-produit-2-nom"></div>
+          <div class="champ"><label for="f-produit-2-prix">Prix (€)</label><input type="number" step="0.01" id="f-produit-2-prix"></div>
+        </div>
+        <div class="champ"><label for="f-produit-2-description">Description</label><input type="text" id="f-produit-2-description"></div>
+        <div class="champ"><label for="f-produit-2-image">Image (URL)</label><input type="url" id="f-produit-2-image"></div>
+      </div>
+      <div class="bloc-produit">
+        <h3>Produit 3</h3>
+        <div class="grille-2">
+          <div class="champ"><label for="f-produit-3-nom">Nom</label><input type="text" id="f-produit-3-nom"></div>
+          <div class="champ"><label for="f-produit-3-prix">Prix (€)</label><input type="number" step="0.01" id="f-produit-3-prix"></div>
+        </div>
+        <div class="champ"><label for="f-produit-3-description">Description</label><input type="text" id="f-produit-3-description"></div>
+        <div class="champ"><label for="f-produit-3-image">Image (URL)</label><input type="url" id="f-produit-3-image"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carte">
+    <h2>Checklist qualité</h2>
+    <p style="margin-top:0; color:#666; font-size:0.85rem;">Simple pense-bête — rien ici n'est coché ou enregistré, c'est à vous de vérifier avant de valider.</p>
+    <ul class="checklist" id="liste-checklist"></ul>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-secondaire" id="btn-enregistrer">Enregistrer les modifications</button>
+    <button class="btn btn-valider" id="btn-valider">Valider et envoyer au prospect</button>
+    <span id="statut-action" style="font-size:0.85rem; color:#666;"></span>
+  </div>
+</main>
+
+<script>
+(function () {
+  var BASE_WEBHOOK = 'https://lbn.app.n8n.cloud/webhook';
+  var params = new URLSearchParams(window.location.search);
+  var token = params.get('token');
+
+  var elChargement = document.getElementById('etat-chargement');
+  var elErreur = document.getElementById('etat-erreur');
+  var elContenu = document.getElementById('contenu-page');
+  var elMessage = document.getElementById('message');
+  var elStatutAction = document.getElementById('statut-action');
+
+  var codeReference = null;
+
+  function afficherMessage(texte, type) {
+    elMessage.textContent = texte;
+    elMessage.className = type;
+    elMessage.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function valeur(id) { return document.getElementById(id).value; }
+  function definir(id, val) { document.getElementById(id).value = val || ''; }
+
+  function remplirFormulaire(contenu) {
+    definir('f-tagline', contenu.tagline);
+    definir('f-description', contenu.description);
+    definir('f-couleur', contenu.couleur_preferee);
+    definir('f-hero-image', contenu.hero_image_url);
+    if (contenu.hero_image_url) {
+      var img = document.getElementById('apercu-hero');
+      img.src = contenu.hero_image_url;
+      img.style.display = 'block';
+    }
+    definir('f-service-1-titre', contenu.service_1_titre);
+    definir('f-service-1-description', contenu.service_1_description);
+    definir('f-service-2-titre', contenu.service_2_titre);
+    definir('f-service-2-description', contenu.service_2_description);
+    definir('f-service-3-titre', contenu.service_3_titre);
+    definir('f-service-3-description', contenu.service_3_description);
+    definir('f-produit-1-nom', contenu.produit_1_nom);
+    definir('f-produit-1-description', contenu.produit_1_description);
+    definir('f-produit-1-prix', contenu.produit_1_prix);
+    definir('f-produit-1-image', contenu.produit_1_image_url);
+    definir('f-produit-2-nom', contenu.produit_2_nom);
+    definir('f-produit-2-description', contenu.produit_2_description);
+    definir('f-produit-2-prix', contenu.produit_2_prix);
+    definir('f-produit-2-image', contenu.produit_2_image_url);
+    definir('f-produit-3-nom', contenu.produit_3_nom);
+    definir('f-produit-3-description', contenu.produit_3_description);
+    definir('f-produit-3-prix', contenu.produit_3_prix);
+    definir('f-produit-3-image', contenu.produit_3_image_url);
+  }
+
+  function lireFormulaire() {
+    var contenu = {
+      tagline: valeur('f-tagline'),
+      description: valeur('f-description'),
+      couleur_preferee: valeur('f-couleur'),
+      hero_image_url: valeur('f-hero-image')
+    };
+    if (codeReference === 'SITE_ECOMMERCE') {
+      contenu.produit_1_nom = valeur('f-produit-1-nom');
+      contenu.produit_1_description = valeur('f-produit-1-description');
+      contenu.produit_1_prix = valeur('f-produit-1-prix');
+      contenu.produit_1_image_url = valeur('f-produit-1-image');
+      contenu.produit_2_nom = valeur('f-produit-2-nom');
+      contenu.produit_2_description = valeur('f-produit-2-description');
+      contenu.produit_2_prix = valeur('f-produit-2-prix');
+      contenu.produit_2_image_url = valeur('f-produit-2-image');
+      contenu.produit_3_nom = valeur('f-produit-3-nom');
+      contenu.produit_3_description = valeur('f-produit-3-description');
+      contenu.produit_3_prix = valeur('f-produit-3-prix');
+      contenu.produit_3_image_url = valeur('f-produit-3-image');
+    } else {
+      contenu.service_1_titre = valeur('f-service-1-titre');
+      contenu.service_1_description = valeur('f-service-1-description');
+      contenu.service_2_titre = valeur('f-service-2-titre');
+      contenu.service_2_description = valeur('f-service-2-description');
+      contenu.service_3_titre = valeur('f-service-3-titre');
+      contenu.service_3_description = valeur('f-service-3-description');
+    }
+    return contenu;
+  }
+
+  function afficherChecklist(items) {
+    var ul = document.getElementById('liste-checklist');
+    ul.innerHTML = '';
+    (items || []).forEach(function (texte) {
+      var li = document.createElement('li');
+      li.textContent = texte;
+      ul.appendChild(li);
+    });
+  }
+
+  function chargerDetails() {
+    if (!token) {
+      elChargement.style.display = 'none';
+      elErreur.style.display = 'block';
+      return;
+    }
+    fetch(BASE_WEBHOOK + '/site-validation-details?token=' + encodeURIComponent(token))
+      .then(function (r) {
+        if (!r.ok) throw new Error('invalide');
+        return r.json();
+      })
+      .then(function (data) {
+        codeReference = data.code_reference;
+        document.getElementById('badge-type').textContent = codeReference || '';
+        var lien = document.getElementById('lien-apercu');
+        lien.href = data.url_previsualisation || '#';
+        remplirFormulaire(data.contenu || {});
+        document.getElementById('bloc-services').style.display = (codeReference === 'SITE_ECOMMERCE') ? 'none' : 'block';
+        document.getElementById('bloc-produits').style.display = (codeReference === 'SITE_ECOMMERCE') ? 'block' : 'none';
+        afficherChecklist(data.checklist);
+        elChargement.style.display = 'none';
+        elContenu.style.display = 'block';
+      })
+      .catch(function () {
+        elChargement.style.display = 'none';
+        elErreur.style.display = 'block';
+      });
+  }
+
+  function envoyerMiseAJour(action, boutonDeclencheur) {
+    var boutons = document.querySelectorAll('.btn');
+    boutons.forEach(function (b) { b.disabled = true; });
+    elStatutAction.textContent = (action === 'valider') ? 'Redéploiement et envoi en cours…' : 'Enregistrement en cours…';
+
+    fetch(BASE_WEBHOOK + '/site-validation-update?token=' + encodeURIComponent(token), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: action, contenu: lireFormulaire() })
+    })
+      .then(function (r) {
+        if (!r.ok) throw new Error('echec');
+        return r.json();
+      })
+      .then(function (data) {
+        elStatutAction.textContent = '';
+        if (action === 'valider') {
+          afficherMessage('Site validé et envoyé au prospect avec succès.', 'ok');
+          boutons.forEach(function (b) { b.disabled = true; });
+        } else {
+          afficherMessage('Modifications enregistrées et redéployées.', 'ok');
+          if (data.url_previsualisation) {
+            document.getElementById('lien-apercu').href = data.url_previsualisation;
+          }
+          boutons.forEach(function (b) { b.disabled = false; });
+        }
+      })
+      .catch(function () {
+        elStatutAction.textContent = '';
+        afficherMessage("Une erreur est survenue — réessayez, ou vérifiez que le lien n'a pas déjà été validé.", 'err');
+        boutons.forEach(function (b) { b.disabled = false; });
+      });
+  }
+
+  document.getElementById('btn-enregistrer').addEventListener('click', function () {
+    envoyerMiseAJour('enregistrer', this);
+  });
+  document.getElementById('btn-valider').addEventListener('click', function () {
+    if (!window.confirm('Le prospect va recevoir un email avec le lien du site. Continuer ?')) return;
+    envoyerMiseAJour('valider', this);
+  });
+
+  chargerDetails();
+})();
+</script>
+
+</body>
+</html>
