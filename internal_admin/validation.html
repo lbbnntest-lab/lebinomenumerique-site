@@ -10,7 +10,7 @@
     --couleur-principale: #1F6F78;
     --couleur-texte: #1a1a1a;
     --couleur-fond-clair: #f7f7f8;
-    --couleur-bordure: #e2e2e4;a
+    --couleur-bordure: #e2e2e4;
     --couleur-danger: #B23A2E;
     --couleur-ok: #2E7D32;
   }
@@ -199,6 +199,11 @@
     </div>
 
     <div class="champ">
+      <label for="f-cta">Texte du bouton d'action (CTA)</label>
+      <input type="text" id="f-cta" placeholder="ex: Réserver une table, Nous contacter, Demander un devis">
+    </div>
+
+    <div class="champ">
       <label for="f-couleur">Couleur principale</label>
       <input type="text" id="f-couleur" placeholder="ex: bleu, vert, rouge, orange, jaune, violet, rose, noir, gris, marron, turquoise">
     </div>
@@ -295,6 +300,7 @@
   function remplirFormulaire(contenu) {
     definir('f-tagline', contenu.tagline);
     definir('f-description', contenu.description);
+    definir('f-cta', contenu.cta_texte);
     definir('f-couleur', contenu.couleur_preferee);
     definir('f-hero-image', contenu.hero_image_url);
     if (contenu.hero_image_url) {
@@ -326,6 +332,7 @@
     var contenu = {
       tagline: valeur('f-tagline'),
       description: valeur('f-description'),
+      cta_texte: valeur('f-cta'),
       couleur_preferee: valeur('f-couleur'),
       hero_image_url: valeur('f-hero-image')
     };
