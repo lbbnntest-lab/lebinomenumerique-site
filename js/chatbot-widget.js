@@ -3,6 +3,7 @@
 
 (function () {
   const sessionId = "sess_" + Math.random().toString(36).slice(2);
+  let authUserId = null; // rempli après création de compte inline (chantier "compte obligatoire", 19/08/2026)
 
   function creerWidget() {
     const bulle = document.createElement("button");
@@ -40,18 +41,89 @@
       if (!message) return;
       ajouterMessage("utilisateur", message);
       input.value = "";
-      const idLoading = ajouterMessage("assistant", "...");
+      await envoyerMessage(message);
+    });
+  }
+
+  // Envoie un message au workflow (utilisé par le formulaire ET après création
+  // de compte inline, où le message est synthétique). N'affiche pas la bulle
+  // "utilisateur" elle-même — l'appelant s'en charge quand c'est pertinent.
+  async function envoyerMessage(message) {
+    const idLoading = ajouterMessage("assistant", "...");
+    try {
+      const payload = { message, session_id: sessionId };
+      if (authUserId) payload.auth_user_id = authUserId;
+
+      const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/chatbot-message`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await resp.json();
+      document.getElementById(idLoading).textContent = data.reponse || "Un conseiller va revenir vers vous rapidement.";
+
+      // Compte obligatoire avant aperçu (anti-abus, 19/08/2026) : le workflow
+      // demande la création d'un compte avant de continuer.
+      if (data.compte_demande && !authUserId) {
+        afficherFormulaireCompte();
+      }
+    } catch (err) {
+      document.getElementById(idLoading).textContent = "Oups, une erreur est survenue. Réservez plutôt un appel gratuit via le bouton en haut de page !";
+    }
+  }
+
+  // Petit formulaire de création de compte affiché directement dans le fil de
+  // discussion, sans quitter le widget — le compte Supabase Auth est créé
+  // côté navigateur (même mécanisme que inscription.html), puis son id est
+  // transmis au workflow pour débloquer la suite (génération de démo).
+  function afficherFormulaireCompte() {
+    if (!window.supabaseClient) {
+      ajouterMessage("assistant", "La création de compte n'est pas disponible sur cette page pour le moment — écrivez-moi votre email et un conseiller vous recontactera.");
+      return;
+    }
+    const zone = document.getElementById("chatbot-messages");
+    const conteneur = document.createElement("div");
+    conteneur.className = "chatbot-msg chatbot-msg-assistant chatbot-form-compte";
+    conteneur.innerHTML = `
+      <div class="champ" style="margin-bottom:8px;">
+        <input type="email" placeholder="Votre email" class="cbf-email" required style="width:100%;">
+      </div>
+      <div class="champ" style="margin-bottom:8px;">
+        <input type="password" placeholder="Mot de passe (8 caractères min.)" class="cbf-password" minlength="8" required style="width:100%;">
+      </div>
+      <button type="button" class="btn btn-primaire cbf-submit" style="width:100%; padding:8px;">Créer mon compte</button>
+      <p class="cbf-erreur" style="color:#c0392b; font-size:.8rem; margin-top:6px;"></p>
+    `;
+    zone.appendChild(conteneur);
+    zone.scrollTop = zone.scrollHeight;
+
+    conteneur.querySelector(".cbf-submit").addEventListener("click", async () => {
+      const email = conteneur.querySelector(".cbf-email").value.trim();
+      const password = conteneur.querySelector(".cbf-password").value;
+      const erreurEl = conteneur.querySelector(".cbf-erreur");
+      erreurEl.textContent = "";
+      if (!email || password.length < 8) {
+        erreurEl.textContent = "Email et mot de passe (8 caractères min.) requis.";
+        return;
+      }
+      const boutonSubmit = conteneur.querySelector(".cbf-submit");
+      boutonSubmit.disabled = true;
+      boutonSubmit.textContent = "Création en cours...";
 
       try {
-        const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/chatbot-message`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message, session_id: sessionId })
-        });
-        const data = await resp.json();
-        document.getElementById(idLoading).textContent = data.reponse || "Un conseiller va revenir vers vous rapidement.";
+        const { data, error } = await window.supabaseClient.auth.signUp({ email, password });
+        if (error) throw error;
+        authUserId = data.user?.id || null;
+        conteneur.remove();
+        ajouterMessage("utilisateur", "J'ai créé mon compte, on continue !");
+        await envoyerMessage("[compte créé]");
       } catch (err) {
-        document.getElementById(idLoading).textContent = "Oups, une erreur est survenue. Réservez plutôt un appel gratuit via le bouton en haut de page !";
+        boutonSubmit.disabled = false;
+        boutonSubmit.textContent = "Créer mon compte";
+        const dejaInscrit = /already registered|already exists|user_already_exists/i.test(err.message || "");
+        erreurEl.textContent = dejaInscrit
+          ? "Cet email a déjà un compte — connectez-vous via la page Connexion, puis revenez discuter ici."
+          : (err.message || "Une erreur est survenue.");
       }
     });
   }
