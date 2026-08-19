@@ -165,7 +165,7 @@
 
 <header>
   <h1>Le Binôme Numérique — Validation du site</h1>
-  <p>Relisez, éditez si besoin, puis validez pour l'envoyer au prospect.</p>
+  <p id="sous-titre-page">Relisez, éditez si besoin, puis validez pour l'envoyer au prospect.</p>
 </header>
 
 <div id="etat-chargement">
@@ -278,6 +278,16 @@
   var BASE_WEBHOOK = 'https://lbn.app.n8n.cloud/webhook';
   var params = new URLSearchParams(window.location.search);
   var token = params.get('token');
+  // type=client -> site généré pour un client payant (workflow 16), webhooks dédiés
+  // pour ne pas entrer en collision avec ceux de la démo (workflow 19).
+  var estClient = params.get('type') === 'client';
+  var CHEMIN_DETAILS = estClient ? 'client-site-validation-details' : 'site-validation-details';
+  var CHEMIN_UPDATE = estClient ? 'client-site-validation-update' : 'site-validation-update';
+
+  if (estClient) {
+    document.getElementById('sous-titre-page').textContent = "Relisez, éditez si besoin, puis validez pour l'envoyer au client.";
+    document.getElementById('btn-valider').textContent = 'Valider et envoyer au client';
+  }
 
   var elChargement = document.getElementById('etat-chargement');
   var elErreur = document.getElementById('etat-erreur');
@@ -376,7 +386,7 @@
       elErreur.style.display = 'block';
       return;
     }
-    fetch(BASE_WEBHOOK + '/site-validation-details?token=' + encodeURIComponent(token))
+    fetch(BASE_WEBHOOK + '/' + CHEMIN_DETAILS + '?token=' + encodeURIComponent(token))
       .then(function (r) {
         if (!r.ok) throw new Error('invalide');
         return r.json();
@@ -404,7 +414,7 @@
     boutons.forEach(function (b) { b.disabled = true; });
     elStatutAction.textContent = (action === 'valider') ? 'Redéploiement et envoi en cours…' : 'Enregistrement en cours…';
 
-    fetch(BASE_WEBHOOK + '/site-validation-update?token=' + encodeURIComponent(token), {
+    fetch(BASE_WEBHOOK + '/' + CHEMIN_UPDATE + '?token=' + encodeURIComponent(token), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: action, contenu: lireFormulaire() })
@@ -416,7 +426,7 @@
       .then(function (data) {
         elStatutAction.textContent = '';
         if (action === 'valider') {
-          afficherMessage('Site validé et envoyé au prospect avec succès.', 'ok');
+          afficherMessage('Site validé et envoyé au ' + (estClient ? 'client' : 'prospect') + ' avec succès.', 'ok');
           boutons.forEach(function (b) { b.disabled = true; });
         } else {
           afficherMessage('Modifications enregistrées et redéployées.', 'ok');
@@ -437,7 +447,7 @@
     envoyerMiseAJour('enregistrer', this);
   });
   document.getElementById('btn-valider').addEventListener('click', function () {
-    if (!window.confirm('Le prospect va recevoir un email avec le lien du site. Continuer ?')) return;
+    if (!window.confirm((estClient ? 'Le client' : 'Le prospect') + ' va recevoir un email avec le lien du site. Continuer ?')) return;
     envoyerMiseAJour('valider', this);
   });
 
