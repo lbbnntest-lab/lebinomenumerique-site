@@ -133,45 +133,34 @@
   </p>
 
   <div id="plans-b2b" class="grille-plans">
-    <div class="carte-plan" data-chatbot-detail="Starter est idéal pour démarrer seul, avec un volume de demandes modéré — parfait pour un indépendant ou une petite structure qui commence à automatiser son secrétariat.">
-      <h3>Starter</h3>
-      <div class="prix">79€ <span>/ mois</span></div>
+    <div class="carte-plan recommande" data-chatbot-detail="Le Socle Secrétariat couvre le besoin de base (tri email IA, devis auto, relance, bilan quotidien) — vous ajoutez ensuite seulement les briques dont vous avez vraiment besoin, sans payer pour un palier fixe surdimensionné.">
+      <h3>Socle Secrétariat</h3>
+      <div class="prix">89€ <span>/ mois</span></div>
       <ul>
         <li>Tri automatique des emails par IA (RDV, Devis, Urgence, SAV)</li>
         <li>Devis automatisés générés par IA</li>
         <li>Relance automatique si un numéro de rappel manque <small style="color:var(--gris-texte); font-weight:400;">(pas de standard téléphonique — tri par email)</small></li>
-        <li>100 demandes traitées / mois <small style="color:var(--gris-texte); font-weight:400;">(au-delà : 0,50€/demande, jamais de blocage)</small></li>
+        <li>Bilan quotidien de l'activité</li>
+        <li>150 demandes traitées / mois <small style="color:var(--gris-texte); font-weight:400;">(au-delà : 0,50€/demande, jamais de blocage)</small></li>
         <li>1 utilisateur inclus</li>
       </ul>
-      <p style="margin:8px 0 16px; color:var(--gris-texte); font-size:.85rem;">Non inclus : facturation automatisée, intégration CRM, accès API, SLA.</p>
-      <a class="btn btn-secondaire" href="inscription.html?type=B2B&plan=B2B_STARTER">Choisir</a>
+
+      <p style="font-weight:600; margin:16px 0 8px;">Briques à la carte <small style="color:var(--gris-texte); font-weight:400;">(optionnel, cumulables)</small></p>
+      <label style="display:flex; align-items:center; gap:8px; margin-bottom:6px; font-weight:400;">
+        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_UTILISATEUR_SUPP" data-prix="15"> Utilisateur supplémentaire <small style="color:var(--gris-texte);">+15€/mois</small>
+      </label>
+      <label style="display:flex; align-items:center; gap:8px; margin-bottom:6px; font-weight:400;">
+        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_EXPORT_AIRTABLE" data-prix="19"> Export automatique vers Airtable <small style="color:var(--gris-texte);">+19€/mois</small>
+      </label>
+      <label style="display:flex; align-items:center; gap:8px; margin-bottom:12px; font-weight:400;">
+        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_SUPPORT_PRIORITAIRE" data-prix="12"> Support prioritaire <small style="color:var(--gris-texte);">+12€/mois</small>
+      </label>
+
+      <p style="margin:4px 0 4px; font-weight:600;">Total : <span id="total-socle-brique">89</span>€ <span style="font-weight:400;">/ mois</span></p>
+      <p style="margin:0 0 16px; color:var(--gris-texte); font-size:.85rem;">Existent aussi séparément : onboarding personnalisé (149€ HT, une fois), accueil téléphonique IA (49€/95€ par mois, bientôt disponible).</p>
+      <a class="btn btn-primaire" id="lien-choisir-socle" href="inscription.html?type=B2B&plan=SECRETARIAT_SOCLE">Choisir</a>
     </div>
-    <div class="carte-plan recommande" data-chatbot-detail="Business est notre plan le plus choisi par les équipes de 2 à 3 personnes — facturation automatisée et intégration CRM incluses, pour vraiment déléguer le secrétariat.">
-      <h3>Business</h3>
-      <div class="prix">149€ <span>/ mois</span></div>
-      <ul>
-        <li>Tout Starter, plus :</li>
-        <li>Facturation automatisée</li>
-        <li>Intégration CRM / Airtable</li>
-        <li>3 utilisateurs inclus, 400 demandes / mois</li>
-        <li>Option : onboarding personnalisé <small style="color:var(--gris-texte); font-weight:400;">(149€ HT, paramétrage règles métier + import de vos contacts)</small></li>
-      </ul>
-      <p style="margin:8px 0 16px; color:var(--gris-texte); font-size:.85rem;">Non inclus : accès API, SLA dédié.</p>
-      <a class="btn btn-primaire" href="inscription.html?type=B2B&plan=B2B_BUSINESS">Choisir</a>
-    </div>
-    <div class="carte-plan" data-chatbot-detail="Enterprise est pensé pour les structures plus grandes avec des besoins sur-mesure — accès API pour connecter vos propres outils, et un SLA dédié pour la fiabilité.">
-      <h3>Enterprise</h3>
-      <div class="prix"><span class="prix-ancien">379€</span>299€ <span>/ mois</span><span class="badge-lancement">Offre de lancement</span></div>
-      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.85rem;">Tarif de lancement valable 90 jours, puis 379€/mois.</p>
-      <ul>
-        <li>Tout Business, plus :</li>
-        <li>Accès API</li>
-        <li>SLA dédié</li>
-        <li>10 utilisateurs inclus, demandes illimitées</li>
-      </ul>
-      <a class="btn btn-secondaire" href="inscription.html?type=B2B&plan=B2B_ENTERPRISE">Choisir</a>
-    </div>
-    <div class="carte-plan au-scroll" data-chatbot-detail="Pour les structures qui dépassent Enterprise : plusieurs sites, workflows métier spécifiques, volumes très élevés, ou intégrations non standard — on étudie votre besoin sur devis.">
+    <div class="carte-plan au-scroll" data-chatbot-detail="Pour les besoins qui dépassent le socle + briques : plusieurs sites, workflows métier spécifiques, volumes très élevés, ou intégrations non standard — on étudie votre besoin sur devis.">
       <h3>Sur-Mesure</h3>
       <div class="prix">Sur devis <span>à partir de 450€/mois</span></div>
       <ul>
@@ -182,6 +171,26 @@
       <a class="btn btn-secondaire" href="devis-site-web.html">Demander un devis</a>
     </div>
   </div>
+  <script>
+  (function () {
+    var checks = document.querySelectorAll('.brique-check');
+    var totalEl = document.getElementById('total-socle-brique');
+    var lien = document.getElementById('lien-choisir-socle');
+    var PRIX_SOCLE = 89;
+    function maj() {
+      var total = PRIX_SOCLE;
+      var codes = [];
+      checks.forEach(function (c) {
+        if (c.checked) { total += Number(c.dataset.prix); codes.push(c.dataset.code); }
+      });
+      totalEl.textContent = total;
+      var href = 'inscription.html?type=B2B&plan=SECRETARIAT_SOCLE';
+      if (codes.length) href += '&briques=' + encodeURIComponent(codes.join(','));
+      lien.setAttribute('href', href);
+    }
+    checks.forEach(function (c) { c.addEventListener('change', maj); });
+  })();
+  </script>
   </div>
 </section>
 

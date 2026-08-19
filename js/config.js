@@ -27,7 +27,13 @@ window.APP_CONFIG = {
     B2B_BUSINESS: { mensuel: "price_1Tyom5PYLCUOQdeILr6PICO6", trimestriel: "price_1TyomtPYLCUOQdeIX24emex0", annuel: "price_1TyomtPYLCUOQdeIhDA8xTkJ" },
     B2B_ENTERPRISE: { mensuel: "price_1TyonUPYLCUOQdeIwYnzZr1x", trimestriel: "price_1Tyoo5PYLCUOQdeIEpzoTGBP", annuel: "price_1Tyoo5PYLCUOQdeIlrTXCKeM" },
     BRIQUE_COORDINATEUR_FAMILIAL: { mensuel: "price_1TypKlPYLCUOQdeI7a8yLk1q", trimestriel: "price_1TypLPPYLCUOQdeIhx9xUC4T", annuel: "price_1TypLPPYLCUOQdeIrp3TeLNa" },
-    BRIQUE_CHASSEUR_FORFAIT: { mensuel: "price_1TypVTPYLCUOQdeI71zMyaUu", trimestriel: "price_1TypW8PYLCUOQdeIJG8cZ0wn", annuel: "price_1TypW8PYLCUOQdeIYINV0yZE" }
+    BRIQUE_CHASSEUR_FORFAIT: { mensuel: "price_1TypVTPYLCUOQdeI71zMyaUu", trimestriel: "price_1TypW8PYLCUOQdeIJG8cZ0wn", annuel: "price_1TypW8PYLCUOQdeIYINV0yZE" },
+    // Nouveau catalogue B2B "socle + briques" (19/08/2026, remplace Starter/Business/Enterprise
+    // pour les nouveaux clients — voir MASTER_PLAN.md). Mensuel uniquement pour l'instant.
+    SECRETARIAT_SOCLE: { mensuel: "price_1U642LPYLCUOQdeImkqupyFb" },
+    SECRETARIAT_UTILISATEUR_SUPP: { mensuel: "price_1U642MPYLCUOQdeI0Bj8XQVd" },
+    SECRETARIAT_EXPORT_AIRTABLE: { mensuel: "price_1U642NPYLCUOQdeIf2ESjFkw" },
+    SECRETARIAT_SUPPORT_PRIORITAIRE: { mensuel: "price_1U642OPYLCUOQdeI5n3EuoYt" }
   },
 
   // Lien de votre type d'événement Cal.com ("Appel découverte 15 min")

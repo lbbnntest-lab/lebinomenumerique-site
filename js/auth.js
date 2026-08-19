@@ -6,6 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const typeParam = params.get("type");
   const planParam = params.get("plan");
+  // Briques à la carte optionnelles (catalogue B2B "socle + briques", 19/08/2026),
+  // ex. ?briques=SECRETARIAT_UTILISATEUR_SUPP,SECRETARIAT_EXPORT_AIRTABLE — voir
+  // frontend_saas/index.html section #plans-b2b pour la construction du lien.
+  const briquesCodes = (params.get("briques") || "").split(",").map(s => s.trim()).filter(Boolean);
 
   const selectType = document.getElementById("type_compte");
   const champsB2B = document.getElementById("champs-b2b");
@@ -13,6 +17,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (typeParam) selectType.value = typeParam;
   if (planParam) planInput.value = planParam;
+
+  if (briquesCodes.length) {
+    const recap = document.createElement("p");
+    recap.style.cssText = "color:var(--gris-texte); font-size:.85rem; margin-top:-8px;";
+    recap.textContent = "Briques sélectionnées : " + briquesCodes.map(c =>
+      ({ SECRETARIAT_UTILISATEUR_SUPP: "Utilisateur supplémentaire (+15€/mois)",
+         SECRETARIAT_EXPORT_AIRTABLE: "Export Airtable (+19€/mois)",
+         SECRETARIAT_SUPPORT_PRIORITAIRE: "Support prioritaire (+12€/mois)" }[c] || c)
+    ).join(", ");
+    planInput.insertAdjacentElement("afterend", recap);
+  }
+
+  // SECRETARIAT_SOCLE et ses briques n'ont qu'un Price ID mensuel pour l'instant
+  // (voir config.js) — masquer le choix de cycle pour éviter d'envoyer un
+  // stripe_price_id undefined si l'utilisateur choisit trimestriel/annuel.
+  if (planInput.value === "SECRETARIAT_SOCLE") {
+    const cycle = document.getElementById("cycle_facturation");
+    cycle.value = "mensuel";
+    cycle.closest(".champ").classList.add("hidden");
+  }
 
   function toggleChampsB2B() {
     champsB2B.classList.toggle("hidden", selectType.value !== "B2B");
@@ -59,6 +83,12 @@ document.addEventListener("DOMContentLoaded", () => {
         cycle_facturation: document.getElementById("cycle_facturation").value,
         plan_code: planInput.value,
         stripe_price_id: window.APP_CONFIG.STRIPE_PRICES[planInput.value]?.[document.getElementById("cycle_facturation").value],
+        // Briques à la carte (catalogue B2B "socle + briques") : chaque code est
+        // résolu vers son Price ID mensuel — pas de cycle trimestriel/annuel pour
+        // l'instant sur les briques, voir config.js.
+        briques: briquesCodes
+          .map(code => ({ code, stripe_price_id: window.APP_CONFIG.STRIPE_PRICES[code]?.mensuel }))
+          .filter(b => b.stripe_price_id),
         auth_user_id: authData.user?.id || null
       };
 
