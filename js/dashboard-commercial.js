@@ -1,13 +1,16 @@
 // Seuils de promotion MLM — DOIVENT rester synchronisés avec les constantes
-// seuil_ventes_formateur / seuil_filleuls_manager / seuil_ventes_par_filleul
-// de la fonction evaluer_promotions_mlm() dans 5_patch_mlm_reseau.sql.
-// La décision de promotion réelle est calculée côté serveur (trigger SQL) ;
-// ces valeurs ne servent ici qu'à afficher une jauge de progression.
+// seuil_ventes_formateur / seuil_filleuls_formateurs_manager de la fonction
+// evaluer_promotions_mlm() dans 34_refonte_progression_mlm.sql (remplace la
+// version de 5_patch_mlm_reseau.sql : Formateur -> Manager se déclenche
+// désormais sur 3 filleuls directs devenus eux-mêmes Formateur, plus sur leur
+// volume de ventes). La décision de promotion réelle est calculée côté
+// serveur (trigger SQL) ; ces valeurs ne servent ici qu'à afficher une jauge
+// de progression.
 const SEUIL_VENTES_FORMATEUR = 10;
-const SEUIL_FILLEULS_MANAGER = 3;
-const SEUIL_VENTES_PAR_FILLEUL = 5;
+const SEUIL_FILLEULS_FORMATEURS_MANAGER = 3;
+const NIVEAUX_COMPTANT_COMME_FORMATEUR = ["formateur", "manager", "directeur"];
 
-const LIBELLES_NIVEAU = { conseiller: "Conseiller", formateur: "Formateur", manager: "Manager" };
+const LIBELLES_NIVEAU = { conseiller: "Conseiller", formateur: "Formateur", manager: "Manager", directeur: "Directeur" };
 const LIBELLES_ROLE_VENTE = { conseiller: "Vente directe", formateur: "Override Formateur", manager: "Override Manager" };
 const BADGE_PAR_STATUT = { payee: "actif", eligible: "essai", en_attente: "essai", annulee: "resilie", a_recuperer: "resilie", bloque_identifiant_manquant: "resilie", bloque_fraude: "resilie" };
 
@@ -143,11 +146,11 @@ function afficherProgression(niveau, ventesPerso, filleuls) {
   }
 
   if (niveau === "formateur") {
-    const nbFilleulsQualifies = filleuls.filter(f => f.nb_ventes_actives >= SEUIL_VENTES_PAR_FILLEUL).length;
-    const pct = Math.min(100, Math.round((nbFilleulsQualifies / SEUIL_FILLEULS_MANAGER) * 100));
+    const nbFilleulsFormateurs = filleuls.filter(f => NIVEAUX_COMPTANT_COMME_FORMATEUR.includes(f.niveau_mlm)).length;
+    const pct = Math.min(100, Math.round((nbFilleulsFormateurs / SEUIL_FILLEULS_FORMATEURS_MANAGER) * 100));
     barre.style.width = pct + "%";
     titre.textContent = "Statut Formateur — Objectif Manager";
-    texte.textContent = `${nbFilleulsQualifies}/${SEUIL_FILLEULS_MANAGER} filleuls actifs (≥ ${SEUIL_VENTES_PAR_FILLEUL} ventes chacun)`;
+    texte.textContent = `${nbFilleulsFormateurs}/${SEUIL_FILLEULS_FORMATEURS_MANAGER} filleuls devenus Formateur`;
     return;
   }
 
