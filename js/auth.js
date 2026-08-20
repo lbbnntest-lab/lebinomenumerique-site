@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (briquesCodes.length) {
     const recap = document.createElement("p");
     recap.style.cssText = "color:var(--gris-texte); font-size:.85rem; margin-top:-8px;";
-    recap.textContent = "Briques sélectionnées : " + briquesCodes.map(c =>
+    recap.textContent = "Options sélectionnées : " + briquesCodes.map(c =>
       ({ SECRETARIAT_UTILISATEUR_SUPP: "Utilisateur supplémentaire (+15€/mois)",
          SECRETARIAT_EXPORT_AIRTABLE: "Export Airtable (+19€/mois)",
          SECRETARIAT_SUPPORT_PRIORITAIRE: "Support prioritaire (+12€/mois)" }[c] || c)

@@ -13,8 +13,9 @@
     <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
     <nav>
       <a href="#tarifs">Tarifs</a>
-      <a href="#telephonie">Accueil téléphonique IA</a>
+      <a href="#telephonie">Gestion Appels</a>
       <a href="#site-web">Création de site web</a>
+      <a href="#automatisation">Automatisation sur mesure</a>
       <a href="#faq">Questions fréquentes</a>
       <a href="#reserver">Réserver un appel</a>
       <!-- Lien "Connexion" retiré du site public (2026-08-03, décision sécurité/discrétion) —
@@ -30,11 +31,11 @@
          d'origine : "Votre secrétariat virtuel, pour les pros comme pour les
          particuliers". Remettre tel quel en réactivant le B2C. -->
     <h1>Votre secrétariat virtuel, pensé pour les professionnels</h1>
-    <p>Le Binôme Numérique trie vos emails, gère vos rendez-vous et vos urgences avec de l'IA — pendant que vous vous concentrez sur l'essentiel.</p>
+    <p>Le Binôme Numérique trie vos emails, gère vos rendez-vous et vos urgences à votre place — simplement, pendant que vous vous concentrez sur l'essentiel.</p>
 
     <div class="bloc-reassurance">
-      🕑 100 % en ligne si vous le souhaitez — tout se fait par téléphone, visio ou directement en ligne, sans aucun déplacement à prévoir.<br>
-      Vous préférez rencontrer quelqu'un en personne ? C'est possible aussi, sur simple demande.
+      💻 Tout se passe à distance si vous préférez — téléphone, visio, ou directement en ligne, sans aucun déplacement à prévoir.<br>
+      Vous préférez nous rencontrer en personne ? <a href="#reserver">Indiquez votre code postal</a> pour voir si c'est possible dans votre secteur.
     </div>
 
     <div class="deux-cta">
@@ -51,7 +52,7 @@
     <div class="etape au-scroll">
       <div class="numero">1</div>
       <h3>Choisissez votre formule en ligne</h3>
-      <p>Aucune interaction requise : vous comparez les offres et sélectionnez celle qui vous correspond, en 2 minutes.</p>
+      <p>Comparez nos formules et choisissez celle qui vous correspond, en 2 minutes — aussi simple qu'un achat en ligne classique.</p>
     </div>
     <div class="etape au-scroll au-scroll-delai-1">
       <div class="numero">2</div>
@@ -132,20 +133,23 @@
     Prix mensuels affichés — cycle trimestriel (5 % de remise) et annuel (2 mois offerts) disponibles à l'inscription.
   </p>
 
+  <p style="text-align:center; max-width:640px; margin:0 auto 8px; color:var(--gris-texte); font-size:.9rem;">
+    Trois blocs simples : gérez vos emails, vos appels, ou les deux — avec des options cumulables dans chaque cas.
+  </p>
   <div id="plans-b2b" class="grille-plans">
-    <div class="carte-plan recommande" data-chatbot-detail="Le Socle Secrétariat couvre le besoin de base (tri email IA, devis auto, relance, bilan quotidien) — vous ajoutez ensuite seulement les briques dont vous avez vraiment besoin, sans payer pour un palier fixe surdimensionné.">
-      <h3>Socle Secrétariat</h3>
+    <div class="carte-plan recommande" data-chatbot-detail="Gestion Email couvre le besoin de base (tri email IA, devis auto, relance, bilan quotidien) — vous ajoutez ensuite seulement les options dont vous avez vraiment besoin, sans payer pour un palier fixe surdimensionné.">
+      <h3>Gestion Email</h3>
       <div class="prix">89€ <span>/ mois</span></div>
       <ul>
-        <li>Tri automatique des emails par IA (RDV, Devis, Urgence, SAV)</li>
-        <li>Devis automatisés générés par IA</li>
+        <li>Tri automatique de vos emails (RDV, Devis, Urgence, SAV)</li>
+        <li>Devis automatisés, prêts à envoyer</li>
         <li>Relance automatique si un numéro de rappel manque <small style="color:var(--gris-texte); font-weight:400;">(pas de standard téléphonique — tri par email)</small></li>
         <li>Bilan quotidien de l'activité</li>
         <li>150 demandes traitées / mois <small style="color:var(--gris-texte); font-weight:400;">(au-delà : 0,50€/demande, jamais de blocage)</small></li>
         <li>1 utilisateur inclus</li>
       </ul>
 
-      <p style="font-weight:600; margin:16px 0 8px;">Briques à la carte <small style="color:var(--gris-texte); font-weight:400;">(optionnel, cumulables)</small></p>
+      <p style="font-weight:600; margin:16px 0 8px;">Options cumulables <small style="color:var(--gris-texte); font-weight:400;">(à la carte)</small></p>
       <label style="display:flex; align-items:center; gap:8px; margin-bottom:6px; font-weight:400;">
         <input type="checkbox" class="brique-check" data-code="SECRETARIAT_UTILISATEUR_SUPP" data-prix="15"> Utilisateur supplémentaire <small style="color:var(--gris-texte);">+15€/mois</small>
       </label>
@@ -157,11 +161,38 @@
       </label>
 
       <p style="margin:4px 0 4px; font-weight:600;">Total : <span id="total-socle-brique">89</span>€ <span style="font-weight:400;">/ mois</span></p>
-      <p style="margin:0 0 16px; color:var(--gris-texte); font-size:.85rem;">Existent aussi séparément : onboarding personnalisé (149€ HT, une fois), accueil téléphonique IA (49€/95€ par mois, bientôt disponible).</p>
+      <p style="margin:0 0 16px; color:var(--gris-texte); font-size:.85rem;">Existe aussi séparément : onboarding personnalisé (149€ HT, une fois).</p>
       <a class="btn btn-primaire" id="lien-choisir-socle" href="inscription.html?type=B2B&plan=SECRETARIAT_SOCLE">Choisir</a>
     </div>
-    <div class="carte-plan au-scroll" data-chatbot-detail="Pour les besoins qui dépassent le socle + briques : plusieurs sites, workflows métier spécifiques, volumes très élevés, ou intégrations non standard — on étudie votre besoin sur devis.">
+
+    <div id="telephonie" class="carte-plan" data-chatbot-detail="L'accueil téléphonique IA n'est pas encore disponible à la vente — vous pouvez réserver un appel pour être informé en priorité de l'ouverture.">
+      <h3>Gestion Appels <span class="badge-bientot">Bientôt disponible</span></h3>
+      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">Vos appels décrochés automatiquement, vos clients renseignés (horaires, tarifs, disponibilités) et leurs rendez-vous pris — en complément de Gestion Email. En cours de construction, ouverture prochaine à un nombre limité de clients pilotes.</p>
+      <div class="prix">49€ <span>/ mois (indicatif)</span></div>
+      <ul>
+        <li><strong>Essentiel — 49€/mois :</strong> accueil vocal automatique (horaires, tarifs, disponibilités), prise de message structuré, prise de RDV sous 24h, 60 appels inclus</li>
+        <li><strong>Pro — 95€/mois :</strong> tout Essentiel, plus RDV en temps réel pendant l'appel, alertes SMS incluses, 150 appels inclus</li>
+      </ul>
+      <p style="margin:0 0 16px; color:var(--gris-texte); font-size:.85rem;">Options disponibles à l'ouverture : numéro dédié supplémentaire, accueil bilingue, horaires étendus, script de qualification métier.</p>
+      <a class="btn btn-secondaire" href="#reserver" style="display:block; text-align:center;">Être informé en priorité</a>
+    </div>
+
+    <div class="carte-plan" data-chatbot-detail="Le Pack Complet réunit Gestion Email et Gestion Appels en une seule facture. La partie email est déjà disponible ; la partie appels ouvre prochainement.">
+      <h3>Pack Complet <span class="badge-bientot">Bientôt disponible</span></h3>
+      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">Gestion Email + Gestion Appels réunies, une seule facture.</p>
+      <div class="prix">à partir de 138€ <span>/ mois (indicatif)</span></div>
+      <ul>
+        <li>Tout Gestion Email (tri des emails, devis auto, bilan quotidien)</li>
+        <li>Tout Gestion Appels Essentiel (accueil vocal automatique, prise de RDV)</li>
+        <li>Mêmes options cumulables que les 2 blocs (utilisateur supplémentaire, export Airtable, support prioritaire...)</li>
+      </ul>
+      <a class="btn btn-secondaire" href="inscription.html?type=B2B&plan=SECRETARIAT_SOCLE" style="display:block; text-align:center; margin-bottom:8px;">Démarrer avec Gestion Email</a>
+      <a href="#reserver" style="display:block; text-align:center; font-size:.82rem; color:var(--gris-texte);">Être informé pour la partie appels</a>
+    </div>
+
+    <div class="carte-plan au-scroll" data-chatbot-detail="Pour les besoins qui dépassent les 3 blocs ci-dessus : plusieurs sites, workflows métier spécifiques, volumes très élevés, ou intégrations non standard — on étudie votre besoin sur devis.">
       <h3>Sur-Mesure</h3>
+      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">On s'implique directement dans votre projet, du premier échange à la mise en place — pas un simple formulaire.</p>
       <div class="prix">Sur devis <span>à partir de 450€/mois</span></div>
       <ul>
         <li>Multi-sites / multi-établissements</li>
@@ -194,40 +225,6 @@
   </div>
 </section>
 
-<section id="telephonie" class="container" style="padding: 48px 0;">
-  <h2 style="text-align:center;">Accueil téléphonique IA <span class="badge-bientot">Bientôt disponible</span></h2>
-  <p style="text-align:center; max-width:640px; margin:0 auto 28px; color:var(--gris-texte);">
-    Une IA qui décroche vos appels, répond aux questions de vos clients (horaires, tarifs, disponibilités) et prend leurs rendez-vous — en complément de votre secrétariat email. En cours de construction, ouverture prochaine à un nombre limité de clients pilotes.
-  </p>
-  <div class="grille-plans">
-    <div class="carte-plan" data-chatbot-detail="L'accueil téléphonique IA n'est pas encore disponible à la vente — vous pouvez réserver un appel pour être informé en priorité de l'ouverture.">
-      <h3>Essentiel</h3>
-      <div class="prix">49€ <span>/ mois (indicatif)</span></div>
-      <ul>
-        <li>Accueil vocal IA — questions horaires, tarifs, disponibilités</li>
-        <li>Prise de message structuré</li>
-        <li>Prise de RDV : créneau souhaité, confirmation sous 24h</li>
-        <li>60 appels inclus / mois</li>
-      </ul>
-      <a class="btn btn-secondaire" href="#reserver" style="display:block; text-align:center; margin-top:12px;">Être informé en priorité</a>
-    </div>
-    <div class="carte-plan recommande" data-chatbot-detail="La formule Pro inclut la prise de rendez-vous en temps réel pendant l'appel — pas encore disponible à la vente, réservez un appel pour être informé en priorité.">
-      <h3>Pro</h3>
-      <div class="prix">95€ <span>/ mois (indicatif)</span></div>
-      <ul>
-        <li>Tout Essentiel, plus :</li>
-        <li>Prise de RDV en temps réel pendant l'appel</li>
-        <li>Alertes SMS incluses</li>
-        <li>150 appels inclus / mois</li>
-      </ul>
-      <a class="btn btn-primaire" href="#reserver" style="display:block; text-align:center; margin-top:12px;">Être informé en priorité</a>
-    </div>
-  </div>
-  <p style="text-align:center; color:var(--gris-texte); font-size:.9rem;">
-    Options disponibles à l'ouverture, à activer selon votre métier : RDV en temps réel, alerte SMS, numéro dédié supplémentaire, accueil bilingue, horaires étendus, script de qualification métier. Le prix affiché est une base — personnalisable, sans surprise.
-  </p>
-</section>
-
 <section id="site-web" class="container" style="padding: 48px 0;">
   <h2 style="text-align:center;">Besoin d'un site web professionnel ?</h2>
   <p style="text-align:center; max-width:640px; margin:0 auto 28px; color:var(--gris-texte);">
@@ -258,7 +255,8 @@
     </div>
     <div class="carte-plan au-scroll au-scroll-delai-2" data-chatbot-detail="Pour les besoins qui dépassent l'E-commerce Starter : plus de 30 produits, réservation avancée, multi-langue, intégrations tierces spécifiques ou design plus poussé — on étudie votre projet sur devis.">
       <h3>Site Sur-Mesure</h3>
-      <div class="prix">Sur devis <span>à partir de 3000€</span></div>
+      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.9rem;">On s'implique directement dans votre projet, du premier échange à la mise en ligne.</p>
+      <div class="prix">Sur devis <span>pour les projets spécifiques</span></div>
       <ul><li>Au-delà de 30 produits</li><li>Réservation avancée, multi-langue</li><li>Intégrations tierces spécifiques</li></ul>
       <a class="btn btn-secondaire" href="devis-site-web.html" style="display:block; text-align:center; margin-top:12px;">Demander un devis</a>
     </div>
@@ -272,19 +270,86 @@
   </div>
 </section>
 
+<section id="automatisation" class="section-teintee">
+  <div class="container" style="padding: 48px 0;">
+  <h2 style="text-align:center;">Une tâche répétitive vous fait perdre du temps ?</h2>
+  <p style="text-align:center; max-width:700px; margin:0 auto 28px; color:var(--gris-texte);">
+    Au-delà du secrétariat et du site web, on peut automatiser une tâche de bureautique précise, propre à votre métier ou à vos outils internes — celles que ni les blocs ci-dessus ni un site ne couvrent. Par exemple : un petit programme qui marque automatiquement chaque jour les devis expirés comme "perdus" dans votre logiciel de gestion, même sur un poste ancien ou un réseau limité.
+  </p>
+  <div class="grille-plans" style="max-width:520px; margin-left:auto; margin-right:auto;">
+    <div class="carte-plan" data-chatbot-detail="Automatisation sur mesure : pour une tâche de bureautique précise, propre au métier ou aux outils internes du client, qui ne rentre dans aucune offre standard. Toujours sur devis, après un appel pour comprendre le besoin réel et les contraintes techniques.">
+      <h3>Automatisation Sur-Mesure</h3>
+      <div class="prix">Sur devis <span>selon la tâche à automatiser</span></div>
+      <ul>
+        <li>Étude de votre processus actuel et de vos contraintes (logiciel, poste, réseau)</li>
+        <li>Développement d'un script ou petit outil dédié à cette tâche précise</li>
+        <li>Installation et tests sur votre poste réel</li>
+        <li>Une fois en place, ça tourne tout seul — rien à apprendre</li>
+      </ul>
+      <a class="btn btn-secondaire" href="#reserver" style="display:block; text-align:center; margin-top:12px;">Décrire mon besoin</a>
+    </div>
+  </div>
+  </div>
+</section>
+
 <section id="reserver" class="container" style="padding: 48px 0;">
   <h2 style="text-align:center;">Réservez votre appel gratuit</h2>
   <p style="text-align:center; max-width:640px; margin:0 auto 24px; color:var(--gris-texte);">
     15 minutes, par téléphone ou visio, sans engagement. Choisissez simplement le créneau qui vous arrange.
   </p>
+
+  <div style="max-width:420px; margin:0 auto 32px; text-align:center;">
+    <button type="button" id="btn-rdv-physique" class="btn btn-secondaire">Je préfère rencontrer quelqu'un en personne</button>
+    <div id="rdv-physique-form" class="hidden" style="margin-top:16px;">
+      <label for="rdv-code-postal" style="display:block; margin-bottom:6px; font-weight:600;">Votre code postal</label>
+      <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+        <input type="text" id="rdv-code-postal" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="Ex. 75001" style="padding:10px; border-radius:8px; border:1px solid #ddd; width:140px;">
+        <button type="button" id="btn-verifier-secteur" class="btn btn-primaire">Vérifier</button>
+      </div>
+      <p id="rdv-resultat" class="hidden" style="margin-top:14px; color:var(--gris-texte); font-size:.9rem;"></p>
+    </div>
+  </div>
+
   <div id="cal-embed"></div>
 </section>
+<script>
+(function () {
+  var btn = document.getElementById('btn-rdv-physique');
+  var form = document.getElementById('rdv-physique-form');
+  var btnVerifier = document.getElementById('btn-verifier-secteur');
+  var input = document.getElementById('rdv-code-postal');
+  var resultat = document.getElementById('rdv-resultat');
+  if (!btn) return;
+  btn.addEventListener('click', function () {
+    form.classList.remove('hidden');
+    btn.classList.add('hidden');
+    input.focus();
+  });
+  btnVerifier.addEventListener('click', function () {
+    // Pas encore de commercial avec couverture géographique en physique (réseau en cours de
+    // recrutement) — toujours "aucun créneau en physique" pour l'instant. À remplacer par un
+    // vrai lookup (table de couverture géographique par commercial) une fois le réseau en place.
+    if (!input.value.trim()) { input.focus(); return; }
+    resultat.textContent = "Pas de commercial disponible en physique dans votre secteur pour le moment (notre réseau est en cours de déploiement). Réservez un appel téléphonique ou en visio ci-dessous à la place — c'est tout aussi efficace pour démarrer.";
+    resultat.classList.remove('hidden');
+    document.getElementById('cal-embed').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+})();
+</script>
 
 <section id="faq" class="container" style="padding: 48px 0; max-width: 760px;">
   <h2 style="text-align:center;">Questions fréquentes</h2>
   <div class="faq-item">
-    <h4>C'est 100 % automatique, ça ne vaut vraiment rien ?</h4>
-    <p>Chaque email est traité par une IA entraînée sur votre métier, avec supervision humaine possible à tout moment. Ce n'est pas un simple filtre, c'est un vrai assistant.</p>
+    <h4>Comment être sûr que mes emails seront bien traités ?</h4>
+    <p>Chaque email est analysé par une IA entraînée sur votre métier, avec nos experts qui peuvent intervenir à tout moment. Ce n'est pas un simple filtre : c'est un vrai assistant qui comprend le contexte de votre activité.</p>
+  </div>
+  <div class="faq-item">
+    <h4>Le contenu généré (site, réponses email) est-il vraiment adapté à mon métier, ou c'est un modèle générique ?</h4>
+    <p>Le texte, le vocabulaire et les actions proposées (ex. "réserver une table" pour un restaurant, "demander un devis" pour un artisan) sont générés spécifiquement pour votre secteur, puis relus par nos experts avant tout envoi — jamais un simple copier-coller de modèle.</p>
+  </div>
+  <div class="faq-item">
+    <h4>Je n'ai pas besoin de tout, je peux commencer petit ?</h4>
+    <p>Oui : Gestion Email et Gestion Appels sont deux blocs indépendants, avec des options à la carte. Vous démarrez avec ce dont vous avez besoin aujourd'hui, et vous ajoutez le reste plus tard sans tout reconfigurer.</p>
   </div>
   <div class="faq-item">
     <h4>Je ne peux pas rencontrer quelqu'un avant de payer ?</h4>
@@ -300,17 +365,17 @@
   </div>
   <div class="faq-item">
     <h4>Combien de temps avant d'être opérationnel ?</h4>
-    <p>Moins de 24h entre votre inscription et le premier email trié automatiquement.</p>
+    <p>Pour Gestion Email : moins de 24h entre votre inscription et le premier email trié automatiquement. Pour un site web ou une offre Sur-Mesure, le délai dépend du projet — il vous est communiqué dès notre premier échange.</p>
   </div>
 </section>
 
 <section id="commerciaux" class="container" style="text-align:center; padding: 48px 0;">
   <h2>Vous êtes commercial ?</h2>
-  <p>Rejoignez notre réseau d'apporteurs d'affaires et touchez une commission sur chaque contrat signé — sans plafond.</p>
+  <p>Rejoignez notre réseau d'agents commerciaux indépendants et présentez nos solutions aux professionnels de votre secteur, en toute autonomie.</p>
   <!-- Lien direct vers dashboard-commercial.html retiré (2026-08-03, décision sécurité/discrétion) —
        déjà commercial ? l'accès se fait via le lien reçu par email de bienvenue, pas depuis le site public.
        TODO non urgent : repointer vers le vrai lien du formulaire Tally de candidature une fois récupéré. -->
-  <a href="#reserver" class="btn btn-secondaire">Candidater à un appel découverte</a>
+  <a href="#reserver" class="btn btn-secondaire">Discutons-en</a>
 </section>
 
 <footer class="site">© 2026 Le Binôme Numérique — Tous droits réservés · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
