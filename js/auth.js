@@ -10,6 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // ex. ?briques=SECRETARIAT_UTILISATEUR_SUPP,SECRETARIAT_EXPORT_AIRTABLE — voir
   // frontend_saas/index.html section #plans-b2b pour la construction du lien.
   const briquesCodes = (params.get("briques") || "").split(",").map(s => s.trim()).filter(Boolean);
+  // Code d'affiliation d'un commercial (lien de parrainage généré par
+  // dashboard-commercial.js : inscription.html?code_affiliation=XXX) —
+  // pré-rempli ici comme devis.js/checkout-siteweb.js le font déjà pour ce
+  // même paramètre, sinon le champ reste vide malgré le lien.
+  const codeAffiliationParam = params.get("code_affiliation");
 
   const selectType = document.getElementById("type_compte");
   const champsB2B = document.getElementById("champs-b2b");
@@ -17,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (typeParam) selectType.value = typeParam;
   if (planParam) planInput.value = planParam;
+  if (codeAffiliationParam) document.getElementById("code_affiliation").value = codeAffiliationParam;
 
   if (briquesCodes.length) {
     const recap = document.createElement("p");
