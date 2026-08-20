@@ -11,8 +11,30 @@ const SEUIL_FILLEULS_FORMATEURS_MANAGER = 3;
 const NIVEAUX_COMPTANT_COMME_FORMATEUR = ["formateur", "manager", "directeur"];
 
 const LIBELLES_NIVEAU = { conseiller: "Conseiller", formateur: "Formateur", manager: "Manager", directeur: "Directeur" };
+const ICONES_NIVEAU = { conseiller: "🥉", formateur: "🥈", manager: "🥇", directeur: "💎" };
 const LIBELLES_ROLE_VENTE = { conseiller: "Vente directe", formateur: "Override Formateur", manager: "Override Manager" };
-const BADGE_PAR_STATUT = { payee: "actif", eligible: "essai", en_attente: "essai", annulee: "resilie", a_recuperer: "resilie", bloque_identifiant_manquant: "resilie", bloque_fraude: "resilie" };
+
+// Statut d'une ligne versements_commission -> libellé + classe de badge.
+// Remplace l'affichage du statut interne brut (ex. "en_attente") par
+// quelque chose de lisible pour le commercial.
+const LIBELLES_STATUT_COMMISSION = {
+  payee: { texte: "✅ Encaissée", classe: "encaissee" },
+  eligible: { texte: "🔓 Débloquée", classe: "debloquee" },
+  en_attente: { texte: "⏳ En cours", classe: "attente" },
+  annulee: { texte: "❌ Annulée", classe: "annulee" },
+  a_recuperer: { texte: "⚠️ À régulariser", classe: "bloquee" },
+  bloque_identifiant_manquant: { texte: "🔒 Bloquée (identifiant)", classe: "bloquee" },
+  bloque_fraude: { texte: "🔒 Bloquée", classe: "bloquee" },
+  bloque_compte_paiement_manquant: { texte: "🔒 Bloquée (paiement)", classe: "bloquee" }
+};
+
+const LIBELLES_STATUT_VENTE = {
+  active: { texte: "Active", classe: "actif" },
+  annulee: { texte: "Annulée", classe: "resilie" },
+  remboursee: { texte: "Remboursée", classe: "resilie" }
+};
+
+const LIBELLES_CATEGORIE_DEFI = { mini: "Mini-primes", mensuel: "Objectifs mensuels", trimestriel: "Paliers trimestriels" };
 
 // DOIT rester synchronisé avec la constante JOURS_GRACE_IDENTITE du workflow 04
 // (n8n_workflows/04_commission_commerciaux.json) — voir migrations 10 et 12,
@@ -73,24 +95,52 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   afficherNiveau(commercial.niveau_mlm);
 
-  // Deux requêtes en parallèle : mes versements (toutes les ventes où je touche
-  // une part, quel que soit mon rôle) et mes filleuls directs (RLS dédiée,
-  // voir 6_patch_hebergement_sites.sql : policy "commerciaux_filleuls_directs").
-  const [{ data: versements, error: erreurVersements }, { data: filleuls, error: erreurFilleuls }] = await Promise.all([
+  // Trois requêtes en parallèle : mes versements (toutes les ventes où je
+  // touche une part, quel que soit mon rôle), mes filleuls directs (RLS
+  // dédiée, voir 6_patch_hebergement_sites.sql : policy
+  // "commerciaux_filleuls_directs"), et les ventes visibles (les miennes +
+  // celles de mes filleuls directs sont combinées automatiquement par les
+  // policies "ventes_self"/"ventes_filleuls_directs", pas de filtre à poser
+  // ici — on sépare les deux groupes après coup côté client).
+  const [
+    { data: versements, error: erreurVersements },
+    { data: filleuls, error: erreurFilleuls },
+    { data: ventesVisibles, error: erreurVentes },
+    { data: catalogueDefis, error: erreurCatalogueDefis },
+    { data: defisObtenus, error: erreurDefisObtenus }
+  ] = await Promise.all([
     sb.from("versements_commission")
       .select("*, ventes(code_reference, type_vente, statut_vente, commercial_id)")
       .eq("commercial_id", commercial.id)
       .order("date_eligibilite", { ascending: true }),
     sb.from("commerciaux")
       .select("id,prenom,nom,niveau_mlm")
-      .eq("parrain_id", commercial.id)
+      .eq("parrain_id", commercial.id),
+    sb.from("ventes")
+      .select("id,code_reference,montant_contrat_ht,date_vente,statut_vente,commercial_id")
+      .order("date_vente", { ascending: false }),
+    sb.from("catalogue_defis")
+      .select("code,libelle,categorie,montant")
+      .eq("actif", true)
+      .order("offset_tranche"),
+    sb.from("defis_obtenus")
+      .select("defi_code,periode,created_at")
+      .eq("commercial_id", commercial.id)
+      .order("created_at", { ascending: false })
   ]);
 
   if (erreurVersements) console.error("Erreur chargement versements :", erreurVersements);
   if (erreurFilleuls) console.error("Erreur chargement filleuls :", erreurFilleuls);
+  if (erreurVentes) console.error("Erreur chargement ventes :", erreurVentes);
+  if (erreurCatalogueDefis) console.error("Erreur chargement catalogue défis :", erreurCatalogueDefis);
+  if (erreurDefisObtenus) console.error("Erreur chargement défis obtenus :", erreurDefisObtenus);
 
   const listeVersements = versements || [];
   const listeFilleuls = filleuls || [];
+  const listeVentesVisibles = ventesVisibles || [];
+  const mesVentes = listeVentesVisibles.filter(v => v.commercial_id === commercial.id);
+  const ventesEquipe = listeVentesVisibles.filter(v => v.commercial_id !== commercial.id);
+  document.getElementById("stat-nb-ventes").textContent = mesVentes.length;
 
   // Ventes actives personnelles (mon rôle = Conseiller sur mes propres ventes).
   const ventesPersoActives = new Set(
@@ -118,9 +168,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   }));
 
   afficherProgression(commercial.niveau_mlm, ventesPersoActives, filleulsAvecVentes);
+  afficherDefis(catalogueDefis || [], defisObtenus || []);
   afficherReseau(filleulsAvecVentes);
-  afficherPipeline(listeVersements);
-  afficherStatsEtHistorique(listeVersements);
+  afficherCommissionsEnCoursEtRente(listeVersements);
+  afficherDetailCommissions(listeVersements);
+  afficherHistoriqueVentes(mesVentes);
+  afficherActiviteEquipe(ventesEquipe, listeFilleuls);
   afficherAlerteIdentifiant(commercial, listeVersements);
   initialiserFormulaireIdentifiant(commercial);
   initialiserBasculeStatut(commercial);
@@ -129,7 +182,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function afficherNiveau(niveau) {
   const el = document.getElementById("badge-niveau");
-  el.textContent = LIBELLES_NIVEAU[niveau] || niveau;
+  el.textContent = `${ICONES_NIVEAU[niveau] || ""} ${LIBELLES_NIVEAU[niveau] || niveau}`;
   el.className = "badge-niveau badge-niveau-" + niveau;
 }
 
@@ -138,27 +191,84 @@ function afficherProgression(niveau, ventesPerso, filleuls) {
   const texte = document.getElementById("texte-progression");
   const titre = document.getElementById("titre-objectif");
 
-  if (niveau === "manager") {
+  // Illumine les paliers déjà franchis / en cours sur la frise en bas de la
+  // jauge (icônes en couleur au lieu de grisées, palier en cours qui pulse).
+  const ordre = ["conseiller", "formateur", "manager"];
+  const indexActuel = ordre.indexOf(niveau === "directeur" ? "manager" : niveau);
+  ordre.forEach((palier, i) => {
+    const el = document.getElementById("palier-" + palier);
+    if (!el) return;
+    el.classList.toggle("atteint", i < indexActuel || niveau === "manager" || niveau === "directeur");
+    el.classList.toggle("actif", i === indexActuel && niveau !== "manager" && niveau !== "directeur");
+  });
+
+  if (niveau === "manager" || niveau === "directeur") {
     barre.style.width = "100%";
-    titre.textContent = "Statut Manager — niveau maximum atteint";
-    texte.textContent = "Vous touchez un override sur toute votre équipe. Continuez à développer votre réseau !";
+    titre.textContent = niveau === "directeur"
+      ? "Niveau Directeur — le sommet du réseau"
+      : "Niveau Manager atteint !";
+    texte.textContent = "Vous touchez un override sur toute votre équipe. La suite : continuez à faire grandir votre réseau.";
     return;
   }
 
   if (niveau === "formateur") {
     const nbFilleulsFormateurs = filleuls.filter(f => NIVEAUX_COMPTANT_COMME_FORMATEUR.includes(f.niveau_mlm)).length;
+    const restants = Math.max(0, SEUIL_FILLEULS_FORMATEURS_MANAGER - nbFilleulsFormateurs);
     const pct = Math.min(100, Math.round((nbFilleulsFormateurs / SEUIL_FILLEULS_FORMATEURS_MANAGER) * 100));
     barre.style.width = pct + "%";
-    titre.textContent = "Statut Formateur — Objectif Manager";
-    texte.textContent = `${nbFilleulsFormateurs}/${SEUIL_FILLEULS_FORMATEURS_MANAGER} filleuls devenus Formateur`;
+    titre.textContent = "Prochain palier : Manager 🥇";
+    texte.textContent = restants > 0
+      ? `Plus que ${restants} filleul${restants > 1 ? "s" : ""} à faire passer Formateur pour débloquer Manager (${nbFilleulsFormateurs}/${SEUIL_FILLEULS_FORMATEURS_MANAGER})`
+      : "Objectif atteint — la promotion se déclenche automatiquement à la prochaine vente de votre équipe.";
     return;
   }
 
   // conseiller (niveau de départ)
+  const restantes = Math.max(0, SEUIL_VENTES_FORMATEUR - ventesPerso);
   const pct = Math.min(100, Math.round((ventesPerso / SEUIL_VENTES_FORMATEUR) * 100));
   barre.style.width = pct + "%";
-  titre.textContent = "Statut Conseiller — Objectif Formateur";
-  texte.textContent = `${ventesPerso}/${SEUIL_VENTES_FORMATEUR} ventes validées`;
+  titre.textContent = "Prochain palier : Formateur 🥈";
+  texte.textContent = restantes > 0
+    ? `Plus que ${restantes} vente${restantes > 1 ? "s" : ""} pour débloquer Formateur (${ventesPerso}/${SEUIL_VENTES_FORMATEUR})`
+    : "Objectif atteint — la promotion se déclenche automatiquement à votre prochaine vente.";
+}
+
+function afficherDefis(catalogue, obtenus) {
+  const codesObtenus = new Set(obtenus.map(d => d.defi_code));
+  const parCategorie = { mini: [], mensuel: [], trimestriel: [] };
+  catalogue.forEach(d => { if (parCategorie[d.categorie]) parCategorie[d.categorie].push(d); });
+
+  const grille = document.getElementById("grille-defis");
+  grille.innerHTML = Object.keys(LIBELLES_CATEGORIE_DEFI).map(cat => {
+    const defis = parCategorie[cat] || [];
+    if (!defis.length) return "";
+    return `
+      <div class="defi-carte">
+        <h4>${LIBELLES_CATEGORIE_DEFI[cat]}</h4>
+        ${defis.map(d => {
+          const obtenu = codesObtenus.has(d.code);
+          return `<div class="defi-item${obtenu ? " defi-obtenu" : ""}">
+            <span class="defi-nom">${obtenu ? "✅ " : ""}${d.libelle}</span>
+            <span class="defi-montant">${Number(d.montant).toFixed(0)} €</span>
+          </div>`;
+        }).join("")}
+      </div>`;
+  }).join("");
+
+  const libelleParCode = {};
+  catalogue.forEach(d => { libelleParCode[d.code] = { libelle: d.libelle, montant: d.montant }; });
+
+  const conteneur = document.getElementById("liste-defis-obtenus");
+  conteneur.innerHTML = obtenus.length
+    ? obtenus.slice(0, 10).map(o => {
+        const info = libelleParCode[o.defi_code] || { libelle: o.defi_code, montant: 0 };
+        return `
+          <div class="ligne-versement-a-venir quete-debloquee">
+            <div><strong>${info.libelle}</strong><span class="delai-versement">${new Date(o.created_at).toLocaleDateString("fr-FR")}</span></div>
+            <div class="montant-versement">${Number(info.montant).toFixed(2)} €</div>
+          </div>`;
+      }).join("")
+    : `<p class="etat-vide">Aucun défi obtenu pour le moment — ils se débloquent automatiquement selon votre activité.</p>`;
 }
 
 function afficherReseau(filleuls) {
@@ -172,57 +282,85 @@ function afficherReseau(filleuls) {
   tbody.innerHTML = filleuls.map(f => `
     <tr>
       <td>${f.prenom} ${f.nom}</td>
-      <td><span class="badge-niveau badge-niveau-${f.niveau_mlm} badge-niveau-petit">${LIBELLES_NIVEAU[f.niveau_mlm] || f.niveau_mlm}</span></td>
+      <td><span class="badge-niveau badge-niveau-${f.niveau_mlm} badge-niveau-petit">${ICONES_NIVEAU[f.niveau_mlm] || ""} ${LIBELLES_NIVEAU[f.niveau_mlm] || f.niveau_mlm}</span></td>
       <td>${f.nb_ventes_actives}</td>
     </tr>`).join("");
 }
 
-function afficherPipeline(versements) {
+function afficherCommissionsEnCoursEtRente(versements) {
   const enAttente = versements.filter(v => v.statut === "en_attente" || v.statut === "eligible");
   const encaissees = versements.filter(v => v.statut === "payee");
 
-  const totalEnAttente = enAttente.reduce((s, v) => s + Number(v.montant), 0);
-  const totalEncaisse = encaissees.reduce((s, v) => s + Number(v.montant), 0);
+  document.getElementById("pipeline-en-attente").textContent =
+    enAttente.reduce((s, v) => s + Number(v.montant), 0).toFixed(2) + " €";
+  document.getElementById("pipeline-encaisse").textContent =
+    encaissees.reduce((s, v) => s + Number(v.montant), 0).toFixed(2) + " €";
 
-  document.getElementById("pipeline-en-attente").textContent = totalEnAttente.toFixed(2) + " €";
-  document.getElementById("pipeline-encaisse").textContent = totalEncaisse.toFixed(2) + " €";
-
-  // Regroupe les tranches à venir par date d'éligibilité (J+14/J+44/J+74 réels de chaque vente).
+  // Vesting initial (nouveaux contrats) : les échéances pas encore débloquées,
+  // regroupées par date d'éligibilité (J+14/J+44/J+74 réels de chaque vente).
+  const enAttenteVesting = enAttente.filter(v => v.type_versement !== "residuel");
   const parDate = {};
-  enAttente.forEach(v => {
+  enAttenteVesting.forEach(v => {
     const d = v.date_eligibilite;
     if (!parDate[d]) parDate[d] = { date: d, montant: 0, nb: 0 };
     parDate[d].montant += Number(v.montant);
     parDate[d].nb += 1;
   });
-
   const prochains = Object.values(parDate).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 8);
-  const conteneur = document.getElementById("liste-prochains-versements");
   const aujourdhui = new Date();
   aujourdhui.setHours(0, 0, 0, 0);
 
-  conteneur.innerHTML = prochains.length
+  const conteneurVesting = document.getElementById("liste-prochains-versements");
+  conteneurVesting.innerHTML = prochains.length
     ? prochains.map(p => {
         const dateEligibilite = new Date(p.date);
         const joursRestants = Math.ceil((dateEligibilite - aujourdhui) / (1000 * 60 * 60 * 24));
-        const libelleDelai = joursRestants <= 0 ? "Débloqué" : `dans ${joursRestants} j`;
+        const debloque = joursRestants <= 0;
+        const libelleDelai = debloque ? "🔓 Débloquée" : `⏳ dans ${joursRestants} j`;
         return `
-          <div class="ligne-versement-a-venir">
+          <div class="ligne-versement-a-venir${debloque ? " quete-debloquee" : ""}">
             <div>
               <strong>${dateEligibilite.toLocaleDateString("fr-FR")}</strong>
               <span class="delai-versement">${libelleDelai}</span>
             </div>
             <div class="montant-versement">
-              ${p.montant.toFixed(2)} € <span class="nb-tranches">(${p.nb} tranche${p.nb > 1 ? "s" : ""})</span>
+              ${p.montant.toFixed(2)} € <span class="nb-tranches">(${p.nb} échéance${p.nb > 1 ? "s" : ""})</span>
             </div>
           </div>`;
       }).join("")
-    : `<p class="etat-vide">Aucun versement en attente pour le moment.</p>`;
+    : `<p class="etat-vide">Aucune commission en cours de déblocage pour le moment.</p>`;
+
+  // Rente active : pour chaque abonnement qui a déjà généré au moins une
+  // ligne résiduelle, on affiche le montant du DERNIER mois généré (= le
+  // rythme mensuel actuel de cette rente) plutôt que de sommer tout
+  // l'historique, qui mélangerait plusieurs mois différents.
+  const residuelParVente = {};
+  versements.filter(v => v.type_versement === "residuel").forEach(v => {
+    const existant = residuelParVente[v.vente_id];
+    if (!existant || v.numero_tranche > existant.numero_tranche) {
+      residuelParVente[v.vente_id] = {
+        vente_id: v.vente_id,
+        numero_tranche: v.numero_tranche,
+        montant: Number(v.montant),
+        code_reference: v.ventes?.code_reference || "—"
+      };
+    }
+  });
+  const rentes = Object.values(residuelParVente);
+  const totalRenteMensuelle = rentes.reduce((s, r) => s + r.montant, 0);
+  document.getElementById("rente-mensuelle-active").textContent = totalRenteMensuelle.toFixed(2) + " € / mois";
+
+  const conteneurRente = document.getElementById("liste-rente-active");
+  conteneurRente.innerHTML = rentes.length
+    ? rentes.map(r => `
+        <div class="ligne-versement-a-venir quete-debloquee">
+          <div><strong>${r.code_reference}</strong><span class="delai-versement">abonnement actif</span></div>
+          <div class="montant-versement">${r.montant.toFixed(2)} € <span class="nb-tranches">/ mois</span></div>
+        </div>`).join("")
+    : `<p class="etat-vide">Aucune rente active pour le moment — elle démarre une fois le vesting initial d'un abonnement terminé.</p>`;
 }
 
-function afficherStatsEtHistorique(versements) {
-  const venteIds = new Set(versements.map(v => v.vente_id));
-  document.getElementById("stat-nb-ventes").textContent = venteIds.size;
+function afficherDetailCommissions(versements) {
   document.getElementById("stat-commissions-attente").textContent =
     versements.filter(v => v.statut === "en_attente" || v.statut === "eligible")
       .reduce((s, v) => s + Number(v.montant), 0).toFixed(2) + " €";
@@ -232,15 +370,55 @@ function afficherStatsEtHistorique(versements) {
 
   const tbody = document.getElementById("tbody-ventes");
   tbody.innerHTML = versements.length
-    ? versements.slice().sort((a, b) => b.date_eligibilite.localeCompare(a.date_eligibilite)).map(v => `
+    ? versements.slice().sort((a, b) => b.date_eligibilite.localeCompare(a.date_eligibilite)).map(v => {
+        const statutCommission = LIBELLES_STATUT_COMMISSION[v.statut] || { texte: v.statut, classe: "attente" };
+        const estResiduel = v.type_versement === "residuel";
+        return `
         <tr>
           <td>${v.ventes?.code_reference || "—"}</td>
-          <td>Tranche ${v.numero_tranche}<br><span class="etiquette-niveau">${LIBELLES_ROLE_VENTE[v.niveau_mlm] || ""}</span></td>
+          <td>
+            Échéance ${v.numero_tranche}<br>
+            <span class="etiquette-niveau">${LIBELLES_ROLE_VENTE[v.niveau_mlm] || ""}</span>
+            ${estResiduel ? '<span class="etiquette-residuel">🔁 Rente mensuelle</span>' : ""}
+          </td>
           <td>${Number(v.montant).toFixed(2)} €</td>
           <td>${new Date(v.date_eligibilite).toLocaleDateString("fr-FR")}</td>
-          <td><span class="badge badge-${BADGE_PAR_STATUT[v.statut] || "essai"}">${v.statut}</span></td>
+          <td><span class="badge badge-quete-${statutCommission.classe}">${statutCommission.texte}</span></td>
+        </tr>`;
+      }).join("")
+    : `<tr><td colspan="5">Aucune commission enregistrée pour le moment — votre première vente en générera une.</td></tr>`;
+}
+
+function afficherHistoriqueVentes(ventes) {
+  const tbody = document.getElementById("tbody-historique-ventes");
+  tbody.innerHTML = ventes.length
+    ? ventes.map(v => {
+        const statutVente = LIBELLES_STATUT_VENTE[v.statut_vente] || { texte: v.statut_vente, classe: "essai" };
+        return `
+        <tr>
+          <td>${new Date(v.date_vente).toLocaleDateString("fr-FR")}</td>
+          <td>${v.code_reference}</td>
+          <td>${Number(v.montant_contrat_ht).toFixed(2)} €</td>
+          <td><span class="badge badge-${statutVente.classe}">${statutVente.texte}</span></td>
+        </tr>`;
+      }).join("")
+    : `<tr><td colspan="4">Aucune vente enregistrée pour le moment.</td></tr>`;
+}
+
+function afficherActiviteEquipe(ventes, filleuls) {
+  const tbody = document.getElementById("tbody-activite-equipe");
+  const nomParFilleul = {};
+  filleuls.forEach(f => { nomParFilleul[f.id] = `${f.prenom} ${f.nom}`; });
+
+  tbody.innerHTML = ventes.length
+    ? ventes.slice(0, 20).map(v => `
+        <tr>
+          <td>${new Date(v.date_vente).toLocaleDateString("fr-FR")}</td>
+          <td>${nomParFilleul[v.commercial_id] || "—"}</td>
+          <td>${v.code_reference}</td>
+          <td>${Number(v.montant_contrat_ht).toFixed(2)} €</td>
         </tr>`).join("")
-    : `<tr><td colspan="5">Aucune commission enregistrée pour le moment.</td></tr>`;
+    : `<tr><td colspan="4">Aucune vente dans votre équipe pour le moment.</td></tr>`;
 }
 
 function afficherAlerteIdentifiant(commercial, versements) {

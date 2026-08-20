@@ -22,10 +22,13 @@
   <aside class="dash-sidebar">
     <a href="dashboard-commercial.html" class="actif">Vue d'ensemble</a>
     <a href="#progression">Ma progression</a>
-    <a href="#pipeline">Pipeline de cash</a>
+    <a href="#defis">Mes défis</a>
+    <a href="#pipeline">Mes commissions</a>
     <a href="#versements">Mes versements</a>
-    <a href="#reseau">Mon réseau</a>
-    <a href="#ventes">Mes commissions</a>
+    <a href="#historique-ventes">Historique de mes ventes</a>
+    <a href="#reseau">Mon équipe</a>
+    <a href="#activite-equipe">Activité de l'équipe</a>
+    <a href="#ventes">Détail des commissions</a>
     <a href="#lien">Mon lien de parrainage</a>
   </aside>
 
@@ -57,7 +60,7 @@
     </div>
 
     <!-- A. Jauge de progression MLM -->
-    <section id="progression" class="carte-section">
+    <section id="progression" class="carte-section carte-progression">
       <h3>Ma progression</h3>
       <div class="bloc-progression">
         <div class="ligne-objectif">
@@ -68,31 +71,70 @@
           <div class="progress-fill" id="barre-progression" style="width: 0%;"></div>
         </div>
         <div class="paliers-niveaux">
-          <span class="palier">Conseiller</span>
-          <span class="palier">Formateur</span>
-          <span class="palier">Manager</span>
+          <span class="palier" id="palier-conseiller"><span class="palier-icone">🥉</span>Conseiller</span>
+          <span class="palier" id="palier-formateur"><span class="palier-icone">🥈</span>Formateur</span>
+          <span class="palier" id="palier-manager"><span class="palier-icone">🥇</span>Manager</span>
         </div>
       </div>
     </section>
 
-    <!-- B. Pipeline de cash -->
+    <!-- Mes défis : primes sur objectif, en plus des commissions habituelles -->
+    <section id="defis" class="carte-section">
+      <h3>Mes défis</h3>
+      <p class="sous-titre-section">Des primes ponctuelles, en plus de vos commissions habituelles — certaines se décrochent en une vente, d'autres demandent un peu de régularité sur le mois ou le trimestre. Détectées et versées automatiquement, rien à réclamer.</p>
+      <div id="grille-defis" class="defis-grille">
+        <p class="etat-vide">Chargement...</p>
+      </div>
+      <h4 class="sous-section-titre">Défis obtenus récemment</h4>
+      <div id="liste-defis-obtenus" class="liste-versements-a-venir">
+        <p class="etat-vide">Chargement...</p>
+      </div>
+    </section>
+
+    <!-- B. Mes commissions : ventes en cours de déblocage vs rente déjà active -->
     <section id="pipeline" class="carte-section">
-      <h3>Pipeline de cash</h3>
-      <p class="sous-titre-section">L'argent qui vous attend, tranche par tranche — débloqué uniquement quand le client paie réellement.</p>
+      <h3>Mes commissions</h3>
+      <p class="sous-titre-section">Chaque vente génère une commission versée en plusieurs échéances, débloquées automatiquement à mesure que le client paie.</p>
       <div class="grille-stats">
         <div class="stat-tuile stat-tuile-accent">
           <div class="valeur" id="pipeline-en-attente">—</div>
-          <div class="label">Cashflow en attente</div>
+          <div class="label">En cours de déblocage</div>
         </div>
         <div class="stat-tuile stat-tuile-succes">
           <div class="valeur" id="pipeline-encaisse">—</div>
-          <div class="label">Commissions encaissées</div>
+          <div class="label">Encaissées (total)</div>
         </div>
       </div>
-      <h4 class="sous-section-titre">Prochains versements</h4>
+
+      <h4 class="sous-section-titre">Ventes en cours (nouveaux contrats)</h4>
+      <p class="sous-titre-section" style="margin-bottom:12px;">Commissions initiales de vos ventes récentes, versées en plusieurs échéances les premiers mois.</p>
       <div id="liste-prochains-versements" class="liste-versements-a-venir">
         <p class="etat-vide">Chargement...</p>
       </div>
+
+      <h4 class="sous-section-titre">Rente active (abonnements déjà en place)</h4>
+      <p class="sous-titre-section" style="margin-bottom:12px;">Une fois les premières échéances d'un abonnement encaissées, il génère un revenu récurrent tant que le client reste abonné.</p>
+      <div class="stat-tuile stat-tuile-accent" style="margin-bottom:12px;">
+        <div class="valeur" id="rente-mensuelle-active">—</div>
+        <div class="label">Rente mensuelle active</div>
+      </div>
+      <div id="liste-rente-active" class="liste-versements-a-venir">
+        <p class="etat-vide">Chargement...</p>
+      </div>
+    </section>
+
+    <!-- Historique des ventes personnelles (une ligne par vente, pas par échéance) -->
+    <section id="historique-ventes" class="carte-section">
+      <h3>Historique de mes ventes</h3>
+      <p class="sous-titre-section">Chaque contrat que vous avez signé, avec son statut.</p>
+      <table class="donnees">
+        <thead>
+          <tr><th>Date</th><th>Offre</th><th>Montant du contrat</th><th>Statut</th></tr>
+        </thead>
+        <tbody id="tbody-historique-ventes">
+          <tr><td colspan="4">Chargement...</td></tr>
+        </tbody>
+      </table>
     </section>
 
     <!-- Versements réels (Stripe Connect Express) -->
@@ -108,14 +150,28 @@
 
     <!-- C. Mon Réseau -->
     <section id="reseau" class="carte-section">
-      <h3>Mon réseau</h3>
-      <p class="sous-titre-section">Vos filleuls directs et leurs ventes actives (base du calcul de votre promotion Manager).</p>
+      <h3>Mon équipe</h3>
+      <p class="sous-titre-section">Votre équipe directe et son niveau — c'est elle qui vous fait progresser vers le palier suivant.</p>
       <table class="donnees">
         <thead>
           <tr><th>Filleul</th><th>Niveau</th><th>Ventes actives</th></tr>
         </thead>
         <tbody id="tbody-reseau">
           <tr><td colspan="3">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Activité de l'équipe : ventes des filleuls directs, une ligne par vente -->
+    <section id="activite-equipe" class="carte-section">
+      <h3>Activité de l'équipe</h3>
+      <p class="sous-titre-section">Les ventes récentes de votre équipe directe — à l'origine de vos commissions d'override.</p>
+      <table class="donnees">
+        <thead>
+          <tr><th>Date</th><th>Membre de l'équipe</th><th>Offre</th><th>Montant du contrat</th></tr>
+        </thead>
+        <tbody id="tbody-activite-equipe">
+          <tr><td colspan="4">Chargement...</td></tr>
         </tbody>
       </table>
     </section>
@@ -151,10 +207,11 @@
     </section>
 
     <section id="ventes" class="carte-section">
-      <h3>Historique de mes commissions</h3>
+      <h3>Détail de mes commissions</h3>
+      <p class="sous-titre-section">Chaque échéance de commission, initiale ou récurrente.</p>
       <table class="donnees">
         <thead>
-          <tr><th>Offre</th><th>Tranche</th><th>Montant</th><th>Éligible le</th><th>Statut</th></tr>
+          <tr><th>Offre</th><th>Échéance</th><th>Montant</th><th>Débloque le</th><th>Statut</th></tr>
         </thead>
         <tbody id="tbody-ventes">
           <tr><td colspan="5">Chargement...</td></tr>
