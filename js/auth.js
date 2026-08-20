@@ -61,10 +61,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const mot_de_passe = document.getElementById("mot_de_passe").value;
 
     try {
-      // 1. Création du compte d'authentification Supabase
+      // 1. Création du compte d'authentification Supabase — emailRedirectTo
+      // explicite (19-20/08/2026) : sans ça, Supabase utilise par défaut
+      // l'origine de la page (window.location.origin), qui pour un site
+      // GitHub Pages de projet ne contient jamais le sous-dossier du repo —
+      // le lien de confirmation atterrissait donc sur une page 404.
       const { data: authData, error: authError } = await window.supabaseClient.auth.signUp({
         email,
-        password: mot_de_passe
+        password: mot_de_passe,
+        options: { emailRedirectTo: "https://lbbnntest-lab.github.io/lebinomenumerique-site/confirmation-attente.html" }
       });
       if (authError) throw authError;
 

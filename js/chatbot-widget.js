@@ -111,7 +111,13 @@
       boutonSubmit.textContent = "Création en cours...";
 
       try {
-        const { data, error } = await window.supabaseClient.auth.signUp({ email, password });
+        // emailRedirectTo explicite (19-20/08/2026) : voir auth.js pour le
+        // détail du bug de redirection sans ce paramètre.
+        const { data, error } = await window.supabaseClient.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: "https://lbbnntest-lab.github.io/lebinomenumerique-site/confirmation-attente.html" }
+        });
         if (error) throw error;
         authUserId = data.user?.id || null;
         conteneur.remove();
