@@ -1,7 +1,8 @@
 // Connexion : authentifie via Supabase Auth, puis route vers le bon
-// tableau de bord selon le rôle. Les commerciaux ont user_metadata.role =
-// "commercial" (défini à la création de leur compte par le workflow 09) ;
-// tout le reste (pas de rôle défini) est traité comme un client.
+// tableau de bord selon le rôle. Les commerciaux ont app_metadata.role =
+// "commercial" (défini à la création de leur compte par le workflow 09,
+// via l'API Admin service_role — jamais modifiable par le client, contrairement
+// à user_metadata) ; tout le reste (pas de rôle défini) est traité comme un client.
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("form-connexion").addEventListener("submit", async (e) => {
@@ -22,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       if (error) throw error;
 
-      const role = data.user?.user_metadata?.role;
+      const role = data.user?.app_metadata?.role;
       window.location.href = role === "commercial" ? "dashboard-commercial.html" : "dashboard-client.html";
     } catch (err) {
       zoneMessage.innerHTML = `<p class="message-erreur">${err.message === "Invalid login credentials" ? "Email ou mot de passe incorrect." : (err.message || "Une erreur est survenue.")}</p>`;
