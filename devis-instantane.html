@@ -55,9 +55,9 @@
   table.devis-table th { font-size: .74rem; text-transform: uppercase; letter-spacing: .04em; color: var(--gris-texte); }
   table.devis-table td.montant, table.devis-table th.montant { text-align: right; white-space: nowrap; }
   .devis-recap { display: flex; justify-content: flex-end; }
-  .devis-recap-table { min-width: 280px; }
-  .devis-recap-table div { display: flex; justify-content: space-between; padding: 6px 0; font-size: .95rem; }
-  .devis-recap-table div.total { border-top: 1px solid #e5e7eb; margin-top: 6px; padding-top: 12px; font-weight: 700; font-size: 1.1rem; font-family: var(--font-titres); }
+  table.devis-recap-table { min-width: 380px; max-width: 460px; margin-bottom: 4px; }
+  table.devis-recap-table tr.total td { font-weight: 700; font-size: 1.05rem; font-family: var(--font-titres); border-top: 1px solid #e5e7eb; border-bottom: none; }
+  #d-mention-tva { text-align: right; font-style: italic; }
   .devis-note { font-size: .82rem; color: var(--gris-texte); margin-top: 24px; padding-top: 16px; border-top: 1px solid #eef0f4; }
   .devis-actions { display: flex; gap: 12px; flex-wrap: wrap; margin: 24px 0; }
   .devis-cta { background: var(--degrade-clair); border-radius: 14px; padding: 20px 24px; margin-top: 8px; }
@@ -135,17 +135,21 @@
       </div>
 
       <table class="devis-table">
-        <thead><tr><th>Offre</th><th class="montant">Prix</th></tr></thead>
+        <thead><tr><th>Offre</th><th class="montant">Prix HT</th><th class="montant">Prix TTC</th></tr></thead>
         <tbody id="d-lignes"></tbody>
       </table>
 
       <div class="devis-recap">
-        <div class="devis-recap-table">
-          <div><span>Total ponctuel</span><span id="d-total-ponctuel">0 €</span></div>
-          <div><span>Total mensuel récurrent</span><span id="d-total-recurrent">0 €</span></div>
-          <div class="total"><span>Dès le 1er mois</span><span id="d-total-premier-mois">0 €</span></div>
-        </div>
+        <table class="devis-table devis-recap-table">
+          <thead><tr><th></th><th class="montant">HT</th><th class="montant">TTC</th></tr></thead>
+          <tbody>
+            <tr><td>Total ponctuel</td><td class="montant" id="d-total-ponctuel-ht">0 €</td><td class="montant" id="d-total-ponctuel-ttc">0 €</td></tr>
+            <tr><td>Total mensuel récurrent</td><td class="montant" id="d-total-recurrent-ht">0 €</td><td class="montant" id="d-total-recurrent-ttc">0 €</td></tr>
+            <tr class="total"><td>Dès le 1er mois</td><td class="montant" id="d-total-premier-mois-ht">0 €</td><td class="montant" id="d-total-premier-mois-ttc">0 €</td></tr>
+          </tbody>
+        </table>
       </div>
+      <p class="devis-note" id="d-mention-tva" style="margin-top:0; padding-top:0; border-top:none;"></p>
 
       <div class="devis-note">
         Ce document est une estimation, sans engagement. La commande se finalise toujours en ligne, directement par

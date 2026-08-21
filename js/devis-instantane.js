@@ -11,6 +11,26 @@
 // pas un raccourci de commande — la commande reste toujours passée par le
 // client lui-même en ligne (garde-fou anti-fraude déjà en place ailleurs sur
 // ce projet, cf. workflow 04 / auto-affiliation).
+//
+// Régime TVA — un seul réglage à changer ici si le statut change un jour.
+// Valeur actuelle (21/08/2026) : franchise en base (0 = pas de TVA facturée),
+// justifiée par un CA à 0€ à ce stade (la micro-entreprise n'est pas encore
+// créée) — vrai quelle que soit la forme juridique finale retenue (micro ou
+// SASU, la franchise en base dépend du CA, pas de la forme), donc pas besoin
+// d'attendre que cette décision soit tranchée pour afficher un devis correct
+// aujourd'hui. Tous les prix du catalogue (CATALOGUE_DEVIS ci-dessous) sont
+// des montants HT, cohérent avec fiches_produits_services.md.
+const TAUX_TVA = 0; // ex: 0.20 pour un régime réel à 20%
+
+function calculerTTC(montantHT) {
+  return montantHT * (1 + TAUX_TVA);
+}
+
+function mentionTva() {
+  return TAUX_TVA === 0
+    ? "TVA non applicable, art. 293 B du CGI"
+    : `Dont TVA (${Math.round(TAUX_TVA * 100)} %)`;
+}
 
 const CATALOGUE_DEVIS = [
   {
@@ -130,12 +150,12 @@ function rendreCatalogueFormulaire() {
         inputPrix.min = "0";
         inputPrix.step = "1";
         inputPrix.value = item.prixDefaut || "";
-        inputPrix.placeholder = "Montant en €";
+        inputPrix.placeholder = "Montant HT en €";
         inputPrix.id = "prix-" + item.code;
         inputPrix.addEventListener("input", recalculerTotalLive);
         libre.appendChild(inputPrix);
         const unite = document.createElement("span");
-        unite.textContent = item.recurrent ? " € / mois" : " € (one-shot)";
+        unite.textContent = item.recurrent ? " € HT / mois" : " € HT (one-shot)";
         unite.style.marginLeft = "8px";
         unite.style.fontSize = ".85rem";
         unite.style.color = "var(--gris-texte)";
@@ -149,8 +169,8 @@ function rendreCatalogueFormulaire() {
       if (!item.prixLibre) {
         const prixEl = document.createElement("div");
         prixEl.className = "devis-item-prix";
-        prixEl.innerHTML = formaterEuros(item.prix) + (item.recurrent ? "<small><br>/ mois</small>" : "<small><br>one-shot</small>") +
-          (item.hebergement ? `<small><br>+ ${item.hebergement} €/mois hébergement</small>` : "");
+        prixEl.innerHTML = formaterEuros(item.prix) + " HT" + (item.recurrent ? "<small><br>/ mois</small>" : "<small><br>one-shot</small>") +
+          (item.hebergement ? `<small><br>+ ${item.hebergement} €/mois HT hébergement</small>` : "");
         ligne.appendChild(prixEl);
       }
 
@@ -198,8 +218,8 @@ function calculerTotaux(lignes) {
 
 function recalculerTotalLive() {
   const { totalPonctuel, totalRecurrent } = calculerTotaux(lignesSelectionnees());
-  document.getElementById("total-recurrent-live").textContent = formaterEuros(totalRecurrent) + "/mois";
-  document.getElementById("total-ponctuel-live").textContent = formaterEuros(totalPonctuel);
+  document.getElementById("total-recurrent-live").textContent = formaterEuros(totalRecurrent) + " HT/mois";
+  document.getElementById("total-ponctuel-live").textContent = formaterEuros(totalPonctuel) + " HT";
 }
 
 async function initialiserFormulaire() {
@@ -280,20 +300,31 @@ function rendreApercu(devis) {
   devis.lignes.forEach((l) => {
     const tr = document.createElement("tr");
     const tdNom = document.createElement("td");
-    tdNom.innerHTML = l.nom + (l.bientot ? ' <span class="badge-bientot-devis">Bientôt disponible</span>' : "") +
-      (l.hebergement ? `<br><small style="color:var(--gris-texte);">+ hébergement ${formaterEuros(l.hebergement)}/mois</small>` : "");
-    const tdPrix = document.createElement("td");
-    tdPrix.className = "montant";
-    tdPrix.textContent = formaterEuros(l.prix) + (l.recurrent ? "/mois" : " (one-shot)");
+    const suffixeHebergement = l.hebergement
+      ? `<br><small style="color:var(--gris-texte);">+ hébergement ${formaterEuros(l.hebergement)} HT / ${formaterEuros(calculerTTC(l.hebergement))} TTC par mois</small>`
+      : "";
+    tdNom.innerHTML = l.nom + (l.bientot ? ' <span class="badge-bientot-devis">Bientôt disponible</span>' : "") + suffixeHebergement;
+    const tdHt = document.createElement("td");
+    tdHt.className = "montant";
+    tdHt.textContent = formaterEuros(l.prix) + (l.recurrent ? "/mois" : " (one-shot)");
+    const tdTtc = document.createElement("td");
+    tdTtc.className = "montant";
+    tdTtc.textContent = formaterEuros(calculerTTC(l.prix)) + (l.recurrent ? "/mois" : " (one-shot)");
     tr.appendChild(tdNom);
-    tr.appendChild(tdPrix);
+    tr.appendChild(tdHt);
+    tr.appendChild(tdTtc);
     corpsTable.appendChild(tr);
   });
 
   const { totalPonctuel, totalRecurrent } = calculerTotaux(devis.lignes);
-  document.getElementById("d-total-ponctuel").textContent = formaterEuros(totalPonctuel);
-  document.getElementById("d-total-recurrent").textContent = formaterEuros(totalRecurrent) + "/mois";
-  document.getElementById("d-total-premier-mois").textContent = formaterEuros(totalPonctuel + totalRecurrent);
+  const premierMoisHt = totalPonctuel + totalRecurrent;
+  document.getElementById("d-total-ponctuel-ht").textContent = formaterEuros(totalPonctuel);
+  document.getElementById("d-total-ponctuel-ttc").textContent = formaterEuros(calculerTTC(totalPonctuel));
+  document.getElementById("d-total-recurrent-ht").textContent = formaterEuros(totalRecurrent) + "/mois";
+  document.getElementById("d-total-recurrent-ttc").textContent = formaterEuros(calculerTTC(totalRecurrent)) + "/mois";
+  document.getElementById("d-total-premier-mois-ht").textContent = formaterEuros(premierMoisHt);
+  document.getElementById("d-total-premier-mois-ttc").textContent = formaterEuros(calculerTTC(premierMoisHt));
+  document.getElementById("d-mention-tva").textContent = mentionTva();
 
   // CTA : lien direct uniquement pour le cas le plus simple et le plus sûr
   // (Gestion Email seule, déjà commandable en self-service) — tout le reste
