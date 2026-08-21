@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commerciaux inactifs — Le Binôme Numérique</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --couleur-principale: #1F6F78;
+    --couleur-texte: #1a1a1a;
+    --couleur-fond-clair: #f7f7f8;
+    --couleur-bordure: #e2e2e4;
+    --couleur-danger: #B23A2E;
+    --couleur-ok: #2E7D32;
+    --couleur-attention: #B8860B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--couleur-texte);
+    background: var(--couleur-fond-clair);
+    line-height: 1.5;
+  }
+  header {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 20px 24px;
+  }
+  header h1 { margin: 0; font-size: 1.3rem; }
+  header p { margin: 4px 0 0; color: #ccc; font-size: 0.9rem; }
+  main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  .carte {
+    background: #fff;
+    border: 1px solid var(--couleur-bordure);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .carte h2 { margin-top: 0; font-size: 1.1rem; }
+  .note {
+    color: #555;
+    font-size: 0.88rem;
+    margin-top: 0;
+  }
+  .champ-cle {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .champ-cle input[type="password"], .champ-cle input[type="text"] {
+    flex: 1;
+    min-width: 240px;
+    padding: 10px 12px;
+    border: 1px solid var(--couleur-bordure);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-family: inherit;
+  }
+  .btn {
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--couleur-principale);
+    color: #fff;
+  }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  .btn-lien {
+    background: none;
+    border: none;
+    color: var(--couleur-principale);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--couleur-bordure); }
+  th { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; color: #666; }
+  tr.eligible { background: #fdf6ec; }
+  .badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .badge-niveau { background: #555; }
+  .badge-eligible { background: var(--couleur-attention); }
+  .badge-ok { background: var(--couleur-ok); }
+  .cellule-jours { font-weight: 700; }
+  #message {
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: none;
+  }
+  #message.err { display: block; background: #fdecea; color: var(--couleur-danger); }
+  #etat-vide { color: #666; font-size: 0.9rem; }
+  #etat-chargement { color: #666; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Le Binôme Numérique — Commerciaux inactifs</h1>
+  <p>Repère de suivi, aucune action automatique déclenchée depuis cette page.</p>
+</header>
+
+<main>
+  <div id="message"></div>
+
+  <div class="carte" id="carte-cle">
+    <h2>Clé d'accès</h2>
+    <p class="note">Page interne non indexée. Colle la clé admin une seule fois — elle reste ensuite enregistrée dans ce navigateur.</p>
+    <div class="champ-cle">
+      <input type="password" id="f-cle" placeholder="Clé admin">
+      <button class="btn" id="btn-valider-cle">Afficher la liste</button>
+    </div>
+  </div>
+
+  <div class="carte" id="carte-liste" style="display:none;">
+    <h2>Commerciaux actifs, triés par inactivité</h2>
+    <p class="note">
+      Seuil de résiliation pour inactivité : <strong>2 mois sans nouvelle vente</strong> (Article 10.4 des CGV Apporteur d'affaires).
+      Passer ce seuil est une <strong>faculté</strong> de la Société, jamais un effet automatique — la décision de résilier reste manuelle,
+      via le mécanisme existant (statut commercial → « inactif »). Rien n'est fait depuis cette page.
+      <button class="btn-lien" id="btn-actualiser">Actualiser</button>
+    </p>
+    <div id="etat-chargement">Chargement…</div>
+    <div id="etat-vide" style="display:none;">Aucun commercial actif en base pour l'instant.</div>
+    <table id="table-liste" style="display:none;">
+      <thead>
+        <tr>
+          <th>Commercial</th>
+          <th>Niveau</th>
+          <th>Dernière vente</th>
+          <th>Jours écoulés</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody id="corps-table"></tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+(function () {
+  var URL_WEBHOOK = 'https://lbn.app.n8n.cloud/webhook/admin-commerciaux-inactifs';
+  var CLE_STOCKAGE = 'lbn_admin_cle_commerciaux_inactifs';
+  var SEUIL_JOURS = 60; // ~2 mois, cohérent avec l'affichage côté serveur (eligible_resiliation_inactivite)
+
+  var elMessage = document.getElementById('message');
+  var elCarteCle = document.getElementById('carte-cle');
+  var elCarteListe = document.getElementById('carte-liste');
+  var elChargement = document.getElementById('etat-chargement');
+  var elVide = document.getElementById('etat-vide');
+  var elTable = document.getElementById('table-liste');
+  var elCorps = document.getElementById('corps-table');
+
+  function afficherErreur(texte) {
+    elMessage.textContent = texte;
+    elMessage.className = 'err';
+    elMessage.style.display = 'block';
+  }
+
+  function masquerErreur() {
+    elMessage.style.display = 'none';
+  }
+
+  function formaterDate(iso) {
+    if (!iso) return 'Jamais';
+    var d = new Date(iso);
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
+
+  function rendreLigne(c) {
+    var tr = document.createElement('tr');
+    if (c.eligible_resiliation_inactivite) tr.className = 'eligible';
+
+    var tdCommercial = document.createElement('td');
+    tdCommercial.innerHTML = '<strong>' + (c.prenom || '') + ' ' + (c.nom || '') + '</strong><br><span style="color:#777;font-size:0.85rem;">' + (c.email || '') + '</span>';
+    tr.appendChild(tdCommercial);
+
+    var tdNiveau = document.createElement('td');
+    var badgeNiveau = document.createElement('span');
+    badgeNiveau.className = 'badge badge-niveau';
+    badgeNiveau.textContent = c.niveau_mlm || '—';
+    tdNiveau.appendChild(badgeNiveau);
+    tr.appendChild(tdNiveau);
+
+    var tdDerniereVente = document.createElement('td');
+    tdDerniereVente.textContent = c.derniere_vente_le ? formaterDate(c.derniere_vente_le) : 'Jamais (inscrit le ' + formaterDate(c.created_at) + ')';
+    tr.appendChild(tdDerniereVente);
+
+    var tdJours = document.createElement('td');
+    tdJours.className = 'cellule-jours';
+    tdJours.textContent = (c.jours_depuis_reference != null ? c.jours_depuis_reference : '—') + ' j';
+    tr.appendChild(tdJours);
+
+    var tdStatut = document.createElement('td');
+    var badgeStatut = document.createElement('span');
+    if (c.eligible_resiliation_inactivite) {
+      badgeStatut.className = 'badge badge-eligible';
+      badgeStatut.textContent = 'Éligible résiliation (Art. 10.4)';
+    } else {
+      badgeStatut.className = 'badge badge-ok';
+      badgeStatut.textContent = 'Actif récemment';
+    }
+    tdStatut.appendChild(badgeStatut);
+    tr.appendChild(tdStatut);
+
+    return tr;
+  }
+
+  function afficherListe(commerciaux) {
+    elChargement.style.display = 'none';
+    elCorps.innerHTML = '';
+    if (!commerciaux || commerciaux.length === 0) {
+      elVide.style.display = 'block';
+      elTable.style.display = 'none';
+      return;
+    }
+    elVide.style.display = 'none';
+    elTable.style.display = 'table';
+    commerciaux.forEach(function (c) {
+      elCorps.appendChild(rendreLigne(c));
+    });
+  }
+
+  function chargerListe(cle) {
+    masquerErreur();
+    elCarteListe.style.display = 'block';
+    elChargement.style.display = 'block';
+    elVide.style.display = 'none';
+    elTable.style.display = 'none';
+
+    fetch(URL_WEBHOOK + '?cle=' + encodeURIComponent(cle))
+      .then(function (r) {
+        if (r.status === 403) throw new Error('cle');
+        if (!r.ok) throw new Error('reseau');
+        return r.json();
+      })
+      .then(function (data) {
+        afficherListe(data.commerciaux || []);
+      })
+      .catch(function (err) {
+        elChargement.style.display = 'none';
+        elCarteListe.style.display = 'none';
+        if (err.message === 'cle') {
+          localStorage.removeItem(CLE_STOCKAGE);
+          afficherErreur('Clé incorrecte — réessaie.');
+        } else {
+          afficherErreur("Impossible de charger la liste — vérifie ta connexion et réessaie.");
+        }
+      });
+  }
+
+  document.getElementById('btn-valider-cle').addEventListener('click', function () {
+    var cle = document.getElementById('f-cle').value.trim();
+    if (!cle) return;
+    localStorage.setItem(CLE_STOCKAGE, cle);
+    chargerListe(cle);
+  });
+
+  document.getElementById('btn-actualiser').addEventListener('click', function () {
+    var cle = localStorage.getItem(CLE_STOCKAGE);
+    if (cle) chargerListe(cle);
+  });
+
+  var cleEnregistree = localStorage.getItem(CLE_STOCKAGE);
+  if (cleEnregistree) {
+    chargerListe(cleEnregistree);
+  }
+})();
+</script>
+
+</body>
+</html>
