@@ -155,6 +155,47 @@ function lireHashDevis() {
 // (n8n_workflows/32_generation_deploiement_site.json, const COULEURS) —
 // l'aperçu visuel ci-dessous doit montrer une couleur que le site livré
 // pourra vraiment avoir, pas une couleur inventée pour l'occasion.
+// Taux Conseiller de la commission résiduelle (migration 39, niveau Modéré)
+// — identique à celui codé dans generer_commission_residuelle(), utilisé ici
+// uniquement pour un repère privé affiché au commercial, jamais pour un
+// calcul qui affecte réellement un paiement (ça reste le rôle exclusif de la
+// fonction SQL). Le book personnel d'un commercial est toujours payé à ce
+// taux, quel que soit son niveau MLM (Conseiller/Formateur/Manager) — seules
+// les overrides sur l'équipe varient par niveau, hors-sujet ici puisqu'il
+// s'agit d'une vente que CE commercial fait lui-même.
+const TAUX_CONSEILLER_MARGE = 0.0521;
+
+// Récupère le coût variable mensuel de Gestion Email (SECRETARIAT_SOCLE) et
+// affiche un repère privé de commission résiduelle estimée sous cette ligne
+// du catalogue — volontairement limité à ce seul produit, le seul dont le
+// coût est aujourd'hui mesuré en base (cout_variable_mensuel, migration 39).
+// Pour tout le reste, mieux vaut ne rien afficher que deviner un coût.
+async function afficherRepereCommissionGestionEmail() {
+  const bloc = document.getElementById("repere-prive-gestion_email");
+  if (!bloc) return;
+  try {
+    const { data, error } = await window.supabaseClient
+      .from("plans_tarifaires")
+      .select("cout_variable_mensuel")
+      .eq("code", "SECRETARIAT_SOCLE")
+      .single();
+    if (error || !data || data.cout_variable_mensuel == null) return; // colonne/migration pas encore en place, on laisse caché
+    let itemGestionEmail = null;
+    CATALOGUE_DEVIS.forEach((g) => {
+      const trouve = g.items.find((i) => i.code === "gestion_email");
+      if (trouve) itemGestionEmail = trouve;
+    });
+    if (!itemGestionEmail) return;
+    const marge = itemGestionEmail.prix - data.cout_variable_mensuel;
+    if (marge <= 0) return;
+    const commissionEstimee = Math.round(marge * TAUX_CONSEILLER_MARGE * 100) / 100;
+    bloc.innerHTML = `<span class="badge-prive">Privé</span> Repère : ~${formaterEuros(commissionEstimee)}/mois de commission résiduelle estimée sur votre book (5,21 % de la marge, jamais visible du prospect)`;
+    bloc.style.display = "flex";
+  } catch (err) {
+    // silencieux — le repère reste simplement caché
+  }
+}
+
 const COULEURS_SITE = {
   bleu: "#1F6F78", vert: "#2E7D32", rouge: "#B23A2E", orange: "#C9702A",
   jaune: "#C9A227", violet: "#6C4A9C", rose: "#C24F82", noir: "#1A1A1A",
@@ -376,6 +417,14 @@ function rendreCatalogueFormulaire() {
       desc.textContent = item.description;
       corps.appendChild(desc);
 
+      if (item.code === "gestion_email") {
+        const repere = document.createElement("div");
+        repere.className = "devis-repere-prive";
+        repere.id = "repere-prive-gestion_email";
+        repere.style.display = "none"; // affiché uniquement une fois le coût réel récupéré
+        corps.appendChild(repere);
+      }
+
       if (item.prixLibre) {
         const libre = document.createElement("div");
         libre.className = "devis-item-libre actif";
@@ -573,6 +622,7 @@ async function initialiserFormulaire() {
   recalculerTotalLive();
   construireListeEtapes();
   allerEtape(0);
+  afficherRepereCommissionGestionEmail();
 
   document.getElementById("btn-precedent").addEventListener("click", () => allerEtape(etapeActuelle - 1));
   document.getElementById("btn-suivant").addEventListener("click", () => {

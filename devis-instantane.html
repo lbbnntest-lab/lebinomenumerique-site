@@ -37,6 +37,14 @@
     display: block; width: 100%; margin-top: 8px; padding: 8px 10px; border: 1px solid #d7deff;
     border-radius: 8px; font-size: .85rem; font-family: inherit; resize: vertical;
   }
+  .devis-repere-prive {
+    margin-top: 8px; padding: 8px 10px; background: #f3f4f6; border-radius: 8px;
+    font-size: .78rem; color: var(--gris-texte); display: flex; align-items: center; gap: 6px;
+  }
+  .devis-repere-prive .badge-prive {
+    display: inline-block; font-size: .64rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase;
+    background: #e5e7eb; color: #4b5563; padding: 1px 6px; border-radius: 999px; flex: none;
+  }
 
   .devis-bareme {
     background: var(--degrade-clair); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px;
@@ -102,7 +110,8 @@
   .devis-cta p { margin: 0 0 12px; font-size: .92rem; }
 
   @media print {
-    header.site, footer.site, .devis-retour, .devis-actions, .cookie-banniere { display: none !important; }
+    header.site, footer.site, .devis-retour, .devis-actions, .cookie-banniere,
+    #bloc-creation-acces { display: none !important; }
     body { background: #fff; }
     .devis-doc { border: none; padding: 0; }
     .devis-layout { padding: 0; max-width: 100%; }
