@@ -349,9 +349,75 @@ function rendreApercu(devis) {
   }
 
   document.title = `Devis ${devis.prospect.entreprise || ""} — Le Binôme Numérique`;
+
+  initialiserBlocCreationAcces(devis);
 }
 
 // ---------------------------------------------------------------------------
+// Création d'accès client (compte de connexion vide, sans vente ni
+// abonnement) — visible uniquement si une session commerciale existe encore
+// dans CE navigateur (juste après avoir généré le devis). Un prospect qui
+// ouvre le lien reçu n'a pas de session : le bloc reste caché pour lui. La
+// vraie protection est côté serveur (vérification JWT dans le workflow 35).
+async function initialiserBlocCreationAcces(devis) {
+  const { data: { session } } = await window.supabaseClient.auth.getSession();
+  if (!session) return; // pas de session dans ce navigateur, on laisse caché
+
+  const bloc = document.getElementById("bloc-creation-acces");
+  bloc.style.display = "block";
+
+  document.getElementById("btn-creer-acces").addEventListener("click", async () => {
+    const messageEl = document.getElementById("message-creation-acces");
+    const btn = document.getElementById("btn-creer-acces");
+    messageEl.innerHTML = "";
+
+    const email = document.getElementById("ac-email").value.trim();
+    const prenom = document.getElementById("ac-prenom").value.trim();
+    const nom = document.getElementById("ac-nom").value.trim();
+    const siret = document.getElementById("ac-siret").value.trim();
+    const telephone = document.getElementById("ac-telephone").value.trim();
+
+    if (!email || !prenom || !nom) {
+      messageEl.innerHTML = '<span class="message-erreur">Email, prénom et nom sont requis.</span>';
+      return;
+    }
+    if (!/^\d{14}$/.test(siret)) {
+      messageEl.innerHTML = '<span class="message-erreur">Le SIRET doit contenir exactement 14 chiffres.</span>';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Création...";
+
+    try {
+      const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/commercial-creer-acces-client`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_token: session.access_token,
+          email, prenom, nom, siret, telephone,
+          raison_sociale: devis.prospect.entreprise || null,
+          secteur_activite: devis.prospect.secteur || null
+        })
+      });
+      if (!resp.ok) {
+        const texteErreur = await resp.text();
+        throw new Error(texteErreur || "Échec de la création.");
+      }
+      messageEl.innerHTML = `<span class="message-succes">Accès créé — un email a été envoyé à ${email} pour définir son mot de passe.</span>`;
+      document.getElementById("ac-email").value = "";
+      document.getElementById("ac-prenom").value = "";
+      document.getElementById("ac-nom").value = "";
+      document.getElementById("ac-siret").value = "";
+      document.getElementById("ac-telephone").value = "";
+    } catch (err) {
+      messageEl.innerHTML = `<span class="message-erreur">${err.message}</span>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Créer l'accès";
+    }
+  });
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   const devisPartage = lireHashDevis();

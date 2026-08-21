@@ -162,6 +162,28 @@
     </div>
 
     <div class="devis-cta" id="devis-cta"></div>
+
+    <!-- Visible uniquement si une session commerciale est active dans CE navigateur
+         (juste après avoir généré ce devis) — jamais pour un prospect qui ouvre le
+         lien reçu, qui n'a pas de session. Protection réelle côté serveur (JWT). -->
+    <div class="carte-section" id="bloc-creation-acces" style="display:none; margin-top:20px;">
+      <h3>Créer un accès pour ce prospect</h3>
+      <p class="sous-titre-section">
+        Crée un compte de connexion vide pour ce prospect — aucun abonnement, aucune vente, rien n'est facturé.
+        Le prospect reçoit un email pour définir son mot de passe et retrouve son espace directement, prêt à souscrire quand il le souhaite.
+      </p>
+      <div class="champ"><label for="ac-email">Email du prospect</label><input type="email" id="ac-email" required></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div class="champ"><label for="ac-prenom">Prénom</label><input type="text" id="ac-prenom" required></div>
+        <div class="champ"><label for="ac-nom">Nom</label><input type="text" id="ac-nom" required></div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div class="champ"><label for="ac-siret">SIRET (14 chiffres)</label><input type="text" id="ac-siret" maxlength="14" required></div>
+        <div class="champ"><label for="ac-telephone">Téléphone (optionnel)</label><input type="tel" id="ac-telephone"></div>
+      </div>
+      <button class="btn btn-primaire" id="btn-creer-acces">Créer l'accès</button>
+      <p id="message-creation-acces" style="margin-top:10px;"></p>
+    </div>
   </div>
 
   <div id="etat-chargement">Chargement…</div>
