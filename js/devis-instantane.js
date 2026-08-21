@@ -32,6 +32,13 @@ function mentionTva() {
     : `Dont TVA (${Math.round(TAUX_TVA * 100)} %)`;
 }
 
+// Barèmes des offres Sur-Mesure (secretariat_sur_mesure, site_sur_mesure,
+// automatisation_sur_mesure ci-dessous) : les montants (taux horaire 75€,
+// paliers de volume, prix par fonctionnalité...) sont des valeurs de
+// démarrage posées le 21/08/2026, pas encore validées sur des devis réels —
+// à ajuster ici au fil de l'expérience terrain. Le prix reste éditable à la
+// main dans tous les cas (input "Montant HT"), le barème ne fait que le
+// pré-remplir.
 const CATALOGUE_DEVIS = [
   {
     categorie: "Secrétariat virtuel",
@@ -45,7 +52,22 @@ const CATALOGUE_DEVIS = [
       { code: "pack_complet", nom: "Pack Complet (Email + Appels Essentiel)", prix: 134.90, recurrent: true, bientot: true,
         description: "Gestion Email + Gestion Appels Essentiel, à prix réduit." },
       { code: "secretariat_sur_mesure", nom: "Secrétariat Sur-Mesure", prixLibre: true, prixDefaut: 450, recurrent: true,
-        description: "Besoin spécifique, à partir de 450 €/mois indicatif." }
+        description: "Besoin spécifique, à partir de 450 €/mois indicatif.",
+        bareme: {
+          base: 450,
+          champs: [
+            { type: "radio", id: "volume", label: "Volume mensuel", options: [
+                { label: "Standard (jusqu'à 50 emails/appels par semaine)", valeur: 0 },
+                { label: "Élevé (50 à 150 par semaine)", valeur: 150 },
+                { label: "Très élevé (150+ par semaine)", valeur: 350 }
+              ] },
+            { type: "radio", id: "couverture", label: "Couverture horaire", options: [
+                { label: "Heures ouvrées (9h-18h, jours ouvrés)", valeur: 0 },
+                { label: "Soirs + week-ends", valeur: 150 },
+                { label: "24/7", valeur: 350 }
+              ] }
+          ]
+        } }
     ]
   },
   {
@@ -58,14 +80,33 @@ const CATALOGUE_DEVIS = [
       { code: "site_ecommerce", nom: "Site E-commerce", prix: 1490, recurrent: false, hebergement: 45,
         description: "Boutique en ligne jusqu'à 30 produits — Setup + hébergement 45 €/mois." },
       { code: "site_sur_mesure", nom: "Site Sur-Mesure", prixLibre: true, prixDefaut: 3500, recurrent: false,
-        description: "Projet spécifique, sur devis." }
+        description: "Projet spécifique, sur devis.",
+        bareme: {
+          base: 3500,
+          champs: [
+            { type: "nombre", id: "pages_supp", label: "Pages supplémentaires (au-delà de 5 incluses)", unite: 150, defaut: 0 },
+            { type: "checkbox", id: "multilingue", label: "Site multilingue", valeur: 400 },
+            { type: "checkbox", id: "reservation", label: "Prise de RDV en ligne intégrée (Cal.com)", valeur: 200 },
+            { type: "checkbox", id: "espace_membre", label: "Espace membre / connexion", valeur: 600 },
+            { type: "nombre", id: "heures_dev", label: "Heures de développement sur-mesure additionnelles", unite: 75, defaut: 0 }
+          ]
+        } }
     ]
   },
   {
     categorie: "Automatisation",
     items: [
       { code: "automatisation_sur_mesure", nom: "Automatisation Sur-Mesure", prixLibre: true, prixDefaut: 1200, recurrent: false,
-        description: "Automatisation d'une tâche métier précise, sur devis." }
+        description: "Automatisation d'une tâche métier précise, sur devis.",
+        bareme: {
+          base: 300,
+          champs: [
+            { type: "nombre", id: "heures_dev", label: "Heures de développement estimées", unite: 75, defaut: 12 },
+            { type: "nombre", id: "outils_tiers", label: "Outils tiers à intégrer (au-delà d'1 inclus)", unite: 300, defaut: 0 },
+            { type: "checkbox", id: "temps_reel", label: "Déclenchement temps réel (webhook) plutôt qu'en différé", valeur: 200 },
+            { type: "checkbox", id: "dashboard", label: "Tableau de bord de suivi dédié", valeur: 400 }
+          ]
+        } }
     ]
   },
   {
@@ -78,6 +119,12 @@ const CATALOGUE_DEVIS = [
     ]
   }
 ];
+
+function echapperHtml(texte) {
+  const div = document.createElement("div");
+  div.textContent = texte == null ? "" : String(texte);
+  return div.innerHTML;
+}
 
 function formaterEuros(montant) {
   return montant.toLocaleString("fr-FR", { minimumFractionDigits: montant % 1 === 0 ? 0 : 2, maximumFractionDigits: 2 }) + " €";
@@ -104,11 +151,198 @@ function lireHashDevis() {
 // MODE FORMULAIRE (commercial connecté)
 // ---------------------------------------------------------------------------
 
+// Palette identique à celle du moteur de génération de site réel
+// (n8n_workflows/32_generation_deploiement_site.json, const COULEURS) —
+// l'aperçu visuel ci-dessous doit montrer une couleur que le site livré
+// pourra vraiment avoir, pas une couleur inventée pour l'occasion.
+const COULEURS_SITE = {
+  bleu: "#1F6F78", vert: "#2E7D32", rouge: "#B23A2E", orange: "#C9702A",
+  jaune: "#C9A227", violet: "#6C4A9C", rose: "#C24F82", noir: "#1A1A1A",
+  gris: "#4B5A66", marron: "#6B4A33", turquoise: "#1F9E8F"
+};
+
+function rendreApercuSiteHtml(nomEntreprise, tagline, couleurHex) {
+  const nom = nomEntreprise || "Votre Entreprise";
+  return `
+    <div class="devis-apercu-site-hero" style="background-color:${couleurHex};">
+      <div class="devis-apercu-site-nav">
+        <span>${echapperHtml(nom)}</span>
+        <span class="devis-apercu-site-nav-liens">Accueil · Services · Contact</span>
+      </div>
+      <div class="devis-apercu-site-titre">${echapperHtml(nom)}</div>
+      <div class="devis-apercu-site-tagline">${echapperHtml(tagline || "Votre accroche apparaîtra ici")}</div>
+      <div class="devis-apercu-site-cta" style="background-color:${couleurHex};">Nous contacter</div>
+    </div>
+  `;
+}
+
+// Recalcule l'aperçu visuel à partir du nom d'entreprise (étape "prospect")
+// et des 2 champs propres à cette carte (accroche, couleur). Appelée à
+// chaque changement de champ concerné, et à chaque changement d'étape (pour
+// rester synchro si le commercial revient modifier le nom de l'entreprise).
+function mettreAJourApercuSite() {
+  const rendu = document.getElementById("apercu-site-rendu");
+  const inputTagline = document.getElementById("site-tagline");
+  const selectCouleur = document.getElementById("site-couleur");
+  if (!rendu || !inputTagline || !selectCouleur) return;
+  const nom = document.getElementById("f-entreprise").value.trim();
+  const tagline = inputTagline.value.trim();
+  const couleurHex = COULEURS_SITE[selectCouleur.value] || COULEURS_SITE.bleu;
+  rendu.innerHTML = rendreApercuSiteHtml(nom, tagline, couleurHex);
+}
+
+// Bloc "Aperçu visuel du site" — inséré une seule fois, dans l'étape "Sites
+// Web" du catalogue (pas un champ par offre, un seul aperçu pour la
+// catégorie entière).
+function construireApercuSite() {
+  const conteneur = document.createElement("div");
+  conteneur.className = "carte-section";
+
+  const titre = document.createElement("h3");
+  titre.textContent = "Aperçu visuel du site (optionnel)";
+  conteneur.appendChild(titre);
+
+  const sousTitre = document.createElement("p");
+  sousTitre.className = "sous-titre-section";
+  sousTitre.textContent = "Montrez au prospect, en direct pendant le rendez-vous, à quoi pourrait ressembler son futur site.";
+  conteneur.appendChild(sousTitre);
+
+  const champTagline = document.createElement("div");
+  champTagline.className = "champ";
+  const labelTagline = document.createElement("label");
+  labelTagline.setAttribute("for", "site-tagline");
+  labelTagline.textContent = "Accroche du site";
+  champTagline.appendChild(labelTagline);
+  const inputTagline = document.createElement("input");
+  inputTagline.type = "text";
+  inputTagline.id = "site-tagline";
+  inputTagline.placeholder = "Ex: Votre boulangerie artisanale au cœur du quartier";
+  inputTagline.addEventListener("input", mettreAJourApercuSite);
+  champTagline.appendChild(inputTagline);
+  conteneur.appendChild(champTagline);
+
+  const champCouleur = document.createElement("div");
+  champCouleur.className = "champ";
+  const labelCouleur = document.createElement("label");
+  labelCouleur.setAttribute("for", "site-couleur");
+  labelCouleur.textContent = "Couleur principale";
+  champCouleur.appendChild(labelCouleur);
+  const selectCouleur = document.createElement("select");
+  selectCouleur.id = "site-couleur";
+  Object.keys(COULEURS_SITE).forEach((nomCouleur) => {
+    const option = document.createElement("option");
+    option.value = nomCouleur;
+    option.textContent = nomCouleur.charAt(0).toUpperCase() + nomCouleur.slice(1);
+    selectCouleur.appendChild(option);
+  });
+  selectCouleur.value = "bleu";
+  selectCouleur.addEventListener("change", mettreAJourApercuSite);
+  champCouleur.appendChild(selectCouleur);
+  conteneur.appendChild(champCouleur);
+
+  const rendu = document.createElement("div");
+  rendu.id = "apercu-site-rendu";
+  rendu.className = "devis-apercu-site-rendu";
+  conteneur.appendChild(rendu);
+
+  return conteneur;
+}
+
+// Construit le mini-calculateur d'un barème (radio / checkbox / nombre) et
+// retourne l'élément DOM à insérer, plus une fonction recalculer() qui met à
+// jour inputPrix.value à partir des champs actuellement sélectionnés.
+// inputPrix reste un input number normal : le commercial peut toujours
+// écraser la valeur calculée à la main après coup.
+function construireBareme(item, inputPrix) {
+  const conteneur = document.createElement("div");
+  conteneur.className = "devis-bareme";
+
+  function recalculer() {
+    let total = item.bareme.base;
+    item.bareme.champs.forEach((champ) => {
+      const elId = "bareme-" + item.code + "-" + champ.id;
+      if (champ.type === "radio") {
+        const coche = conteneur.querySelector(`input[name="${elId}"]:checked`);
+        const option = champ.options.find((o) => o.label === (coche ? coche.value : champ.options[0].label));
+        total += option ? option.valeur : 0;
+      } else if (champ.type === "checkbox") {
+        const el = conteneur.querySelector(`#${CSS.escape(elId)}`);
+        if (el && el.checked) total += champ.valeur;
+      } else if (champ.type === "nombre") {
+        const el = conteneur.querySelector(`#${CSS.escape(elId)}`);
+        const n = el ? parseFloat(el.value) || 0 : 0;
+        total += n * champ.unite;
+      }
+    });
+    inputPrix.value = total;
+    recalculerTotalLive();
+  }
+
+  item.bareme.champs.forEach((champ) => {
+    const elId = "bareme-" + item.code + "-" + champ.id;
+    const ligneChamp = document.createElement("div");
+    ligneChamp.className = "devis-bareme-champ";
+
+    if (champ.type === "radio") {
+      const titre = document.createElement("div");
+      titre.className = "devis-bareme-titre";
+      titre.textContent = champ.label;
+      ligneChamp.appendChild(titre);
+      champ.options.forEach((option, i) => {
+        const wrap = document.createElement("label");
+        wrap.className = "devis-bareme-option";
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = elId;
+        radio.value = option.label;
+        if (i === 0) radio.checked = true;
+        radio.addEventListener("change", recalculer);
+        wrap.appendChild(radio);
+        wrap.appendChild(document.createTextNode(" " + option.label + (option.valeur ? ` (+${option.valeur} €)` : "")));
+        ligneChamp.appendChild(wrap);
+      });
+    } else if (champ.type === "checkbox") {
+      const wrap = document.createElement("label");
+      wrap.className = "devis-bareme-option";
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.id = elId;
+      cb.addEventListener("change", recalculer);
+      wrap.appendChild(cb);
+      wrap.appendChild(document.createTextNode(` ${champ.label} (+${champ.valeur} €)`));
+      ligneChamp.appendChild(wrap);
+    } else if (champ.type === "nombre") {
+      const titre = document.createElement("div");
+      titre.className = "devis-bareme-titre";
+      titre.textContent = `${champ.label} (× ${champ.unite} €)`;
+      ligneChamp.appendChild(titre);
+      const inputNombre = document.createElement("input");
+      inputNombre.type = "number";
+      inputNombre.min = "0";
+      inputNombre.step = "1";
+      inputNombre.id = elId;
+      inputNombre.value = champ.defaut || 0;
+      inputNombre.className = "devis-bareme-nombre";
+      inputNombre.addEventListener("input", recalculer);
+      ligneChamp.appendChild(inputNombre);
+    }
+
+    conteneur.appendChild(ligneChamp);
+  });
+
+  return { element: conteneur, recalculer };
+}
+
 function rendreCatalogueFormulaire() {
   const conteneur = document.getElementById("catalogue-formulaire");
   conteneur.innerHTML = "";
 
-  CATALOGUE_DEVIS.forEach((groupe) => {
+  CATALOGUE_DEVIS.forEach((groupe, indexGroupe) => {
+    const etape = document.createElement("div");
+    etape.className = "devis-etape";
+    etape.id = "etape-cat-" + indexGroupe;
+    etape.style.display = "none";
+
     const bloc = document.createElement("div");
     bloc.className = "devis-categorie carte-section";
     const titre = document.createElement("h3");
@@ -145,6 +379,7 @@ function rendreCatalogueFormulaire() {
       if (item.prixLibre) {
         const libre = document.createElement("div");
         libre.className = "devis-item-libre actif";
+
         const inputPrix = document.createElement("input");
         inputPrix.type = "number";
         inputPrix.min = "0";
@@ -153,6 +388,17 @@ function rendreCatalogueFormulaire() {
         inputPrix.placeholder = "Montant HT en €";
         inputPrix.id = "prix-" + item.code;
         inputPrix.addEventListener("input", recalculerTotalLive);
+
+        if (item.bareme) {
+          const { element: baremeEl, recalculer: recalculerBareme } = construireBareme(item, inputPrix);
+          libre.appendChild(baremeEl);
+          const labelPrix = document.createElement("div");
+          labelPrix.className = "devis-bareme-titre";
+          labelPrix.textContent = "Prix calculé — ajustable manuellement si besoin";
+          libre.appendChild(labelPrix);
+          recalculerBareme();
+        }
+
         libre.appendChild(inputPrix);
         const unite = document.createElement("span");
         unite.textContent = item.recurrent ? " € HT / mois" : " € HT (one-shot)";
@@ -160,6 +406,14 @@ function rendreCatalogueFormulaire() {
         unite.style.fontSize = ".85rem";
         unite.style.color = "var(--gris-texte)";
         libre.appendChild(unite);
+
+        const descLibre = document.createElement("textarea");
+        descLibre.className = "devis-item-desc-perso";
+        descLibre.id = "desc-" + item.code;
+        descLibre.rows = 2;
+        descLibre.placeholder = "Décris précisément ce qui est inclus pour ce prospect (affiché sur le devis) — sinon la description générique ci-dessus sera utilisée.";
+        libre.appendChild(descLibre);
+
         corps.appendChild(libre);
       }
 
@@ -177,8 +431,14 @@ function rendreCatalogueFormulaire() {
       bloc.appendChild(ligne);
     });
 
-    conteneur.appendChild(bloc);
+    etape.appendChild(bloc);
+    if (groupe.categorie === "Sites Web") {
+      etape.appendChild(construireApercuSite());
+    }
+    conteneur.appendChild(etape);
   });
+
+  mettreAJourApercuSite();
 }
 
 function lignesSelectionnees() {
@@ -188,9 +448,13 @@ function lignesSelectionnees() {
       const checkbox = document.getElementById("chk-" + item.code);
       if (checkbox && checkbox.checked) {
         let prix = item.prix;
+        let description = item.description;
         if (item.prixLibre) {
           const val = parseFloat(document.getElementById("prix-" + item.code).value);
           prix = isNaN(val) ? 0 : val;
+          const descEl = document.getElementById("desc-" + item.code);
+          const descVal = descEl ? descEl.value.trim() : "";
+          if (descVal) description = descVal;
         }
         lignes.push({
           code: item.code,
@@ -198,7 +462,8 @@ function lignesSelectionnees() {
           prix: prix,
           recurrent: !!item.recurrent,
           hebergement: item.hebergement || 0,
-          bientot: !!item.bientot
+          bientot: !!item.bientot,
+          description: description
         });
       }
     });
@@ -222,6 +487,67 @@ function recalculerTotalLive() {
   document.getElementById("total-ponctuel-live").textContent = formaterEuros(totalPonctuel) + " HT";
 }
 
+// ---------------------------------------------------------------------------
+// Navigation par étapes (une catégorie du catalogue par écran, plutôt qu'une
+// seule longue page à scroller) — étapes : "prospect", une par catégorie de
+// CATALOGUE_DEVIS, puis "recap".
+// ---------------------------------------------------------------------------
+
+let ETAPES = [];
+let etapeActuelle = 0;
+
+function construireListeEtapes() {
+  ETAPES = ["prospect", ...CATALOGUE_DEVIS.map((g, i) => "cat-" + i), "recap"];
+}
+
+function elementEtape(id) {
+  if (id === "prospect") return document.getElementById("etape-prospect");
+  if (id === "recap") return document.getElementById("etape-recap");
+  return document.getElementById("etape-" + id);
+}
+
+function libelleEtape(id) {
+  if (id === "prospect") return "Le prospect";
+  if (id === "recap") return "Récapitulatif";
+  return CATALOGUE_DEVIS[parseInt(id.split("-")[1], 10)].categorie;
+}
+
+function rendreRecap() {
+  const lignes = lignesSelectionnees();
+  const conteneur = document.getElementById("recap-lignes");
+  if (lignes.length === 0) {
+    conteneur.innerHTML = '<p class="sous-titre-section">Aucune offre sélectionnée pour l\'instant — revenez en arrière pour en choisir.</p>';
+    return;
+  }
+  conteneur.innerHTML = lignes.map((l) => `
+    <div class="devis-recap-item">
+      <div class="devis-item-corps">
+        <div class="devis-item-titre">${echapperHtml(l.nom)}${l.bientot ? ' <span class="badge-bientot-devis">Bientôt disponible</span>' : ""}</div>
+        ${l.description ? `<div class="devis-item-desc">${echapperHtml(l.description)}</div>` : ""}
+      </div>
+      <div class="devis-item-prix">${formaterEuros(l.prix)} HT${l.recurrent ? "<small><br>/ mois</small>" : "<small><br>one-shot</small>"}</div>
+    </div>
+  `).join("");
+}
+
+function allerEtape(index) {
+  etapeActuelle = Math.max(0, Math.min(index, ETAPES.length - 1));
+  ETAPES.forEach((id, i) => {
+    const el = elementEtape(id);
+    if (el) el.style.display = i === etapeActuelle ? "block" : "none";
+  });
+  document.getElementById("devis-progression").textContent =
+    `Étape ${etapeActuelle + 1}/${ETAPES.length} — ${libelleEtape(ETAPES[etapeActuelle])}`;
+  document.getElementById("btn-precedent").style.visibility = etapeActuelle === 0 ? "hidden" : "visible";
+  const dernierePage = etapeActuelle === ETAPES.length - 1;
+  document.getElementById("btn-suivant").style.display = dernierePage ? "none" : "inline-block";
+  document.getElementById("btn-generer-devis").style.display = dernierePage ? "inline-block" : "none";
+  document.getElementById("message-formulaire").innerHTML = "";
+  mettreAJourApercuSite(); // reste synchro si le nom d'entreprise a été modifié entre-temps
+  if (dernierePage) rendreRecap();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 async function initialiserFormulaire() {
   const session = await requireAuth("connexion.html");
   if (!session) return;
@@ -229,7 +555,7 @@ async function initialiserFormulaire() {
   const sb = window.supabaseClient;
   const { data: commercial } = await sb
     .from("commerciaux")
-    .select("nom,prenom,email,code_affiliation")
+    .select("id,nom,prenom,email,code_affiliation")
     .eq("user_id", session.user.id)
     .single();
 
@@ -240,13 +566,27 @@ async function initialiserFormulaire() {
   }
 
   document.getElementById("etat-chargement").style.display = "none";
-  document.getElementById("nav-header").innerHTML = '<a href="dashboard-commercial.html">Tableau de bord</a> <a href="#" onclick="logout()">Se déconnecter</a>';
+  document.getElementById("nav-header").innerHTML = '<a href="dashboard-commercial.html">Tableau de bord</a> <a href="historique-devis.html">Historique des devis</a> <a href="#" onclick="logout()">Se déconnecter</a>';
   document.getElementById("mode-formulaire").style.display = "block";
 
   rendreCatalogueFormulaire();
   recalculerTotalLive();
+  construireListeEtapes();
+  allerEtape(0);
 
-  document.getElementById("btn-generer-devis").addEventListener("click", () => {
+  document.getElementById("btn-precedent").addEventListener("click", () => allerEtape(etapeActuelle - 1));
+  document.getElementById("btn-suivant").addEventListener("click", () => {
+    if (ETAPES[etapeActuelle] === "prospect") {
+      const entreprise = document.getElementById("f-entreprise").value.trim();
+      if (!entreprise) {
+        document.getElementById("message-formulaire").innerHTML = '<span class="message-erreur">Le nom de l\'entreprise est requis.</span>';
+        return;
+      }
+    }
+    allerEtape(etapeActuelle + 1);
+  });
+
+  document.getElementById("btn-generer-devis").addEventListener("click", async () => {
     const lignes = lignesSelectionnees();
     const messageEl = document.getElementById("message-formulaire");
     if (lignes.length === 0) {
@@ -272,9 +612,27 @@ async function initialiserFormulaire() {
         contact: document.getElementById("f-contact").value.trim(),
         secteur: document.getElementById("f-secteur").value.trim()
       },
-      lignes: lignes
+      lignes: lignes,
+      previsualisationSite: {
+        tagline: document.getElementById("site-tagline").value.trim(),
+        couleur: document.getElementById("site-couleur").value
+      }
     };
-    window.location.hash = "d=" + encoderDevis(devis);
+    const hash = encoderDevis(devis);
+
+    // Historique — best-effort : un échec d'écriture n'empêche jamais
+    // d'afficher/envoyer le devis, il manquera juste dans l'historique.
+    try {
+      await sb.from("devis_prospects").insert({
+        commercial_id: commercial.id,
+        prospect_entreprise: entreprise,
+        devis_hash: hash
+      });
+    } catch (err) {
+      // silencieux, non bloquant
+    }
+
+    window.location.hash = "d=" + hash;
     window.location.reload();
   });
 }
@@ -295,6 +653,15 @@ function rendreApercu(devis) {
   document.getElementById("d-commercial-nom").textContent = (devis.commercial.prenom || "") + " " + (devis.commercial.nom || "");
   document.getElementById("d-commercial-email").textContent = devis.commercial.email || "";
 
+  const blocApercuSite = document.getElementById("d-apercu-site");
+  if (devis.previsualisationSite && devis.previsualisationSite.tagline) {
+    const couleurHex = COULEURS_SITE[devis.previsualisationSite.couleur] || COULEURS_SITE.bleu;
+    blocApercuSite.innerHTML = rendreApercuSiteHtml(devis.prospect.entreprise, devis.previsualisationSite.tagline, couleurHex);
+    blocApercuSite.style.display = "block";
+  } else {
+    blocApercuSite.style.display = "none";
+  }
+
   const corpsTable = document.getElementById("d-lignes");
   corpsTable.innerHTML = "";
   devis.lignes.forEach((l) => {
@@ -303,7 +670,8 @@ function rendreApercu(devis) {
     const suffixeHebergement = l.hebergement
       ? `<br><small style="color:var(--gris-texte);">+ hébergement ${formaterEuros(l.hebergement)} HT / ${formaterEuros(calculerTTC(l.hebergement))} TTC par mois</small>`
       : "";
-    tdNom.innerHTML = l.nom + (l.bientot ? ' <span class="badge-bientot-devis">Bientôt disponible</span>' : "") + suffixeHebergement;
+    const descriptionHtml = l.description ? `<br><small style="color:var(--gris-texte);">${echapperHtml(l.description)}</small>` : "";
+    tdNom.innerHTML = echapperHtml(l.nom) + (l.bientot ? ' <span class="badge-bientot-devis">Bientôt disponible</span>' : "") + descriptionHtml + suffixeHebergement;
     const tdHt = document.createElement("td");
     tdHt.className = "montant";
     tdHt.textContent = formaterEuros(l.prix) + (l.recurrent ? "/mois" : " (one-shot)");
@@ -341,10 +709,16 @@ function rendreApercu(devis) {
       <a class="btn btn-primaire" href="${lienInscription}">Démarrer maintenant</a>
     `;
   } else {
+    // Le lien mailto: ne fait rien de visible si l'appareil n'a pas de
+    // logiciel mail par défaut configuré — l'email est donc aussi affiché en
+    // clair, copiable à la main dans ce cas.
     ctaEl.innerHTML = `
       <h4>Cette offre vous intéresse ?</h4>
-      <p>Contactez ${devis.commercial.prenom || "votre interlocuteur"} pour finaliser votre projet.</p>
-      ${devis.commercial.email ? `<a class="btn btn-primaire" href="mailto:${devis.commercial.email}">Contacter par email</a>` : ""}
+      <p>Contactez ${echapperHtml(devis.commercial.prenom || "votre interlocuteur")} pour finaliser votre projet.</p>
+      ${devis.commercial.email ? `
+        <a class="btn btn-primaire" href="mailto:${echapperHtml(devis.commercial.email)}">Contacter par email</a>
+        <p style="margin-top:8px; font-size:.88rem; color:var(--gris-texte);">Ou écrivez directement à : ${echapperHtml(devis.commercial.email)}</p>
+      ` : ""}
     `;
   }
 

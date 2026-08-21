@@ -33,6 +33,42 @@
   .devis-item-libre input {
     width: 160px; padding: 8px 10px; border: 1px solid #d7deff; border-radius: 8px; font-size: .92rem;
   }
+  .devis-item-desc-perso {
+    display: block; width: 100%; margin-top: 8px; padding: 8px 10px; border: 1px solid #d7deff;
+    border-radius: 8px; font-size: .85rem; font-family: inherit; resize: vertical;
+  }
+
+  .devis-bareme {
+    background: var(--degrade-clair); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px;
+  }
+  .devis-bareme-champ { margin-bottom: 10px; }
+  .devis-bareme-champ:last-child { margin-bottom: 0; }
+  .devis-bareme-titre { font-size: .82rem; font-weight: 700; margin-bottom: 4px; }
+  .devis-bareme-option { display: block; font-size: .85rem; font-weight: 400; margin: 2px 0; cursor: pointer; }
+  .devis-bareme-nombre {
+    width: 70px; padding: 6px 8px; border: 1px solid #d7deff; border-radius: 8px; font-size: .9rem;
+  }
+
+  .devis-apercu-site-rendu { margin-top: 14px; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; }
+  .devis-apercu-site-hero {
+    background-size: cover; background-position: center; padding: 40px 24px; text-align: center; color: #fff;
+  }
+  .devis-apercu-site-nav {
+    display: flex; justify-content: space-between; align-items: center; font-size: .8rem; margin-bottom: 32px; opacity: .9;
+  }
+  .devis-apercu-site-nav-liens { font-size: .75rem; opacity: .85; }
+  .devis-apercu-site-titre { font-family: var(--font-titres); font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
+  .devis-apercu-site-tagline { font-size: .95rem; max-width: 420px; margin: 0 auto 18px; opacity: .95; }
+  .devis-apercu-site-cta { display: inline-block; padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: .85rem; }
+
+  .devis-progression {
+    font-size: .82rem; font-weight: 700; color: var(--bleu-primaire); margin-bottom: 18px;
+    text-transform: uppercase; letter-spacing: .03em;
+  }
+  .devis-recap-item {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+    padding: 14px 16px; border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 10px; background: #fff;
+  }
 
   .devis-total-flottant {
     position: sticky; bottom: 0; background: #fff; border-top: 1px solid #e5e7eb;
@@ -41,6 +77,7 @@
   }
   .devis-total-flottant .montants { font-size: .92rem; color: var(--gris-texte); }
   .devis-total-flottant .montants b { color: var(--bleu-primaire); font-family: var(--font-titres); font-size: 1.05rem; }
+  .devis-nav-boutons { display: flex; gap: 10px; }
 
   /* --- Aperçu / vue partagée (mode prospect) --- */
   .devis-doc { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 40px; }
@@ -89,21 +126,37 @@
     <h2>Devis instantané</h2>
     <p class="sous-titre-section">Sélectionnez les offres qui intéressent le prospect, renseignez ses coordonnées, et générez un devis à lui montrer ou lui envoyer sur place — aucune commande n'est passée ici, c'est un chiffrage.</p>
 
-    <div class="carte-section">
-      <h3>Le prospect</h3>
-      <div class="champ"><label for="f-entreprise">Entreprise</label><input type="text" id="f-entreprise" placeholder="Ex: Boulangerie Martin"></div>
-      <div class="champ"><label for="f-contact">Nom du contact</label><input type="text" id="f-contact" placeholder="Ex: Julie Martin"></div>
-      <div class="champ"><label for="f-secteur">Secteur d'activité (optionnel)</label><input type="text" id="f-secteur" placeholder="Ex: Boulangerie-pâtisserie"></div>
+    <div class="devis-progression" id="devis-progression"></div>
+
+    <div id="etape-prospect" class="devis-etape">
+      <div class="carte-section">
+        <h3>Le prospect</h3>
+        <div class="champ"><label for="f-entreprise">Entreprise</label><input type="text" id="f-entreprise" placeholder="Ex: Boulangerie Martin"></div>
+        <div class="champ"><label for="f-contact">Nom du contact</label><input type="text" id="f-contact" placeholder="Ex: Julie Martin"></div>
+        <div class="champ"><label for="f-secteur">Secteur d'activité (optionnel)</label><input type="text" id="f-secteur" placeholder="Ex: Boulangerie-pâtisserie"></div>
+      </div>
     </div>
 
     <div id="catalogue-formulaire"></div>
+
+    <div id="etape-recap" class="devis-etape" style="display:none;">
+      <div class="carte-section">
+        <h3>Récapitulatif</h3>
+        <p class="sous-titre-section">Vérifiez la sélection avant de générer le devis.</p>
+        <div id="recap-lignes"></div>
+      </div>
+    </div>
 
     <div class="devis-total-flottant">
       <div class="montants">
         Total mensuel récurrent : <b id="total-recurrent-live">0 €</b> &nbsp;·&nbsp;
         Total ponctuel : <b id="total-ponctuel-live">0 €</b>
       </div>
-      <button class="btn btn-primaire" id="btn-generer-devis">Générer le devis</button>
+      <div class="devis-nav-boutons">
+        <button class="btn btn-secondaire" id="btn-precedent">← Précédent</button>
+        <button class="btn btn-primaire" id="btn-suivant">Suivant →</button>
+        <button class="btn btn-primaire" id="btn-generer-devis" style="display:none;">Générer le devis</button>
+      </div>
     </div>
     <p id="message-formulaire" style="margin-top:10px;"></p>
   </div>
@@ -133,6 +186,8 @@
           <p id="d-commercial-email" style="color:var(--gris-texte);"></p>
         </div>
       </div>
+
+      <div id="d-apercu-site" style="display:none; margin-bottom:24px;"></div>
 
       <table class="devis-table">
         <thead><tr><th>Offre</th><th class="montant">Prix HT</th><th class="montant">Prix TTC</th></tr></thead>

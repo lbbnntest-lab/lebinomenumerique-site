@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Historique des devis — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .devis-layout { max-width: 920px; margin: 0 auto; padding: 32px 20px 80px; }
+  .devis-retour { display: inline-block; margin-bottom: 18px; font-size: .9rem; }
+
+  .historique-filtres { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .historique-filtres select { padding: 8px 10px; border: 1px solid #d7deff; border-radius: 8px; font-size: .92rem; }
+
+  .historique-item {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    padding: 16px 18px; border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 12px; background: #fff;
+  }
+  .historique-item-corps { min-width: 0; flex: 1; }
+  .historique-item-titre { font-weight: 700; font-family: var(--font-titres); }
+  .historique-item-meta { color: var(--gris-texte); font-size: .85rem; margin-top: 2px; }
+  .historique-item-actions { display: flex; align-items: center; gap: 10px; flex: none; }
+  .historique-item-actions select {
+    padding: 7px 10px; border: 1px solid #d7deff; border-radius: 8px; font-size: .85rem; font-weight: 600;
+  }
+  .statut-envoye { color: #a8690a; }
+  .statut-relance { color: #1F6F78; }
+  .statut-gagne { color: #2E7D32; }
+  .statut-perdu { color: #B23A2E; }
+
+  .historique-vide { color: var(--gris-texte); padding: 24px 0; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
+    <nav id="nav-header"></nav>
+  </div>
+</header>
+
+<div class="devis-layout">
+  <a class="devis-retour" href="dashboard-commercial.html">← Retour au tableau de bord</a>
+  <h2>Historique des devis</h2>
+  <p class="sous-titre-section">Retrouvez les devis générés pour vos prospects, marquez-les au fil des relances, et rouvrez-les d'un clic pour les renvoyer.</p>
+
+  <div class="historique-filtres">
+    <label for="filtre-statut">Statut</label>
+    <select id="filtre-statut">
+      <option value="">Tous</option>
+      <option value="envoye">Envoyé</option>
+      <option value="relance">Relancé</option>
+      <option value="gagne">Gagné</option>
+      <option value="perdu">Perdu</option>
+    </select>
+  </div>
+
+  <div id="etat-chargement">Chargement…</div>
+  <div id="liste-devis" style="display:none;"></div>
+</div>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/historique-devis.js"></script>
+</body>
+</html>
