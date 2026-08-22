@@ -1,3 +1,13 @@
+// Catalogue des offres "simples" proposables en achat direct depuis le dashboard
+// (hors Sur-Mesure, qui passe par une demande de prix, pas un achat direct).
+// Volontairement dupliqué du catalogue affiché sur index.html/devis-instantane.js
+// plutôt que lu depuis plans_tarifaires : garde l'autorité des prix affichés
+// alignée avec le reste du site, la résolution du vrai Price ID Stripe se fait
+// côté serveur (workflow 36) à partir du plan_code, jamais du prix envoyé ici.
+const OFFRES_SIMPLES_DASHBOARD = [
+  { plan_code: "SECRETARIAT_SOCLE", nom: "Gestion Email", prix: 89, description: "Tri automatique de vos emails, relance si téléphone manquant, bilan quotidien.", bientot: false }
+];
+
 document.addEventListener("DOMContentLoaded", async () => {
   const session = await requireAuth("connexion.html");
   if (!session) return;
@@ -48,6 +58,54 @@ document.addEventListener("DOMContentLoaded", async () => {
           <td><span class="badge badge-actif">${a.statut}</span></td>
         </tr>`).join("")
     : `<tr><td colspan="3">Aucun abonnement actif pour le moment.</td></tr>`;
+
+  // ---------- Ajouter une offre (achat direct de formules simples) ----------
+  const codesDejaSouscrits = new Set(listeAbonnements.map(a => a.plans_tarifaires?.code).filter(Boolean));
+  const conteneurOffres = document.getElementById("liste-offres-disponibles");
+  const messageAjoutOffre = document.getElementById("message-ajout-offre");
+  const peutSouscrire = utilisateur.role === "owner" || utilisateur.role === "admin";
+
+  const offresAAfficher = OFFRES_SIMPLES_DASHBOARD.filter(o => !codesDejaSouscrits.has(o.plan_code));
+
+  conteneurOffres.innerHTML = offresAAfficher.length
+    ? offresAAfficher.map(o => `
+        <div class="carte-offre-dashboard">
+          <h4>${o.nom}${o.bientot ? ' <span class="badge badge-bientot">Bientôt disponible</span>' : ""}</h4>
+          <div class="desc-offre">${o.description}</div>
+          <div class="prix-offre">${o.prix} € HT/mois</div>
+          ${o.bientot
+            ? `<button class="btn btn-secondaire" disabled>Bientôt disponible</button>`
+            : peutSouscrire
+              ? `<button class="btn btn-primaire" data-plan-code="${o.plan_code}">Souscrire</button>`
+              : `<p class="sous-titre-section" style="margin:0;">Seul le propriétaire ou un administrateur peut souscrire.</p>`}
+        </div>`).join("")
+    : `<p class="sous-titre-section">Aucune offre supplémentaire disponible pour le moment — vous êtes déjà abonné à tout ce qui est proposable aujourd'hui.</p>`;
+
+  conteneurOffres.querySelectorAll("button[data-plan-code]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      messageAjoutOffre.innerHTML = "";
+      btn.disabled = true;
+      btn.textContent = "Redirection vers le paiement...";
+      try {
+        const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/dashboard-ajouter-offre`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            access_token: session.access_token,
+            plan_code: btn.dataset.planCode,
+            cycle_facturation: "mensuel"
+          })
+        });
+        const result = await resp.json();
+        if (!resp.ok) throw new Error(result.erreur || "Échec de la souscription.");
+        window.location.href = result.checkout_url;
+      } catch (err) {
+        messageAjoutOffre.innerHTML = `<p class="message-erreur">${err.message}</p>`;
+        btn.disabled = false;
+        btn.textContent = "Souscrire";
+      }
+    });
+  });
 
   const debutMois = new Date();
   debutMois.setDate(1);

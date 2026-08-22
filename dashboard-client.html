@@ -6,6 +6,13 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Mon espace — Le Binôme Numérique</title>
 <link rel="stylesheet" href="css/style.css">
+<style>
+  .grille-offres-dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 12px; }
+  .carte-offre-dashboard { border: 1px solid #d7deff; border-radius: 12px; padding: 18px; background: var(--blanc); display: flex; flex-direction: column; gap: 8px; }
+  .carte-offre-dashboard h4 { margin: 0; font-size: 1rem; }
+  .carte-offre-dashboard .prix-offre { font-weight: 700; color: var(--bleu-primaire); }
+  .carte-offre-dashboard .desc-offre { color: var(--gris-texte); font-size: .88rem; flex-grow: 1; }
+</style>
 </head>
 <body>
 
@@ -24,6 +31,7 @@
     <a href="#demandes">Mes demandes</a>
     <a href="#factures">Factures</a>
     <a href="#abonnement">Abonnement</a>
+    <a href="#ajouter-offre">Ajouter une offre</a>
     <a href="#equipe">Mon équipe</a>
   </aside>
 
@@ -59,6 +67,13 @@
           <tr><td colspan="3">Chargement...</td></tr>
         </tbody>
       </table>
+    </section>
+
+    <section id="ajouter-offre" style="margin-top:32px;">
+      <h3>Ajouter une offre</h3>
+      <p class="sous-titre-section">Souscrivez directement à une formule supplémentaire — paiement Stripe sécurisé, sans repasser par un commercial.</p>
+      <div id="liste-offres-disponibles" class="grille-offres-dashboard">Chargement...</div>
+      <p id="message-ajout-offre" style="margin-top:10px;"></p>
     </section>
 
     <section id="demandes" style="margin-top:32px;">
