@@ -1,8 +1,8 @@
-// Connexion client — page publique, liée depuis l'accueil. Les commerciaux ont
-// leur propre page séparée (connexion-commercial.html, non liée publiquement,
-// décision sécurité/discrétion du 22/08/2026) : un compte avec app_metadata.role
-// = "commercial" (défini uniquement côté serveur, workflow 09) est explicitement
-// rejeté ici, même si l'email/mot de passe sont corrects.
+// Connexion commerciale — page séparée de connexion.html (22/08/2026, décision
+// sécurité/discrétion) : jamais liée depuis le site public, URL communiquée
+// directement aux commerciaux. Rejette explicitement tout compte sans
+// app_metadata.role = "commercial" (défini uniquement côté serveur, workflow 09
+// via l'API Admin service_role — jamais falsifiable par le client).
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("form-connexion").addEventListener("submit", async (e) => {
@@ -24,11 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (error) throw error;
 
       const role = data.user?.app_metadata?.role;
-      if (role === "commercial") {
+      if (role !== "commercial") {
         await window.supabaseClient.auth.signOut();
-        throw new Error("Ce compte est un compte commercial — connectez-vous depuis votre lien dédié.");
+        throw new Error("Ce compte n'est pas un compte commercial. Connectez-vous depuis l'espace client.");
       }
-      window.location.href = "dashboard-client.html";
+      window.location.href = "dashboard-commercial.html";
     } catch (err) {
       zoneMessage.innerHTML = `<p class="message-erreur">${err.message === "Invalid login credentials" ? "Email ou mot de passe incorrect." : (err.message || "Une erreur est survenue.")}</p>`;
       btn.disabled = false;

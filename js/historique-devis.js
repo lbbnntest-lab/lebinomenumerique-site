@@ -104,7 +104,7 @@ function rendreListe(filtreStatut) {
 }
 
 async function initialiserHistorique() {
-  const session = await requireAuth("connexion.html");
+  const session = await requireAuth("connexion-commercial.html");
   if (!session) return;
 
   const sb = window.supabaseClient;

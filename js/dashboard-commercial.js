@@ -71,7 +71,7 @@ const CONFIG_IDENTIFIANT = {
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const session = await requireAuth("connexion.html");
+  const session = await requireAuth("connexion-commercial.html");
   if (!session) return;
 
   const sb = window.supabaseClient;
