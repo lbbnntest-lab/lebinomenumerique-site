@@ -14,6 +14,7 @@ function echapperHtml(texte) {
 }
 
 let prospectsChargesEnMemoire = [];
+let codeAffiliationActuel = null;
 
 function rendreListe() {
   const filtreStatut = document.getElementById("filtre-statut").value;
@@ -51,7 +52,8 @@ function rendreListe() {
           ${Object.entries(LIBELLES_STATUT).map(([val, lib]) =>
             `<option value="${val}" ${p.statut === val ? "selected" : ""}>${lib}</option>`).join("")}
         </select>
-        <a class="btn btn-secondaire" href="devis-instantane.html" target="_blank" rel="noopener">Devis</a>
+        <a class="btn btn-secondaire" href="devis-instantane.html" target="_blank" rel="noopener">Devis instantané</a>
+        <a class="btn btn-secondaire" href="devis-saas.html${codeAffiliationActuel ? "?code_affiliation=" + encodeURIComponent(codeAffiliationActuel) : ""}" target="_blank" rel="noopener">Devis SaaS</a>
       </div>
     `;
     conteneur.appendChild(item);
@@ -84,7 +86,7 @@ async function initialiserProspection() {
   const sb = window.supabaseClient;
   const { data: commercial } = await sb
     .from("commerciaux")
-    .select("id")
+    .select("id,code_affiliation")
     .eq("user_id", session.user.id)
     .single();
 
@@ -93,6 +95,7 @@ async function initialiserProspection() {
       "Aucun profil commercial n'est rattaché à ce compte.";
     return;
   }
+  codeAffiliationActuel = commercial.code_affiliation;
 
   document.getElementById("nav-header").innerHTML =
     '<a href="dashboard-commercial.html">Tableau de bord</a> <a href="argumentaires.html">Argumentaires</a> <a href="#" onclick="logout()">Se déconnecter</a>';
