@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function chargerEquipe() {
     const { data: equipe } = await sb
       .from("utilisateurs_comptes")
-      .select("nom, prenom, email, role")
+      .select("nom, prenom, fonction, email, role")
       .eq("compte_client_id", utilisateur.compte_client_id);
 
     const membres = equipe || [];
@@ -178,10 +178,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       ? membres.map(m => `
           <tr>
             <td>${m.prenom || ""} ${m.nom || ""}</td>
+            <td>${m.fonction || "—"}</td>
             <td>${m.email}</td>
             <td>${libelleRole[m.role] || m.role}</td>
           </tr>`).join("")
-      : `<tr><td colspan="3">Aucun utilisateur.</td></tr>`;
+      : `<tr><td colspan="4">Aucun utilisateur.</td></tr>`;
 
     return membres.length;
   }
@@ -210,6 +211,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           access_token: session.access_token,
           prenom: document.getElementById("invite-prenom").value,
           nom: document.getElementById("invite-nom").value,
+          fonction: document.getElementById("invite-fonction").value || null,
           email: document.getElementById("invite-email").value
         })
       });
