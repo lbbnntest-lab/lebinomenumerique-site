@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Prospection terrain — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .devis-layout { max-width: 920px; margin: 0 auto; padding: 32px 20px 80px; }
+  .devis-retour { display: inline-block; margin-bottom: 18px; font-size: .9rem; }
+
+  .prospection-entete { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+
+  .prospection-filtres { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+  .prospection-filtres select { padding: 8px 10px; border: 1px solid #d7deff; border-radius: 8px; font-size: .92rem; }
+
+  .prospect-item {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    padding: 16px 18px; border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 12px; background: #fff;
+  }
+  .prospect-item-corps { min-width: 0; flex: 1; }
+  .prospect-item-titre { font-weight: 700; font-family: var(--font-titres); }
+  .prospect-item-meta { color: var(--gris-texte); font-size: .85rem; margin-top: 2px; }
+  .prospect-item-message { font-size: .85rem; margin-top: 6px; white-space: pre-wrap; }
+  .prospect-item-actions { display: flex; align-items: center; gap: 10px; flex: none; flex-wrap: wrap; }
+  .prospect-item-actions select {
+    padding: 7px 10px; border: 1px solid #d7deff; border-radius: 8px; font-size: .85rem; font-weight: 600;
+  }
+  .etiquette-source { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: .72rem; font-weight: 700; background: #eef0ff; color: #4046c7; margin-left: 8px; }
+
+  .statut-nouveau { color: #a8690a; }
+  .statut-contacte { color: #1F6F78; }
+  .statut-devis_envoye { color: #6b4fbb; }
+  .statut-converti { color: #2E7D32; }
+  .statut-perdu { color: #B23A2E; }
+
+  .prospection-vide { color: var(--gris-texte); padding: 24px 0; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
+    <nav id="nav-header"></nav>
+  </div>
+</header>
+
+<div class="devis-layout">
+  <a class="devis-retour" href="dashboard-commercial.html">← Retour au tableau de bord</a>
+
+  <div class="prospection-entete">
+    <h2>Prospection terrain</h2>
+    <a class="btn btn-primaire" href="nouveau-prospect-terrain.html">+ Nouveau prospect</a>
+  </div>
+  <p class="sous-titre-section">Vos prospects, quelle que soit leur origine (visite terrain, site, chatbot). Consultez <a href="argumentaires.html">les scripts et argumentaires</a> par offre avant un rendez-vous.</p>
+
+  <div class="prospection-filtres">
+    <label for="filtre-statut">Statut</label>
+    <select id="filtre-statut">
+      <option value="">Tous</option>
+      <option value="nouveau">Nouveau</option>
+      <option value="contacte">Contacté</option>
+      <option value="devis_envoye">Devis envoyé</option>
+      <option value="converti">Converti</option>
+      <option value="perdu">Perdu</option>
+    </select>
+    <label for="filtre-source">Origine</label>
+    <select id="filtre-source">
+      <option value="">Toutes</option>
+      <option value="commercial_terrain">Terrain</option>
+      <option value="site_web">Site web</option>
+      <option value="chatbot">Chatbot</option>
+    </select>
+  </div>
+
+  <div id="etat-chargement">Chargement…</div>
+  <div id="liste-prospects" style="display:none;"></div>
+</div>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/prospection-terrain.js"></script>
+</body>
+</html>
