@@ -187,7 +187,57 @@ document.addEventListener("DOMContentLoaded", async () => {
     return membres.length;
   }
 
+  // "Mes devis" (Module 5, 23/08/2026) : inclut les devis pré-vente créés en
+  // discutant avec le chatbot (source = 'chatbot'), Sur-Mesure compris — un
+  // devis Sur-Mesure généré par le chatbot a necessite_validation_humaine = true
+  // (prix estimé par barème déterministe, pas un prix ferme du chatbot).
+  async function chargerMesDevis() {
+    const conteneur = document.getElementById("liste-mes-devis");
+    const { data: devis, error } = await sb
+      .from("prospects_devis")
+      .select("id, interet, message, lignes_devis, necessite_validation_humaine, statut, source, created_at")
+      .eq("compte_client_id", utilisateur.compte_client_id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      conteneur.innerHTML = `<p class="etat-vide">Impossible de charger vos devis pour le moment.</p>`;
+      console.error(error);
+      return;
+    }
+
+    const liste = devis || [];
+    if (!liste.length) {
+      conteneur.innerHTML = `<p class="etat-vide">Aucun devis pour le moment.</p>`;
+      return;
+    }
+
+    conteneur.innerHTML = liste.map((d) => {
+      const dateFormatee = new Date(d.created_at).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+      const lignes = Array.isArray(d.lignes_devis) ? d.lignes_devis : [];
+      const total = lignes.reduce((s, l) => s + (Number(l.prix) || 0), 0);
+      return `
+        <div class="carte-devis">
+          <div class="carte-devis-entete">
+            <span class="carte-devis-titre">${d.message ? echapperHtmlDevis(d.message) : (d.interet === "site_web" ? "Devis site web" : "Devis secrétariat/automatisation")}${d.necessite_validation_humaine ? '<span class="badge-en-attente-validation">Estimation — en attente de confirmation</span>' : ""}</span>
+            <span class="carte-devis-meta">${dateFormatee}</span>
+          </div>
+          ${lignes.length ? lignes.map(l => `
+            <div class="carte-devis-ligne">
+              <span>${echapperHtmlDevis(l.nom)}${l.detail ? `<small>${echapperHtmlDevis(l.detail)}</small>` : ""}</span>
+              <span>${Number(l.prix).toFixed(0)} €${l.recurrent ? "/mois" : ""}</span>
+            </div>`).join("") : `<p class="carte-devis-meta">En cours de chiffrage par un conseiller.</p>`}
+        </div>`;
+    }).join("");
+  }
+
+  function echapperHtmlDevis(texte) {
+    const div = document.createElement("div");
+    div.textContent = texte == null ? "" : String(texte);
+    return div.innerHTML;
+  }
+
   const nbMembres = await chargerEquipe();
+  await chargerMesDevis();
 
   // Seuls le propriétaire et les administrateurs peuvent inviter
   const blocInviter = document.getElementById("bloc-inviter");

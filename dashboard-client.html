@@ -12,6 +12,14 @@
   .carte-offre-dashboard h4 { margin: 0; font-size: 1rem; }
   .carte-offre-dashboard .prix-offre { font-weight: 700; color: var(--bleu-primaire); }
   .carte-offre-dashboard .desc-offre { color: var(--gris-texte); font-size: .88rem; flex-grow: 1; }
+
+  .carte-devis { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; background: var(--blanc); }
+  .carte-devis-entete { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .carte-devis-titre { font-weight: 700; font-family: var(--font-titres); }
+  .carte-devis-meta { color: var(--gris-texte); font-size: .85rem; margin-top: 2px; }
+  .badge-en-attente-validation { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: .72rem; font-weight: 700; background: #fff3cd; color: #8a6d1a; margin-left: 8px; }
+  .carte-devis-ligne { display: flex; justify-content: space-between; font-size: .88rem; padding: 4px 0; }
+  .carte-devis-ligne small { color: var(--gris-texte); display: block; }
 </style>
 </head>
 <body>
@@ -28,6 +36,7 @@
 <div class="dash-layout">
   <aside class="dash-sidebar">
     <a href="dashboard-client.html" class="actif">Vue d'ensemble</a>
+    <a href="#devis">Mes devis</a>
     <a href="#demandes">Mes demandes</a>
     <a href="#factures">Factures</a>
     <a href="#abonnement">Abonnement</a>
@@ -74,6 +83,12 @@
       <p class="sous-titre-section">Souscrivez directement à une formule supplémentaire — paiement Stripe sécurisé, sans repasser par un commercial.</p>
       <div id="liste-offres-disponibles" class="grille-offres-dashboard">Chargement...</div>
       <p id="message-ajout-offre" style="margin-top:10px;"></p>
+    </section>
+
+    <section id="devis" style="margin-top:32px;">
+      <h3>Mes devis</h3>
+      <p class="sous-titre-section">Vos demandes de devis, y compris celles faites en discutant avec notre conseiller virtuel.</p>
+      <div id="liste-mes-devis">Chargement...</div>
     </section>
 
     <section id="demandes" style="margin-top:32px;">
