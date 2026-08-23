@@ -19,25 +19,18 @@
   <p style="color:var(--gris-texte); font-size:.9rem;">14 jours d'essai gratuit, sans engagement.</p>
 
   <form id="form-inscription">
-    <div class="champ">
-      <label>Vous êtes</label>
-      <select id="type_compte" required>
-        <option value="B2B">Un professionnel (entreprise, artisan, indépendant)</option>
-      </select>
-    </div>
-
-    <div id="champs-b2b" class="hidden">
+    <div>
       <div class="champ">
         <label>Raison sociale</label>
         <input type="text" id="raison_sociale">
       </div>
       <div class="champ">
         <label>SIRET (14 chiffres)</label>
-        <input type="text" id="siret" pattern="[0-9]{14}" maxlength="14">
+        <input type="text" id="siret" pattern="[0-9]{14}" maxlength="14" required>
       </div>
       <div class="champ">
         <label>Secteur d'activité</label>
-        <input type="text" id="secteur_activite" placeholder="Plomberie, conseil, artisanat...">
+        <input type="text" id="secteur_activite" placeholder="Plomberie, conseil, artisanat..." required>
       </div>
     </div>
 
@@ -48,6 +41,10 @@
     <div class="champ">
       <label>Nom</label>
       <input type="text" id="nom" required>
+    </div>
+    <div class="champ">
+      <label>Fonction <small>(optionnel)</small></label>
+      <input type="text" id="fonction" placeholder="Gérant, Responsable RH...">
     </div>
     <div class="champ">
       <label>Email</label>

@@ -1,10 +1,10 @@
-// Logique du formulaire d'inscription : bascule B2B/B2C, pré-remplissage
-// du plan depuis l'URL, création du compte Supabase Auth puis appel du
-// workflow n8n d'onboarding qui renvoie l'URL de paiement Stripe.
+// Logique du formulaire d'inscription : pré-remplissage du plan depuis
+// l'URL, création du compte Supabase Auth puis appel du workflow n8n
+// d'onboarding qui renvoie l'URL de paiement Stripe. B2B uniquement — le
+// B2C a été retiré du formulaire (Module 3, 23/08/2026, voir migration 42).
 
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
-  const typeParam = params.get("type");
   const planParam = params.get("plan");
   // Briques à la carte optionnelles (catalogue B2B "socle + briques", 19/08/2026),
   // ex. ?briques=SECRETARIAT_UTILISATEUR_SUPP,SECRETARIAT_EXPORT_AIRTABLE — voir
@@ -16,11 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // même paramètre, sinon le champ reste vide malgré le lien.
   const codeAffiliationParam = params.get("code_affiliation");
 
-  const selectType = document.getElementById("type_compte");
-  const champsB2B = document.getElementById("champs-b2b");
   const planInput = document.getElementById("plan");
 
-  if (typeParam) selectType.value = typeParam;
   if (planParam) planInput.value = planParam;
   if (codeAffiliationParam) document.getElementById("code_affiliation").value = codeAffiliationParam;
 
@@ -44,16 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
     cycle.closest(".champ").classList.add("hidden");
   }
 
-  function toggleChampsB2B() {
-    champsB2B.classList.toggle("hidden", selectType.value !== "B2B");
-    const siret = document.getElementById("siret");
-    siret.required = selectType.value === "B2B";
-    const secteurActivite = document.getElementById("secteur_activite");
-    secteurActivite.required = selectType.value === "B2B";
-  }
-  toggleChampsB2B();
-  selectType.addEventListener("change", toggleChampsB2B);
-
   document.getElementById("form-inscription").addEventListener("submit", async (e) => {
     e.preventDefault();
     const zoneMessage = document.getElementById("zone-message");
@@ -62,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.disabled = true;
     btn.textContent = "Création du compte...";
 
-    const type_compte = selectType.value;
+    const type_compte = "B2B";
     const email = document.getElementById("email").value.trim();
     const mot_de_passe = document.getElementById("mot_de_passe").value;
 
@@ -88,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         secteur_activite: document.getElementById("secteur_activite")?.value || null,
         nom: document.getElementById("nom").value,
         prenom: document.getElementById("prenom").value,
+        fonction: document.getElementById("fonction").value || null,
         email,
         telephone: document.getElementById("telephone").value,
         code_affiliation: document.getElementById("code_affiliation").value || null,
