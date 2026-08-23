@@ -4,8 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const codeAffiliationParam = params.get("code_affiliation");
 
   const selectPack = document.getElementById("code_reference");
-  const selectType = document.getElementById("type_compte");
-  const champsB2B = document.getElementById("champs-b2b");
   const champsCatalogue = document.getElementById("champs-catalogue");
   const listeProduits = document.getElementById("liste-produits");
   const btnAjouterProduit = document.getElementById("btn-ajouter-produit");
@@ -13,13 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (codeReferenceParam) selectPack.value = codeReferenceParam;
   if (codeAffiliationParam) document.getElementById("code_affiliation").value = codeAffiliationParam;
-
-  function toggleChampsB2B() {
-    champsB2B.classList.toggle("hidden", selectType.value !== "B2B");
-    document.getElementById("siret").required = selectType.value === "B2B";
-  }
-  toggleChampsB2B();
-  selectType.addEventListener("change", toggleChampsB2B);
 
   function ajouterLigneProduit() {
     if (listeProduits.children.length >= MAX_PRODUITS) return;
@@ -72,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const payload = {
       code_reference: selectPack.value,
-      type_compte: selectType.value,
+      type_compte: "B2B",
       raison_sociale: document.getElementById("raison_sociale")?.value || null,
       siret: document.getElementById("siret")?.value || null,
       secteur_activite: document.getElementById("secteur_activite")?.value || null,
