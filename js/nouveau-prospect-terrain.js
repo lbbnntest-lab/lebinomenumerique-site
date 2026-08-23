@@ -27,12 +27,17 @@ async function initialiserFormulaire() {
     return;
   }
   commercialActuel = commercial;
+  document.getElementById("btn-submit").disabled = false;
 
   document.getElementById("nav-header").innerHTML =
     '<a href="dashboard-commercial.html">Tableau de bord</a> <a href="prospection-terrain.html">Mes prospects</a> <a href="#" onclick="logout()">Se déconnecter</a>';
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Désactivé tant que le profil commercial n'est pas chargé (évite qu'un
+  // clic trop rapide sur "Enregistrer" ne fasse rien silencieusement, le
+  // temps que initialiserFormulaire() résolve commercialActuel).
+  document.getElementById("btn-submit").disabled = true;
   initialiserFormulaire();
 
   document.getElementById("form-nouveau-prospect").addEventListener("submit", async (e) => {
