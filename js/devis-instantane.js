@@ -991,6 +991,47 @@ async function initialiserBlocCreationAcces(devis) {
   const bloc = document.getElementById("bloc-creation-acces");
   bloc.style.display = "block";
 
+  const blocEmail = document.getElementById("bloc-envoyer-email");
+  blocEmail.style.display = "block";
+  document.getElementById("btn-envoyer-email").addEventListener("click", async () => {
+    const messageEl = document.getElementById("message-envoyer-email");
+    const btn = document.getElementById("btn-envoyer-email");
+    messageEl.innerHTML = "";
+
+    const email = document.getElementById("ee-email").value.trim();
+    if (!email) {
+      messageEl.innerHTML = '<span class="message-erreur">L\'email du destinataire est requis.</span>';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Envoi...";
+
+    try {
+      const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/commercial-envoyer-devis-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_token: session.access_token,
+          email_destinataire: email,
+          prospect: { entreprise: devis.prospect.entreprise || null },
+          lignes: devis.lignes.map((l) => ({ nom: l.nom, prix: l.prix, recurrent: l.recurrent }))
+        })
+      });
+      if (!resp.ok) {
+        const texteErreur = await resp.text();
+        throw new Error(texteErreur || "Échec de l'envoi.");
+      }
+      messageEl.innerHTML = `<span class="message-succes">Devis envoyé à ${email}.</span>`;
+      document.getElementById("ee-email").value = "";
+    } catch (err) {
+      messageEl.innerHTML = `<span class="message-erreur">${err.message}</span>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Envoyer le devis";
+    }
+  });
+
   document.getElementById("btn-creer-acces").addEventListener("click", async () => {
     const messageEl = document.getElementById("message-creation-acces");
     const btn = document.getElementById("btn-creer-acces");
