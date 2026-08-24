@@ -122,6 +122,14 @@
       </div>
 
       <div class="champ">
+        <label for="f-mode-utilisation">Mode d'utilisation</label>
+        <select id="f-mode-utilisation">
+          <option value="site">Site — le client final remplit lui-même le devis en autonomie (boulangerie, coiffeur à domicile...)</option>
+          <option value="terrain">Terrain — le pro remplit lui-même sur son téléphone devant son client (plombier en intervention...)</option>
+        </select>
+      </div>
+
+      <div class="champ">
         <label for="f-modele-metier">Modèle de métier (pré-remplit le barème avec des exemples — à ajuster ensuite)</label>
         <select id="f-modele-metier">
           <option value="">— Choisir un modèle pour démarrer —</option>
@@ -163,7 +171,7 @@
       <div id="etat-vide" style="display:none;">Aucune configuration créée pour l'instant.</div>
       <table id="table-liste" style="display:none; margin-top:10px;">
         <thead>
-          <tr><th>Entreprise</th><th>Compte client</th><th>Formule</th><th>Lien</th></tr>
+          <tr><th>Entreprise</th><th>Compte client</th><th>Formule</th><th>Mode</th><th>Lien</th></tr>
         </thead>
         <tbody id="corps-table"></tbody>
       </table>
@@ -420,6 +428,10 @@
     tdFormule.appendChild(badge);
     tr.appendChild(tdFormule);
 
+    var tdMode = document.createElement('td');
+    tdMode.textContent = config.mode_utilisation === 'terrain' ? 'Terrain' : 'Site';
+    tr.appendChild(tdMode);
+
     var tdLien = document.createElement('td');
     var lien = document.createElement('code');
     lien.textContent = URL_PAGE_PUBLIQUE + '?token=' + config.token_widget;
@@ -495,6 +507,7 @@
       couleur_principale: document.getElementById('f-couleur').value,
       email_notification_leads: emailNotif,
       formule: document.getElementById('f-formule').value,
+      mode_utilisation: document.getElementById('f-mode-utilisation').value,
       bareme: { base: base, champs: champsBareme }
     };
 

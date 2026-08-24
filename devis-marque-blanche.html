@@ -37,6 +37,11 @@
   #zone-confirmation { display: none; text-align: center; padding: 20px 0; }
   #zone-confirmation .montant { font-size: 2.2rem; font-weight: 800; color: var(--couleur-accent); margin: 10px 0; }
   footer { text-align: center; color: #999; font-size: 0.78rem; margin-top: 30px; }
+  .btn-secondaire { background: #fff; color: var(--couleur-accent); border: 1px solid var(--couleur-accent); margin-top: 10px; }
+  @media print {
+    .btn, footer, #message { display: none !important; }
+    body { background: #fff; }
+  }
 </style>
 </head>
 <body>
@@ -58,21 +63,27 @@
       <div class="montant" id="montant-affiche">0 €</div>
     </div>
 
+    <div class="champ" id="bloc-montant-manuel" style="display:none;">
+      <label for="f-montant-manuel">Montant final à annoncer au client (ajustable)</label>
+      <input type="number" id="f-montant-manuel">
+    </div>
+
     <div class="carte">
       <div id="message"></div>
       <div class="champ">
-        <label for="f-nom">Nom</label>
+        <label for="f-nom" id="label-nom">Nom</label>
         <input type="text" id="f-nom">
       </div>
       <div class="champ">
-        <label for="f-email">Email</label>
+        <label for="f-email" id="label-email">Email</label>
         <input type="email" id="f-email">
       </div>
       <div class="champ">
-        <label for="f-telephone">Téléphone</label>
+        <label for="f-telephone" id="label-telephone">Téléphone</label>
         <input type="tel" id="f-telephone">
       </div>
       <button class="btn" id="btn-envoyer">Recevoir mon devis</button>
+      <button class="btn btn-secondaire" id="btn-imprimer" type="button" style="display:none;">Imprimer ce devis</button>
     </div>
   </div>
 
@@ -80,7 +91,8 @@
     <h1>Merci !</h1>
     <p>Votre estimation :</p>
     <div class="montant" id="montant-confirmation"></div>
-    <p>Vous serez recontacté(e) rapidement.</p>
+    <p id="texte-recontact">Vous serez recontacté(e) rapidement.</p>
+    <button class="btn btn-secondaire" id="btn-pdf" type="button" style="display:none;">Télécharger en PDF</button>
   </div>
 
   <footer>Configurateur propulsé par Le Binôme Numérique</footer>
@@ -127,7 +139,14 @@
   }
 
   function recalculer() {
-    elMontant.textContent = calculerTotal().toFixed(0) + ' €';
+    var total = calculerTotal();
+    elMontant.textContent = total.toFixed(0) + ' €';
+    // Mode terrain : le champ "montant final" reste synchronisé avec le calcul
+    // tant que le pro n'a pas commencé à le modifier à la main lui-même.
+    var champManuel = document.getElementById('f-montant-manuel');
+    if (config && config.mode_utilisation === 'terrain' && document.activeElement !== champManuel) {
+      champManuel.value = total.toFixed(0);
+    }
   }
 
   function collecterReponses() {
@@ -207,6 +226,18 @@
       elListeChamps.innerHTML = '';
       (config.bareme.champs || []).forEach(function (champ) { elListeChamps.appendChild(rendreChamp(champ)); });
 
+      if (config.mode_utilisation === 'terrain') {
+        // Le pro remplit lui-même en face de son client : pas besoin de forcer la
+        // capture email/téléphone pour voir le total, montant final ajustable à la
+        // main, et un bouton pour imprimer/donner le devis tout de suite.
+        document.getElementById('bloc-montant-manuel').style.display = 'block';
+        document.getElementById('btn-imprimer').style.display = 'block';
+        document.getElementById('label-nom').textContent = 'Nom du client (optionnel)';
+        document.getElementById('label-email').textContent = 'Email du client (optionnel)';
+        document.getElementById('label-telephone').textContent = 'Téléphone du client (optionnel)';
+        document.getElementById('btn-envoyer').textContent = 'Enregistrer ce devis';
+      }
+
       elChargement.style.display = 'none';
       elFormulaire.style.display = 'block';
       recalculer();
@@ -216,35 +247,55 @@
       elErreur.style.display = 'block';
     });
 
+  document.getElementById('btn-imprimer').addEventListener('click', function () { window.print(); });
+  document.getElementById('btn-pdf').addEventListener('click', function () { window.print(); });
+
   document.getElementById('btn-envoyer').addEventListener('click', function () {
     var btn = this;
+    var enModeTerrain = config && config.mode_utilisation === 'terrain';
     var nom = document.getElementById('f-nom').value.trim();
     var email = document.getElementById('f-email').value.trim();
     var telephone = document.getElementById('f-telephone').value.trim();
 
-    if (!email && !telephone) {
+    if (!enModeTerrain && !email && !telephone) {
       afficherMessage('Merci de renseigner au moins un email ou un téléphone pour être recontacté(e).', false);
       return;
     }
 
     btn.disabled = true;
-    btn.textContent = 'Envoi en cours...';
+    btn.textContent = enModeTerrain ? 'Enregistrement...' : 'Envoi en cours...';
+
+    var corpsRequete = { token: token, nom: nom || null, email: email || null, telephone: telephone || null, reponses: collecterReponses() };
+    if (enModeTerrain) {
+      corpsRequete.total_final_manuel = parseFloat(document.getElementById('f-montant-manuel').value) || 0;
+    }
 
     fetch(N8N_BASE_URL + '/devis-mb-lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: token, nom: nom || null, email: email || null, telephone: telephone || null, reponses: collecterReponses() })
+      body: JSON.stringify(corpsRequete)
     })
       .then(function (r) { if (!r.ok) throw new Error('Échec de l\'envoi.'); return r.json(); })
       .then(function (data) {
+        if (data.quota_atteint) {
+          afficherMessage(data.message || 'Limite de devis atteinte pour ce mois-ci.', false);
+          btn.disabled = false;
+          btn.textContent = enModeTerrain ? 'Enregistrer ce devis' : 'Recevoir mon devis';
+          return;
+        }
         document.getElementById('montant-confirmation').textContent = Math.round(data.total) + ' €';
+        if (enModeTerrain) {
+          document.getElementById('texte-recontact').style.display = 'none';
+        } else if (config.formule === 'pro') {
+          document.getElementById('btn-pdf').style.display = 'block';
+        }
         elFormulaire.style.display = 'none';
         document.getElementById('zone-confirmation').style.display = 'block';
       })
       .catch(function () {
         afficherMessage('Une erreur est survenue — réessayez.', false);
         btn.disabled = false;
-        btn.textContent = 'Recevoir mon devis';
+        btn.textContent = enModeTerrain ? 'Enregistrer ce devis' : 'Recevoir mon devis';
       });
   });
 })();
