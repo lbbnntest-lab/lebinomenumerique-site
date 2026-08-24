@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendriers sociaux — Le Binôme Numérique</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --couleur-principale: #1F6F78;
+    --couleur-texte: #1a1a1a;
+    --couleur-fond-clair: #f7f7f8;
+    --couleur-bordure: #e2e2e4;
+    --couleur-danger: #B23A2E;
+    --couleur-ok: #2E7D32;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--couleur-texte);
+    background: var(--couleur-fond-clair);
+    line-height: 1.5;
+  }
+  header { background: #1a1a1a; color: #fff; padding: 20px 24px; }
+  header h1 { margin: 0; font-size: 1.3rem; }
+  header p { margin: 4px 0 0; color: #ccc; font-size: 0.9rem; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px; }
+  .carte { background: #fff; border: 1px solid var(--couleur-bordure); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+  .carte h2 { margin-top: 0; font-size: 1.1rem; }
+  .note { color: #555; font-size: 0.88rem; }
+  .champ { margin-bottom: 14px; }
+  .champ label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+  .champ input, .champ select, .champ textarea {
+    width: 100%; padding: 9px 11px; border: 1px solid var(--couleur-bordure); border-radius: 6px;
+    font-size: 0.92rem; font-family: inherit;
+  }
+  .champ-cle { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .champ-cle input { flex: 1; min-width: 240px; padding: 10px 12px; border: 1px solid var(--couleur-bordure); border-radius: 6px; font-size: 0.95rem; }
+  .btn {
+    border: none; border-radius: 6px; padding: 10px 20px; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; background: var(--couleur-principale); color: #fff;
+  }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  .btn-secondaire { background: #fff; color: var(--couleur-principale); border: 1px solid var(--couleur-principale); }
+  .btn-petit { padding: 5px 12px; font-size: 0.82rem; }
+  .btn-lien { background: none; border: none; color: var(--couleur-danger); font-size: 0.82rem; cursor: pointer; text-decoration: underline; padding: 0; }
+  #message { padding: 12px 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; display: none; }
+  #message.err { display: block; background: #fdecea; color: var(--couleur-danger); }
+  #message.ok { display: block; background: #eaf5ec; color: var(--couleur-ok); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--couleur-bordure); }
+  th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.03em; color: #666; }
+  .badge { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #555; color: #fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Le Binôme Numérique — Calendriers sociaux</h1>
+  <p>Créer une configuration puis générer le calendrier de posts IA d'un client (produit "Réseaux sociaux", cadré le 24/08/2026).</p>
+</header>
+
+<main>
+  <div id="message"></div>
+
+  <div class="carte" id="carte-cle">
+    <h2>Clé d'accès</h2>
+    <p class="note">Page interne non indexée. Colle la clé admin une seule fois — elle reste ensuite enregistrée dans ce navigateur.</p>
+    <div class="champ-cle">
+      <input type="password" id="f-cle" placeholder="Clé admin">
+      <button class="btn" id="btn-valider-cle">Continuer</button>
+    </div>
+  </div>
+
+  <div id="zone-outil" style="display:none;">
+
+    <div class="carte">
+      <h2>Créer une configuration</h2>
+      <p class="note">
+        Le client n'a pas besoin d'être configuré ici pour uploader ses propres photos — il le fait
+        directement depuis son dashboard une fois la configuration créée. Cette page sert à créer la
+        configuration après une vente manuelle, puis à déclencher la génération du calendrier.
+      </p>
+
+      <div class="champ">
+        <label for="f-compte-client-id">ID du compte client (comptes_clients.id, Supabase Studio)</label>
+        <input type="text" id="f-compte-client-id" placeholder="UUID du compte client">
+      </div>
+
+      <div class="champ">
+        <label for="f-nom-entreprise">Nom de l'entreprise</label>
+        <input type="text" id="f-nom-entreprise" placeholder="Ex: Plomberie Dupont">
+      </div>
+
+      <div class="champ">
+        <label for="f-secteur">Secteur d'activité (optionnel)</label>
+        <input type="text" id="f-secteur" placeholder="Ex: Plomberie">
+      </div>
+
+      <div class="champ">
+        <label for="f-ton">Ton à adopter (optionnel)</label>
+        <input type="text" id="f-ton" placeholder="Ex: chaleureux et rassurant, vouvoiement">
+      </div>
+
+      <div class="champ">
+        <label for="f-formule">Formule</label>
+        <select id="f-formule">
+          <option value="standard">Standard — 190 € setup + 59 €/mois</option>
+          <option value="sur_mesure">Sur-Mesure — 390 € setup + 99 €/mois</option>
+        </select>
+      </div>
+
+      <div class="champ">
+        <label for="f-nb-posts">Nombre de posts par mois</label>
+        <input type="number" id="f-nb-posts" value="8" min="1" max="30">
+      </div>
+
+      <div class="champ">
+        <label>Réseaux ciblés</label>
+        <label style="font-weight:400; display:inline-flex; align-items:center; gap:6px; margin-right:16px;">
+          <input type="checkbox" id="f-reseau-facebook" checked style="width:auto;"> Facebook
+        </label>
+        <label style="font-weight:400; display:inline-flex; align-items:center; gap:6px;">
+          <input type="checkbox" id="f-reseau-instagram" checked style="width:auto;"> Instagram
+        </label>
+      </div>
+
+      <button class="btn" id="btn-creer">Créer la configuration</button>
+    </div>
+
+    <div class="carte">
+      <h2>Configurations existantes</h2>
+      <button class="btn-lien" id="btn-actualiser" style="color:var(--couleur-principale);">Actualiser</button>
+      <div id="etat-chargement" style="margin-top:10px;">Chargement…</div>
+      <div id="etat-vide" style="display:none;">Aucune configuration créée pour l'instant.</div>
+      <table id="table-liste" style="display:none; margin-top:10px;">
+        <thead>
+          <tr><th>Entreprise</th><th>Compte client</th><th>Formule</th><th>Posts/mois</th><th></th></tr>
+        </thead>
+        <tbody id="corps-table"></tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  var URL_LISTE = 'https://lbn.app.n8n.cloud/webhook/admin-calendrier-social-liste';
+  var URL_CREER = 'https://lbn.app.n8n.cloud/webhook/admin-calendrier-social-creer';
+  var URL_GENERER = 'https://lbn.app.n8n.cloud/webhook/admin-calendrier-social-generer';
+  var CLE_STOCKAGE = 'lbn_admin_cle_calendriers_sociaux';
+
+  var elMessage = document.getElementById('message');
+  var elCarteCle = document.getElementById('carte-cle');
+  var elZoneOutil = document.getElementById('zone-outil');
+
+  function afficherMessage(texte, ok) {
+    elMessage.textContent = texte;
+    elMessage.className = ok ? 'ok' : 'err';
+    elMessage.style.display = 'block';
+  }
+  function masquerMessage() { elMessage.style.display = 'none'; }
+
+  var cleActuelle = null;
+
+  function formaterCompteClient(c) {
+    if (!c) return '—';
+    return (c.raison_sociale || '') + (c.email ? ' (' + c.email + ')' : '');
+  }
+
+  function rendreLigne(config) {
+    var tr = document.createElement('tr');
+
+    var tdEntreprise = document.createElement('td');
+    tdEntreprise.textContent = config.nom_entreprise;
+    tr.appendChild(tdEntreprise);
+
+    var tdCompte = document.createElement('td');
+    tdCompte.textContent = formaterCompteClient(config.comptes_clients);
+    tr.appendChild(tdCompte);
+
+    var tdFormule = document.createElement('td');
+    var badge = document.createElement('span');
+    badge.className = 'badge';
+    badge.textContent = config.formule === 'sur_mesure' ? 'Sur-Mesure' : 'Standard';
+    tdFormule.appendChild(badge);
+    tr.appendChild(tdFormule);
+
+    var tdNbPosts = document.createElement('td');
+    tdNbPosts.textContent = config.nb_posts_mois;
+    tr.appendChild(tdNbPosts);
+
+    var tdAction = document.createElement('td');
+    var btnGenerer = document.createElement('button');
+    btnGenerer.className = 'btn btn-secondaire btn-petit';
+    btnGenerer.textContent = 'Générer le calendrier';
+    btnGenerer.addEventListener('click', function () { genererCalendrier(config.id, btnGenerer); });
+    tdAction.appendChild(btnGenerer);
+    tr.appendChild(tdAction);
+
+    return tr;
+  }
+
+  function genererCalendrier(calendrierId, btn) {
+    masquerMessage();
+    btn.disabled = true;
+    var texteInitial = btn.textContent;
+    btn.textContent = 'Génération en cours...';
+
+    fetch(URL_GENERER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cle: cleActuelle, calendrier_id: calendrierId })
+    })
+      .then(function (r) {
+        if (r.status === 403) throw new Error('cle');
+        if (!r.ok) return r.text().then(function (t) { throw new Error(t || 'Échec de la génération.'); });
+        return r.json();
+      })
+      .then(function (data) {
+        afficherMessage((data.posts_generes || 0) + ' posts générés — visibles dans le dashboard du client, en attente de sa validation.', true);
+      })
+      .catch(function (err) {
+        afficherMessage(err.message === 'cle' ? 'Clé incorrecte — réessaie.' : (err.message || 'Une erreur est survenue.'), false);
+      })
+      .finally(function () {
+        btn.disabled = false;
+        btn.textContent = texteInitial;
+      });
+  }
+
+  function chargerListe() {
+    var elChargement = document.getElementById('etat-chargement');
+    var elVide = document.getElementById('etat-vide');
+    var elTable = document.getElementById('table-liste');
+    var elCorps = document.getElementById('corps-table');
+
+    elChargement.style.display = 'block';
+    elVide.style.display = 'none';
+    elTable.style.display = 'none';
+
+    fetch(URL_LISTE + '?cle=' + encodeURIComponent(cleActuelle))
+      .then(function (r) {
+        if (r.status === 403) throw new Error('cle');
+        if (!r.ok) throw new Error('reseau');
+        return r.json();
+      })
+      .then(function (data) {
+        elChargement.style.display = 'none';
+        var configs = data.configs || [];
+        elCorps.innerHTML = '';
+        if (configs.length === 0) {
+          elVide.style.display = 'block';
+          return;
+        }
+        elTable.style.display = 'table';
+        configs.forEach(function (c) { elCorps.appendChild(rendreLigne(c)); });
+      })
+      .catch(function (err) {
+        elChargement.style.display = 'none';
+        if (err.message === 'cle') {
+          localStorage.removeItem(CLE_STOCKAGE);
+          elCarteCle.style.display = 'block';
+          elZoneOutil.style.display = 'none';
+          afficherMessage('Clé incorrecte — réessaie.', false);
+        } else {
+          afficherMessage("Impossible de charger la liste — réessaie.", false);
+        }
+      });
+  }
+
+  document.getElementById('btn-creer').addEventListener('click', function () {
+    masquerMessage();
+    var compteClientId = document.getElementById('f-compte-client-id').value.trim();
+    var nomEntreprise = document.getElementById('f-nom-entreprise').value.trim();
+
+    if (!compteClientId || !nomEntreprise) {
+      afficherMessage("L'ID du compte client et le nom de l'entreprise sont requis.", false);
+      return;
+    }
+
+    var reseauxCibles = [];
+    if (document.getElementById('f-reseau-facebook').checked) reseauxCibles.push('facebook');
+    if (document.getElementById('f-reseau-instagram').checked) reseauxCibles.push('instagram');
+
+    var body = {
+      cle: cleActuelle,
+      compte_client_id: compteClientId,
+      nom_entreprise: nomEntreprise,
+      secteur_activite: document.getElementById('f-secteur').value.trim() || null,
+      ton: document.getElementById('f-ton').value.trim() || null,
+      formule: document.getElementById('f-formule').value,
+      nb_posts_mois: parseInt(document.getElementById('f-nb-posts').value, 10) || 8,
+      reseaux_cibles: reseauxCibles.length ? reseauxCibles : ['facebook', 'instagram']
+    };
+
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Création...';
+
+    fetch(URL_CREER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+      .then(function (r) {
+        if (r.status === 403) throw new Error('cle');
+        if (!r.ok) return r.text().then(function (t) { throw new Error(t || 'Échec de la création.'); });
+        return r.json();
+      })
+      .then(function () {
+        afficherMessage('Configuration créée avec succès.', true);
+        document.getElementById('f-compte-client-id').value = '';
+        document.getElementById('f-nom-entreprise').value = '';
+        document.getElementById('f-secteur').value = '';
+        document.getElementById('f-ton').value = '';
+        chargerListe();
+      })
+      .catch(function (err) {
+        afficherMessage(err.message === 'cle' ? 'Clé incorrecte — réessaie.' : (err.message || 'Une erreur est survenue.'), false);
+      })
+      .finally(function () {
+        btn.disabled = false;
+        btn.textContent = 'Créer la configuration';
+      });
+  });
+
+  document.getElementById('btn-actualiser').addEventListener('click', chargerListe);
+
+  document.getElementById('btn-valider-cle').addEventListener('click', function () {
+    var cle = document.getElementById('f-cle').value.trim();
+    if (!cle) return;
+    localStorage.setItem(CLE_STOCKAGE, cle);
+    cleActuelle = cle;
+    elCarteCle.style.display = 'none';
+    elZoneOutil.style.display = 'block';
+    chargerListe();
+  });
+
+  var cleEnregistree = localStorage.getItem(CLE_STOCKAGE);
+  if (cleEnregistree) {
+    cleActuelle = cleEnregistree;
+    elCarteCle.style.display = 'none';
+    elZoneOutil.style.display = 'block';
+    chargerListe();
+  }
+})();
+</script>
+
+</body>
+</html>

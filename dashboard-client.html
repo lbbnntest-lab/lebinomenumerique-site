@@ -20,6 +20,21 @@
   .badge-en-attente-validation { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: .72rem; font-weight: 700; background: #fff3cd; color: #8a6d1a; margin-left: 8px; }
   .carte-devis-ligne { display: flex; justify-content: space-between; font-size: .88rem; padding: 4px 0; }
   .carte-devis-ligne small { color: var(--gris-texte); display: block; }
+
+  .zone-upload-photos { border: 1px dashed #c7ccdb; border-radius: 12px; padding: 16px 18px; margin-bottom: 20px; background: var(--blanc); }
+  .zone-upload-photos .champ { margin-bottom: 10px; }
+  .zone-upload-photos .champ label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 4px; }
+  .grille-photos-uploadees { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .grille-photos-uploadees img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb; }
+
+  .carte-post-social { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; background: var(--blanc); display: flex; gap: 14px; flex-wrap: wrap; }
+  .carte-post-social img { width: 110px; height: 110px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+  .carte-post-social .contenu-post { flex: 1; min-width: 200px; }
+  .carte-post-social .texte-post { white-space: pre-wrap; font-size: .92rem; }
+  .badge-statut-post { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: .72rem; font-weight: 700; margin-left: 8px; }
+  .badge-statut-post.attente { background: #fff3cd; color: #8a6d1a; }
+  .badge-statut-post.a-publier { background: #d7f0ff; color: #0a5c85; }
+  .badge-statut-post.publie { background: #d9f2df; color: #1e6b34; }
 </style>
 </head>
 <body>
@@ -38,6 +53,7 @@
     <a href="dashboard-client.html" class="actif">Vue d'ensemble</a>
     <a href="reporting.html">Tableau de bord</a>
     <a href="#devis">Mes devis</a>
+    <a href="#contenus">Mes contenus</a>
     <a href="#demandes">Mes demandes</a>
     <a href="#factures">Factures</a>
     <a href="#abonnement">Abonnement</a>
@@ -90,6 +106,28 @@
       <h3>Mes devis</h3>
       <p class="sous-titre-section">Vos demandes de devis, y compris celles faites en discutant avec notre conseiller virtuel.</p>
       <div id="liste-mes-devis">Chargement...</div>
+    </section>
+
+    <section id="contenus" class="hidden" style="margin-top:32px;">
+      <h3>Mes contenus</h3>
+      <p class="sous-titre-section">Votre calendrier de posts réseaux sociaux généré par IA. Uploadez vos propres photos (chantier, réalisations) pour qu'elles soient utilisées en priorité, puis validez chaque post avant de le publier vous-même sur vos pages.</p>
+
+      <div class="zone-upload-photos">
+        <p class="sous-section-titre" style="margin-top:0;">Ajouter une photo</p>
+        <div class="champ">
+          <label for="upload-photo-fichier">Photo (chantier, réalisation...)</label>
+          <input type="file" id="upload-photo-fichier" accept="image/*">
+        </div>
+        <div class="champ">
+          <label for="upload-photo-description">Description courte <small>(optionnel, aide l'IA à bien l'utiliser)</small></label>
+          <input type="text" id="upload-photo-description" placeholder="Ex: pose d'une chaudière chez un client à Nantes">
+        </div>
+        <button class="btn btn-secondaire" id="btn-uploader-photo" type="button">Envoyer la photo</button>
+        <p id="message-upload-photo" style="margin-top:8px;"></p>
+        <div id="grille-photos-uploadees" class="grille-photos-uploadees"></div>
+      </div>
+
+      <div id="liste-mes-posts-sociaux">Chargement...</div>
     </section>
 
     <section id="demandes" style="margin-top:32px;">

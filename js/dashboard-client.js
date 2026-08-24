@@ -236,8 +236,157 @@ document.addEventListener("DOMContentLoaded", async () => {
     return div.innerHTML;
   }
 
+  // "Mes contenus" (produit Réseaux sociaux, cadré le 24/08/2026) : n'affiché
+  // que si le client a une configuration de calendrier social (pas tous les
+  // clients n'ont acheté ce produit). Le client peut uploader ses propres
+  // photos (privilégiées par Claude à la génération) et valider chaque post
+  // avant de le publier lui-même (publication manuelle, pas d'API sociale).
+  let calendrierSocialId = null;
+
+  const LIBELLES_STATUT_POST = {
+    en_attente_validation: { texte: "En attente de validation", classe: "attente" },
+    a_publier: { texte: "À publier", classe: "a-publier" },
+    publie: { texte: "Publié", classe: "publie" }
+  };
+
+  async function chargerMesPosts() {
+    const conteneur = document.getElementById("liste-mes-posts-sociaux");
+    const { data: posts, error } = await sb
+      .from("posts_calendrier_social")
+      .select("id, date_publication_prevue, texte_post, image_url, statut")
+      .eq("calendrier_id", calendrierSocialId)
+      .order("date_publication_prevue", { ascending: true });
+
+    if (error) {
+      conteneur.innerHTML = `<p class="etat-vide">Impossible de charger vos posts pour le moment.</p>`;
+      console.error(error);
+      return;
+    }
+
+    const liste = posts || [];
+    if (!liste.length) {
+      conteneur.innerHTML = `<p class="etat-vide">Aucun post généré pour le moment — votre calendrier arrive bientôt.</p>`;
+      return;
+    }
+
+    conteneur.innerHTML = liste.map((p) => {
+      const dateFormatee = new Date(p.date_publication_prevue).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+      const statutInfo = LIBELLES_STATUT_POST[p.statut] || { texte: p.statut, classe: "attente" };
+      let bouton = "";
+      if (p.statut === "en_attente_validation") {
+        bouton = `<button class="btn btn-secondaire btn-valider-post" data-id="${p.id}" style="margin-top:10px;">Valider ce post</button>`;
+      } else if (p.statut === "a_publier") {
+        bouton = `<button class="btn btn-secondaire btn-marquer-publie" data-id="${p.id}" style="margin-top:10px;">Marquer comme publié</button>`;
+      }
+      return `
+        <div class="carte-post-social">
+          ${p.image_url ? `<img src="${p.image_url}" alt="">` : ""}
+          <div class="contenu-post">
+            <div class="carte-devis-meta">${dateFormatee}<span class="badge-statut-post ${statutInfo.classe}">${statutInfo.texte}</span></div>
+            <p class="texte-post">${echapperHtmlDevis(p.texte_post)}</p>
+            ${bouton}
+          </div>
+        </div>`;
+    }).join("");
+
+    conteneur.querySelectorAll(".btn-valider-post").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        btn.disabled = true;
+        await sb.from("posts_calendrier_social").update({ statut: "a_publier" }).eq("id", btn.dataset.id);
+        await chargerMesPosts();
+      });
+    });
+    conteneur.querySelectorAll(".btn-marquer-publie").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        btn.disabled = true;
+        await sb.from("posts_calendrier_social").update({ statut: "publie" }).eq("id", btn.dataset.id);
+        await chargerMesPosts();
+      });
+    });
+  }
+
+  async function chargerMesPhotos() {
+    const conteneur = document.getElementById("grille-photos-uploadees");
+    const { data: photos } = await sb
+      .from("photos_calendrier_social")
+      .select("id, url_publique, description, utilisee")
+      .eq("calendrier_id", calendrierSocialId)
+      .order("created_at", { ascending: false });
+
+    conteneur.innerHTML = (photos || []).map((p) => `<img src="${p.url_publique}" title="${p.description ? echapperHtmlDevis(p.description) : ""}${p.utilisee ? " (déjà utilisée)" : ""}" style="${p.utilisee ? "opacity:.5;" : ""}">`).join("");
+  }
+
+  async function chargerMesContenus() {
+    const { data: calendrier } = await sb
+      .from("calendriers_sociaux_clients")
+      .select("id")
+      .eq("compte_client_id", utilisateur.compte_client_id)
+      .eq("statut", "actif")
+      .limit(1)
+      .maybeSingle();
+
+    if (!calendrier) return; // Produit non souscrit — section reste masquée.
+
+    calendrierSocialId = calendrier.id;
+    document.getElementById("contenus").classList.remove("hidden");
+    await Promise.all([chargerMesPosts(), chargerMesPhotos()]);
+  }
+
+  function fichierEnBase64(fichier) {
+    return new Promise((resolve, reject) => {
+      const lecteur = new FileReader();
+      lecteur.onload = () => resolve(lecteur.result);
+      lecteur.onerror = reject;
+      lecteur.readAsDataURL(fichier);
+    });
+  }
+
+  document.getElementById("btn-uploader-photo").addEventListener("click", async () => {
+    const messageEl = document.getElementById("message-upload-photo");
+    const inputFichier = document.getElementById("upload-photo-fichier");
+    const inputDescription = document.getElementById("upload-photo-description");
+    const btn = document.getElementById("btn-uploader-photo");
+    messageEl.textContent = "";
+
+    if (!calendrierSocialId) return;
+    const fichier = inputFichier.files[0];
+    if (!fichier) {
+      messageEl.innerHTML = `<span class="message-erreur">Choisissez une photo d'abord.</span>`;
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Envoi en cours...";
+
+    try {
+      const imageBase64 = await fichierEnBase64(fichier);
+      const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/client-calendrier-social-upload-photo`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_token: session.access_token,
+          calendrier_id: calendrierSocialId,
+          image_base64: imageBase64,
+          nom_fichier: fichier.name,
+          description: inputDescription.value || null
+        })
+      });
+      if (!resp.ok) throw new Error("Échec de l'envoi de la photo.");
+      messageEl.innerHTML = `<span class="message-succes">Photo envoyée !</span>`;
+      inputFichier.value = "";
+      inputDescription.value = "";
+      await chargerMesPhotos();
+    } catch (err) {
+      messageEl.innerHTML = `<span class="message-erreur">${err.message || "Une erreur est survenue."}</span>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Envoyer la photo";
+    }
+  });
+
   const nbMembres = await chargerEquipe();
   await chargerMesDevis();
+  await chargerMesContenus();
 
   // Seuls le propriétaire et les administrateurs peuvent inviter
   const blocInviter = document.getElementById("bloc-inviter");
