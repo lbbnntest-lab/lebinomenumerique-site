@@ -303,7 +303,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         boutons = `<button class="btn btn-secondaire btn-marquer-publie" data-id="${p.id}" style="margin-top:10px;">Marquer comme publié</button>`;
       }
       if (p.statut !== "publie") {
-        boutons += `<button class="btn-lien btn-modifier-post" data-id="${p.id}" style="margin-top:10px; margin-left:10px;">Modifier</button>`;
+        boutons += `<button class="btn btn-secondaire btn-modifier-post" data-id="${p.id}" style="margin-top:10px; margin-left:10px;">Modifier</button>`;
       }
       return `
         <div class="carte-post-social">
