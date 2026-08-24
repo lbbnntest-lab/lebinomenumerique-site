@@ -125,6 +125,26 @@ const CATALOGUE_DEVIS = [
     ]
   },
   {
+    categorie: "Référencement (SEO)",
+    items: [
+      { code: "seo_audit", nom: "Audit SEO", prix: 390, recurrent: false,
+        description: "Audit technique (balises, structure, vitesse), optimisation on-page, sitemap." },
+      { code: "seo_suivi", nom: "Suivi SEO mensuel", prix: 49, recurrent: true,
+        description: "Rapport mensuel de positionnement + suggestions de contenu par IA (pas de rédaction ni de netlinking — à ne pas vendre comme un suivi SEO complet)." }
+    ]
+  },
+  {
+    categorie: "Chatbot en marque blanche",
+    items: [
+      { code: "chatbot_niveau1", nom: "Chatbot — Niveau 1 (questions basiques)", prix: 290, recurrent: false, hebergement: 29, hebergementLabel: "abonnement",
+        description: "Répond aux questions fréquentes et infos pratiques sur le site du client — Setup + 29 €/mois." },
+      { code: "chatbot_niveau2", nom: "Chatbot — Niveau 2 (+ prise de RDV)", prix: 490, recurrent: false, hebergement: 49, hebergementLabel: "abonnement",
+        description: "Tout le Niveau 1, plus prise de rendez-vous intégrée (Cal.com) — Setup + 49 €/mois." },
+      { code: "chatbot_niveau3", nom: "Chatbot — Niveau 3 (+ devis + urgence)", prix: 890, recurrent: false, hebergement: 89, hebergementLabel: "abonnement",
+        description: "Tout le Niveau 2, plus pré-devis calculé selon le barème du client et contact direct de l'artisan en cas d'urgence détectée — Setup + 89 €/mois." }
+    ]
+  },
+  {
     categorie: "Formation",
     items: [
       { code: "formation_1j", nom: "Formation Entreprise — 1 jour", prix: 1900, recurrent: false,
@@ -633,7 +653,7 @@ function rendreCatalogueFormulaire() {
         const prixEl = document.createElement("div");
         prixEl.className = "devis-item-prix";
         prixEl.innerHTML = formaterEuros(item.prix) + " HT" + (item.recurrent ? "<small><br>/ mois</small>" : "<small><br>one-shot</small>") +
-          (item.hebergement ? `<small><br>+ ${item.hebergement} €/mois HT hébergement</small>` : "");
+          (item.hebergement ? `<small><br>+ ${item.hebergement} €/mois HT ${item.hebergementLabel || "hébergement"}</small>` : "");
         ligne.appendChild(prixEl);
       }
 
@@ -671,6 +691,7 @@ function lignesSelectionnees() {
           prix: prix,
           recurrent: !!item.recurrent,
           hebergement: item.hebergement || 0,
+          hebergementLabel: item.hebergementLabel || "hébergement",
           bientot: !!item.bientot,
           description: description
         });
@@ -880,7 +901,7 @@ function rendreApercu(devis) {
     const tr = document.createElement("tr");
     const tdNom = document.createElement("td");
     const suffixeHebergement = l.hebergement
-      ? `<br><small style="color:var(--gris-texte);">+ hébergement ${formaterEuros(l.hebergement)} HT / ${formaterEuros(calculerTTC(l.hebergement))} TTC par mois</small>`
+      ? `<br><small style="color:var(--gris-texte);">+ ${l.hebergementLabel || "hébergement"} ${formaterEuros(l.hebergement)} HT / ${formaterEuros(calculerTTC(l.hebergement))} TTC par mois</small>`
       : "";
     const descriptionHtml = l.description ? `<br><small style="color:var(--gris-texte);">${echapperHtml(l.description)}</small>` : "";
     tdNom.innerHTML = echapperHtml(l.nom) + (l.bientot ? ' <span class="badge-bientot-devis">Bientôt disponible</span>' : "") + descriptionHtml + suffixeHebergement;
