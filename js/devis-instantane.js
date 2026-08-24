@@ -145,6 +145,24 @@ const CATALOGUE_DEVIS = [
     ]
   },
   {
+    categorie: "Réseaux sociaux",
+    items: [
+      { code: "reseaux_sociaux_standard", nom: "Calendrier de posts IA — Standard", prix: 190, recurrent: false, hebergement: 59, hebergementLabel: "abonnement",
+        description: "8-12 posts/mois générés par Claude (texte + visuel), photos du client privilégiées à une image générique — Setup + 59 €/mois." },
+      { code: "reseaux_sociaux_sur_mesure", nom: "Calendrier de posts IA — Sur-Mesure", prix: 390, recurrent: false, hebergement: 99, hebergementLabel: "abonnement",
+        description: "Ligne éditoriale personnalisée à la marque, visuels sur-mesure — Setup + 99 €/mois." }
+    ]
+  },
+  {
+    categorie: "Devis en marque blanche",
+    items: [
+      { code: "devis_mb_starter", nom: "Devis en marque blanche — Starter", prix: 290, recurrent: false, hebergement: 29, hebergementLabel: "abonnement",
+        description: "Configurateur de devis à la marque du client, barème simple, 20 devis/mois — Setup + 29 €/mois." },
+      { code: "devis_mb_pro", nom: "Devis en marque blanche — Pro", prix: 490, recurrent: false, hebergement: 59, hebergementLabel: "abonnement",
+        description: "Devis illimités, PDF téléchargeable pour le prospect — Setup + 59 €/mois." }
+    ]
+  },
+  {
     categorie: "Formation",
     items: [
       { code: "formation_1j", nom: "Formation Entreprise — 1 jour", prix: 1900, recurrent: false,
