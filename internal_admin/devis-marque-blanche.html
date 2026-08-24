@@ -56,6 +56,12 @@
   .badge { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #555; color: #fff; }
   code { background: #eef; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; }
   pre.snippet { background: #1a1a1a; color: #eee; padding: 14px; border-radius: 8px; overflow-x: auto; font-size: 0.8rem; }
+  .rangee-bareme.incomplete { border-color: var(--couleur-danger); background: #fdecea; }
+  .avertissement-champ { color: var(--couleur-danger); font-size: 0.78rem; margin: -4px 0 8px; }
+  .apercu-bareme { border: 1px dashed var(--couleur-bordure); border-radius: 8px; padding: 14px 16px; background: var(--couleur-fond-clair); font-size: 0.9rem; }
+  .apercu-bareme .ligne-apercu { padding: 3px 0; }
+  .apercu-bareme .ligne-apercu.invalide { color: var(--couleur-danger); font-weight: 600; }
+  .apercu-bareme .vide { color: #888; font-style: italic; }
 </style>
 </head>
 <body>
@@ -116,13 +122,29 @@
       </div>
 
       <div class="champ">
-        <label for="f-bareme-base">Prix de base du devis</label>
+        <label for="f-modele-metier">Modèle de métier (pré-remplit le barème avec des exemples — à ajuster ensuite)</label>
+        <select id="f-modele-metier">
+          <option value="">— Choisir un modèle pour démarrer —</option>
+          <option value="boulangerie">Boulangerie / Pâtisserie (commande spéciale)</option>
+          <option value="coiffure">Coiffure / Beauté (prestation événement)</option>
+          <option value="plomberie">Plomberie / Chauffage (intervention)</option>
+          <option value="vide">Personnalisé — partir de zéro</option>
+        </select>
+      </div>
+
+      <div class="champ">
+        <label for="f-bareme-base">Prix de base du devis (€, appliqué à tous les devis avant les options ci-dessous)</label>
         <input type="number" id="f-bareme-base" placeholder="Ex: 50">
       </div>
       <div class="champ">
-        <label>Champs du barème</label>
+        <label>Options du barème <small style="font-weight:400; color:#666;">— chaque option ajoute un supplément au prix de base selon ce que choisit le prospect</small></label>
         <div id="liste-champs-bareme"></div>
-        <button type="button" class="btn btn-secondaire" id="btn-ajouter-champ">+ Ajouter un champ</button>
+        <button type="button" class="btn btn-secondaire" id="btn-ajouter-champ">+ Ajouter une option</button>
+      </div>
+
+      <div class="champ">
+        <label>Aperçu — ce que verra le prospect sur la page de devis</label>
+        <div id="apercu-bareme" class="apercu-bareme"></div>
       </div>
 
       <button class="btn" id="btn-creer">Créer la configuration</button>
@@ -182,21 +204,21 @@
       ligne1.className = 'ligne';
 
       var inputId = document.createElement('input');
-      inputId.placeholder = 'Identifiant (ex: nb_pieces)';
+      inputId.placeholder = 'Identifiant interne (ex: nb_pieces, sans espace)';
       inputId.value = champ.id || '';
-      inputId.addEventListener('input', function () { champ.id = inputId.value; });
+      inputId.addEventListener('input', function () { champ.id = inputId.value; majValiditeRangee(div, champ); mettreAJourApercu(); });
       ligne1.appendChild(inputId);
 
       var inputLabel = document.createElement('input');
-      inputLabel.placeholder = 'Libellé affiché';
+      inputLabel.placeholder = 'Libellé affiché au prospect (ex: Nombre de pièces)';
       inputLabel.value = champ.label || '';
-      inputLabel.addEventListener('input', function () { champ.label = inputLabel.value; });
+      inputLabel.addEventListener('input', function () { champ.label = inputLabel.value; majValiditeRangee(div, champ); mettreAJourApercu(); });
       ligne1.appendChild(inputLabel);
 
       var selectType = document.createElement('select');
       ['nombre', 'checkbox', 'radio'].forEach(function (t) {
         var opt = document.createElement('option');
-        opt.value = t; opt.textContent = t;
+        opt.value = t; opt.textContent = t === 'nombre' ? 'Nombre (ex: quantité)' : (t === 'checkbox' ? 'Case à cocher (oui/non)' : 'Choix parmi plusieurs options');
         if (champ.type === t) opt.selected = true;
         selectType.appendChild(opt);
       });
@@ -213,6 +235,13 @@
 
       div.appendChild(ligne1);
 
+      var avertissement = document.createElement('p');
+      avertissement.className = 'avertissement-champ';
+      avertissement.textContent = 'Identifiant et libellé requis — ce champ ne sera pas enregistré tant qu\'il n\'est pas complet.';
+      avertissement.style.display = 'none';
+      div.appendChild(avertissement);
+      majValiditeRangee(div, champ);
+
       if (champ.type === 'nombre') {
         var ligne2 = document.createElement('div');
         ligne2.className = 'ligne';
@@ -220,7 +249,7 @@
         inputUnite.type = 'number';
         inputUnite.placeholder = 'Prix par unité (€)';
         inputUnite.value = champ.unite != null ? champ.unite : '';
-        inputUnite.addEventListener('input', function () { champ.unite = parseFloat(inputUnite.value) || 0; });
+        inputUnite.addEventListener('input', function () { champ.unite = parseFloat(inputUnite.value) || 0; mettreAJourApercu(); });
         ligne2.appendChild(inputUnite);
         div.appendChild(ligne2);
       } else if (champ.type === 'checkbox') {
@@ -230,7 +259,7 @@
         inputValeur.type = 'number';
         inputValeur.placeholder = 'Supplément si coché (€)';
         inputValeur.value = champ.valeur != null ? champ.valeur : '';
-        inputValeur.addEventListener('input', function () { champ.valeur = parseFloat(inputValeur.value) || 0; });
+        inputValeur.addEventListener('input', function () { champ.valeur = parseFloat(inputValeur.value) || 0; mettreAJourApercu(); });
         ligne2b.appendChild(inputValeur);
         div.appendChild(ligne2b);
       } else if (champ.type === 'radio') {
@@ -241,13 +270,13 @@
           var inputOptionLabel = document.createElement('input');
           inputOptionLabel.placeholder = 'Option (ex: Standard)';
           inputOptionLabel.value = option.label || '';
-          inputOptionLabel.addEventListener('input', function () { option.label = inputOptionLabel.value; });
+          inputOptionLabel.addEventListener('input', function () { option.label = inputOptionLabel.value; mettreAJourApercu(); });
           ligneOption.appendChild(inputOptionLabel);
           var inputOptionValeur = document.createElement('input');
           inputOptionValeur.type = 'number';
           inputOptionValeur.placeholder = 'Supplément (€)';
           inputOptionValeur.value = option.valeur != null ? option.valeur : '';
-          inputOptionValeur.addEventListener('input', function () { option.valeur = parseFloat(inputOptionValeur.value) || 0; });
+          inputOptionValeur.addEventListener('input', function () { option.valeur = parseFloat(inputOptionValeur.value) || 0; mettreAJourApercu(); });
           ligneOption.appendChild(inputOptionValeur);
           div.appendChild(ligneOption);
         });
@@ -262,9 +291,108 @@
 
       conteneur.appendChild(div);
     });
+    mettreAJourApercu();
   }
   document.getElementById('btn-ajouter-champ').addEventListener('click', function () {
     champsBareme.push({ id: '', label: '', type: 'nombre', unite: 0 });
+    rendreChampsBareme();
+  });
+
+  function majValiditeRangee(div, champ) {
+    var complet = !!(champ.id && champ.id.trim() && champ.label && champ.label.trim());
+    div.classList.toggle('incomplete', !complet);
+    var avertissement = div.querySelector('.avertissement-champ');
+    if (avertissement) avertissement.style.display = complet ? 'none' : 'block';
+  }
+
+  function champEstComplet(champ) {
+    return !!(champ.id && champ.id.trim() && champ.label && champ.label.trim());
+  }
+
+  // Aperçu en direct de ce que verra le prospect, pour rendre le barème
+  // compréhensible sans avoir à ouvrir la page publique à chaque changement —
+  // signale aussi clairement les champs incomplets (cause du bug du 24/08 :
+  // un champ sans identifiant/libellé était silencieusement ignoré).
+  function mettreAJourApercu() {
+    var elApercu = document.getElementById('apercu-bareme');
+    if (!elApercu) return;
+    var base = parseFloat(document.getElementById('f-bareme-base').value) || 0;
+    var lignes = ['<div class="ligne-apercu"><strong>Prix de base : ' + base + ' €</strong></div>'];
+
+    if (champsBareme.length === 0) {
+      lignes.push('<div class="ligne-apercu vide">Aucune option — le prospect verra uniquement le prix de base.</div>');
+    }
+
+    champsBareme.forEach(function (champ) {
+      if (!champEstComplet(champ)) {
+        lignes.push('<div class="ligne-apercu invalide">⚠️ Option incomplète (identifiant/libellé manquant) — ne sera pas enregistrée</div>');
+        return;
+      }
+      var libelle = champ.label;
+      if (champ.type === 'nombre') {
+        lignes.push('<div class="ligne-apercu">• ' + libelle + ' — champ numérique, +' + (champ.unite || 0) + ' €/unité</div>');
+      } else if (champ.type === 'checkbox') {
+        lignes.push('<div class="ligne-apercu">• ' + libelle + ' — case à cocher, +' + (champ.valeur || 0) + ' € si cochée</div>');
+      } else if (champ.type === 'radio') {
+        var options = (champ.options || []).filter(function (o) { return o.label && o.label.trim(); });
+        if (options.length === 0) {
+          lignes.push('<div class="ligne-apercu invalide">⚠️ ' + libelle + ' — aucune option renseignée</div>');
+        } else {
+          lignes.push('<div class="ligne-apercu">• ' + libelle + ' — choix parmi : ' + options.map(function (o) { return o.label + ' (+' + (o.valeur || 0) + ' €)'; }).join(', ') + '</div>');
+        }
+      }
+    });
+
+    elApercu.innerHTML = lignes.join('');
+  }
+  document.getElementById('f-bareme-base').addEventListener('input', mettreAJourApercu);
+
+  // ---------- Modèles de métier ----------
+  var MODELES_METIER = {
+    boulangerie: {
+      base: 20,
+      champs: [
+        { id: 'nb_personnes', label: 'Nombre de personnes / parts', type: 'nombre', unite: 2 },
+        { id: 'type_commande', label: 'Type de commande', type: 'radio', options: [
+          { label: 'Gâteau simple', valeur: 0 },
+          { label: 'Pièce montée', valeur: 80 },
+          { label: 'Buffet salé-sucré', valeur: 150 }
+        ] },
+        { id: 'livraison', label: 'Livraison sur place', type: 'checkbox', valeur: 25 }
+      ]
+    },
+    coiffure: {
+      base: 15,
+      champs: [
+        { id: 'prestation', label: 'Prestation souhaitée', type: 'radio', options: [
+          { label: 'Coupe + brushing', valeur: 0 },
+          { label: 'Coloration', valeur: 35 },
+          { label: 'Chignon événement', valeur: 50 }
+        ] },
+        { id: 'maquillage', label: 'Maquillage inclus', type: 'checkbox', valeur: 30 },
+        { id: 'nb_personnes', label: 'Nombre de personnes (groupe)', type: 'nombre', unite: 40 }
+      ]
+    },
+    plomberie: {
+      base: 50,
+      champs: [
+        { id: 'type_intervention', label: "Type d'intervention", type: 'radio', options: [
+          { label: 'Dépannage simple', valeur: 0 },
+          { label: 'Installation sanitaire', valeur: 120 },
+          { label: 'Remplacement chaudière', valeur: 400 }
+        ] },
+        { id: 'urgence', label: 'Intervention en urgence (soir/week-end)', type: 'checkbox', valeur: 60 },
+        { id: 'nb_heures', label: "Heures de main d'œuvre estimées", type: 'nombre', unite: 45 }
+      ]
+    },
+    vide: { base: 0, champs: [] }
+  };
+
+  document.getElementById('f-modele-metier').addEventListener('change', function () {
+    var modele = MODELES_METIER[this.value];
+    if (!modele) return;
+    document.getElementById('f-bareme-base').value = modele.base;
+    champsBareme = JSON.parse(JSON.stringify(modele.champs));
     rendreChampsBareme();
   });
 
@@ -353,6 +481,12 @@
       return;
     }
 
+    var champIncomplet = champsBareme.find(function (c) { return !champEstComplet(c); });
+    if (champIncomplet) {
+      afficherMessage("Une option du barème est incomplète (identifiant ou libellé manquant) — complète-la ou retire-la avant de créer la configuration. Regarde l'aperçu ci-dessus, elle est signalée en rouge.", false);
+      return;
+    }
+
     var base = parseFloat(document.getElementById('f-bareme-base').value) || 0;
     var body = {
       cle: cleActuelle,
@@ -361,7 +495,7 @@
       couleur_principale: document.getElementById('f-couleur').value,
       email_notification_leads: emailNotif,
       formule: document.getElementById('f-formule').value,
-      bareme: { base: base, champs: champsBareme.filter(function (c) { return c.id && c.label; }) }
+      bareme: { base: base, champs: champsBareme }
     };
 
     var btn = this;
