@@ -125,16 +125,16 @@ const CATALOGUE_DEVIS = [
     ]
   },
   {
-    categorie: "Référencement (SEO)",
+    categorie: "Mise en avant Google",
     items: [
-      { code: "seo_audit", nom: "Audit SEO", prix: 390, recurrent: false,
-        description: "Audit technique (balises, structure, vitesse), optimisation on-page, sitemap." },
-      { code: "seo_suivi", nom: "Suivi SEO mensuel", prix: 49, recurrent: true,
+      { code: "seo_audit", nom: "Audit de visibilité Google", prix: 390, recurrent: false,
+        description: "Audit technique (balises, structure, vitesse), optimisation on-page, sitemap — pour mieux ressortir dans les résultats Google." },
+      { code: "seo_suivi", nom: "Suivi mensuel de visibilité", prix: 49, recurrent: true,
         description: "Rapport mensuel de positionnement + suggestions de contenu par IA (pas de rédaction ni de netlinking — à ne pas vendre comme un suivi SEO complet)." }
     ]
   },
   {
-    categorie: "Chatbot en marque blanche",
+    categorie: "Chatbot",
     items: [
       { code: "chatbot_niveau1", nom: "Chatbot — Niveau 1 (questions basiques)", prix: 290, recurrent: false, hebergement: 29, hebergementLabel: "abonnement",
         description: "Répond aux questions fréquentes et infos pratiques sur le site du client — Setup + 29 €/mois." },
