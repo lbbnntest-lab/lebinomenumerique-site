@@ -263,6 +263,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     return `
       <div class="zone-edition-post hidden" data-edition-id="${p.id}">
         <textarea class="edition-texte" rows="4">${echapperHtmlDevis(p.texte_post)}</textarea>
+        <label class="carte-devis-meta" style="display:block; margin-top:8px;">Heure de publication
+          <input type="time" class="edition-heure" value="${p.heure_publication_prevue ? p.heure_publication_prevue.slice(0, 5) : ""}" style="display:block; margin-top:4px;">
+        </label>
         <p class="carte-devis-meta" style="margin-top:8px;">Choisir une photo (optionnel) :</p>
         <div class="grille-photos-edition">
           <div class="photo-option-aucune${!p.photo_client_id ? " selectionnee" : ""}" data-photo-id="" data-photo-url="">Pas de photo perso</div>
@@ -277,7 +280,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const conteneur = document.getElementById("liste-mes-posts-sociaux");
     const { data: posts, error } = await sb
       .from("posts_calendrier_social")
-      .select("id, date_publication_prevue, texte_post, image_url, photo_client_id, statut")
+      .select("id, date_publication_prevue, heure_publication_prevue, texte_post, image_url, photo_client_id, statut")
       .eq("calendrier_id", calendrierSocialId)
       .order("date_publication_prevue", { ascending: true });
 
@@ -295,6 +298,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     conteneur.innerHTML = liste.map((p) => {
       const dateFormatee = new Date(p.date_publication_prevue).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+      const heureFormatee = p.heure_publication_prevue ? ` à ${p.heure_publication_prevue.slice(0, 5)}` : "";
       const statutInfo = LIBELLES_STATUT_POST[p.statut] || { texte: p.statut, classe: "attente" };
       let boutons = "";
       if (p.statut === "en_attente_validation") {
@@ -309,7 +313,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="carte-post-social">
           ${p.image_url ? `<img src="${p.image_url}" alt="">` : ""}
           <div class="contenu-post">
-            <div class="carte-devis-meta">${dateFormatee}<span class="badge-statut-post ${statutInfo.classe}">${statutInfo.texte}</span></div>
+            <div class="carte-devis-meta">${dateFormatee}${heureFormatee}<span class="badge-statut-post ${statutInfo.classe}">${statutInfo.texte}</span></div>
             <p class="texte-post">${echapperHtmlDevis(p.texte_post)}</p>
             ${boutons}
             ${p.statut !== "publie" ? rendreEditeurPost(p) : ""}
@@ -353,6 +357,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.addEventListener("click", async () => {
         const zone = conteneur.querySelector(`.zone-edition-post[data-edition-id="${btn.dataset.id}"]`);
         const nouveauTexte = zone.querySelector(".edition-texte").value.trim();
+        const nouvelleHeure = zone.querySelector(".edition-heure").value || null;
         const elementSelectionne = zone.querySelector(".photo-selectionnable.selectionnee, .photo-option-aucune.selectionnee");
         if (!nouveauTexte) return;
 
@@ -360,6 +365,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         btn.textContent = "Enregistrement...";
         await sb.from("posts_calendrier_social").update({
           texte_post: nouveauTexte,
+          heure_publication_prevue: nouvelleHeure,
           photo_client_id: elementSelectionne?.dataset.photoId || null,
           image_url: elementSelectionne?.dataset.photoUrl || null
         }).eq("id", btn.dataset.id);
