@@ -96,6 +96,7 @@
       </div>
       <button class="btn" id="btn-envoyer">Recevoir mon devis</button>
       <button class="btn btn-secondaire" id="btn-imprimer" type="button" style="display:none;">Imprimer ce devis</button>
+      <button class="btn btn-secondaire" id="btn-envoyer-client" type="button" style="display:none;">Envoyer par email au client</button>
     </div>
   </div>
 
@@ -298,6 +299,7 @@
         // main, et un bouton pour imprimer/donner le devis tout de suite.
         document.getElementById('bloc-montant-manuel').style.display = 'block';
         document.getElementById('btn-imprimer').style.display = 'block';
+        document.getElementById('btn-envoyer-client').style.display = 'block';
         document.getElementById('label-nom').textContent = 'Nom du client (optionnel)';
         document.getElementById('label-email').textContent = 'Email du client (optionnel)';
         document.getElementById('label-telephone').textContent = 'Téléphone du client (optionnel)';
@@ -314,6 +316,42 @@
     });
 
   document.getElementById('btn-imprimer').addEventListener('click', function () { remplirVueImpression(); window.print(); });
+
+  document.getElementById('btn-envoyer-client').addEventListener('click', function () {
+    var btn = this;
+    var emailClient = document.getElementById('f-email').value.trim();
+    if (!emailClient) {
+      afficherMessage('Renseignez l\'email du client pour pouvoir lui envoyer le devis.', false);
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Envoi en cours...';
+
+    var champManuel = document.getElementById('f-montant-manuel');
+    fetch(N8N_BASE_URL + '/devis-mb-envoyer-client', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: token,
+        email_client: emailClient,
+        nom_client: document.getElementById('f-nom').value.trim() || null,
+        reponses: collecterReponses(),
+        total_final_manuel: champManuel.value !== '' ? parseFloat(champManuel.value) : null
+      })
+    })
+      .then(function (r) { if (!r.ok) throw new Error('Échec de l\'envoi.'); return r.json(); })
+      .then(function () {
+        afficherMessage('Devis envoyé à ' + emailClient + '.', true);
+      })
+      .catch(function () {
+        afficherMessage('Une erreur est survenue — réessayez.', false);
+      })
+      .finally(function () {
+        btn.disabled = false;
+        btn.textContent = 'Envoyer par email au client';
+      });
+  });
   document.getElementById('btn-pdf').addEventListener('click', function () { remplirVueImpression(); window.print(); });
 
   document.getElementById('btn-envoyer').addEventListener('click', function () {
