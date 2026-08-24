@@ -66,6 +66,11 @@ const CATALOGUE_DEVIS = [
                 { label: "Soirs + week-ends", valeur: 150 },
                 { label: "24/7", valeur: 350 }
               ] }
+          ],
+          exemples: [
+            { label: "Petit commerce, volume standard", valeurs: { volume: "Standard (jusqu'à 50 emails/appels par semaine)", couverture: "Heures ouvrées (9h-18h, jours ouvrés)" } },
+            { label: "Activité soutenue, soirs/week-ends", valeurs: { volume: "Élevé (50 à 150 par semaine)", couverture: "Soirs + week-ends" } },
+            { label: "Gros volume, couverture totale", valeurs: { volume: "Très élevé (150+ par semaine)", couverture: "24/7" } }
           ]
         } }
     ]
@@ -89,6 +94,11 @@ const CATALOGUE_DEVIS = [
             { type: "checkbox", id: "reservation", label: "Prise de RDV en ligne intégrée (Cal.com)", valeur: 200 },
             { type: "checkbox", id: "espace_membre", label: "Espace membre / connexion", valeur: 600 },
             { type: "nombre", id: "heures_dev", label: "Heures de développement sur-mesure additionnelles", unite: 75, defaut: 0 }
+          ],
+          exemples: [
+            { label: "Vitrine simple (artisan, commerçant)", valeurs: { pages_supp: 0, multilingue: false, reservation: false, espace_membre: false, heures_dev: 5 } },
+            { label: "Multi-pages avec prise de RDV", valeurs: { pages_supp: 3, multilingue: false, reservation: true, espace_membre: false, heures_dev: 10 } },
+            { label: "Espace client, multilingue", valeurs: { pages_supp: 5, multilingue: true, reservation: true, espace_membre: true, heures_dev: 20 } }
           ]
         } }
     ]
@@ -105,6 +115,11 @@ const CATALOGUE_DEVIS = [
             { type: "nombre", id: "outils_tiers", label: "Outils tiers à intégrer (au-delà d'1 inclus)", unite: 300, defaut: 0 },
             { type: "checkbox", id: "temps_reel", label: "Déclenchement temps réel (webhook) plutôt qu'en différé", valeur: 200 },
             { type: "checkbox", id: "dashboard", label: "Tableau de bord de suivi dédié", valeur: 400 }
+          ],
+          exemples: [
+            { label: "Tâche simple, 1 seul outil", valeurs: { heures_dev: 6, outils_tiers: 0, temps_reel: false, dashboard: false } },
+            { label: "Plusieurs outils connectés, temps réel", valeurs: { heures_dev: 15, outils_tiers: 2, temps_reel: true, dashboard: false } },
+            { label: "Projet complexe avec suivi dédié", valeurs: { heures_dev: 25, outils_tiers: 3, temps_reel: true, dashboard: true } }
           ]
         } }
     ]
@@ -194,6 +209,21 @@ async function afficherRepereCommissionGestionEmail() {
   } catch (err) {
     // silencieux — le repère reste simplement caché
   }
+}
+
+// Repère privé de commission pour le Sur-Mesure (24/08/2026) — le vrai
+// barème de commission Sur-Mesure n'est pas encore défini (chantier "nouveau
+// modèle de commission en % de marge", voir MASTER_PLAN), donc ce calcul
+// applique le taux Conseiller au prix de vente entier (pas à une marge
+// connue, contrairement à Gestion Email où le coût réel est en base) —
+// volontairement présenté comme un ordre de grandeur, jamais un montant
+// engageant, et jamais visible du prospect (uniquement dans le formulaire
+// commercial, jamais dans rendreApercu()).
+function mettreAJourRepereSurMesure(bloc, montant) {
+  if (!bloc || !montant || montant <= 0) return;
+  const commissionEstimee = Math.round(montant * TAUX_CONSEILLER_MARGE * 100) / 100;
+  bloc.innerHTML = `<span class="badge-prive">Privé</span> Ordre de grandeur : ~${formaterEuros(commissionEstimee)} de commission estimée (barème définitif Sur-Mesure pas encore fixé, jamais visible du prospect)`;
+  bloc.style.display = "flex";
 }
 
 const COULEURS_SITE = {
@@ -286,7 +316,85 @@ function construireApercuSite() {
   rendu.className = "devis-apercu-site-rendu";
   conteneur.appendChild(rendu);
 
+  // Vrai aperçu généré (24/08/2026) : au-delà du carré de couleur ci-dessus,
+  // un bouton déclenche une vraie ébauche (texte écrit par Claude, photo
+  // Pexels, réellement déployée) — pensé pour être montré en direct au
+  // prospect pendant le RDV ("j'ai remarqué que vous n'aviez pas de site,
+  // voici une première ébauche"). Même moteur que le chatbot (workflow 19),
+  // mais sans sas de validation : le commercial voit et décide en direct.
+  const blocReel = document.createElement("div");
+  blocReel.className = "devis-apercu-reel";
+
+  const boutonReel = document.createElement("button");
+  boutonReel.type = "button";
+  boutonReel.className = "btn btn-secondaire";
+  boutonReel.id = "btn-apercu-reel";
+  boutonReel.textContent = "🚀 Générer un vrai aperçu (bêta)";
+  boutonReel.addEventListener("click", genererVraiApercuSite);
+  blocReel.appendChild(boutonReel);
+
+  const noteReel = document.createElement("p");
+  noteReel.className = "sous-titre-section";
+  noteReel.style.marginTop = "6px";
+  noteReel.textContent = "Prend 10 à 30 secondes — génère un vrai site en ligne (texte rédigé automatiquement à partir du secteur, photo assortie), à montrer directement sur place.";
+  blocReel.appendChild(noteReel);
+
+  const resultatReel = document.createElement("div");
+  resultatReel.id = "resultat-apercu-reel";
+  blocReel.appendChild(resultatReel);
+
+  conteneur.appendChild(blocReel);
+
   return conteneur;
+}
+
+function packSiteSelectionne() {
+  const correspondance = { site_essentiel: "SITE_ESSENTIEL", site_pro: "SITE_PRO", site_ecommerce: "SITE_ECOMMERCE", site_sur_mesure: "SITE_PRO" };
+  for (const code of Object.keys(correspondance)) {
+    const cb = document.getElementById("chk-" + code);
+    if (cb && cb.checked) return correspondance[code];
+  }
+  return "SITE_PRO";
+}
+
+async function genererVraiApercuSite() {
+  const bouton = document.getElementById("btn-apercu-reel");
+  const zoneResultat = document.getElementById("resultat-apercu-reel");
+  const entreprise = document.getElementById("f-entreprise").value.trim();
+  if (!entreprise) {
+    zoneResultat.innerHTML = '<p class="message-erreur">Renseignez d\'abord le nom de l\'entreprise (étape "Le prospect").</p>';
+    return;
+  }
+  bouton.disabled = true;
+  bouton.textContent = "Génération en cours...";
+  zoneResultat.innerHTML = "";
+
+  try {
+    const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/commercial-generer-apercu-site`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        access_token: sessionCommerciale.access_token,
+        business_name: entreprise,
+        secteur_activite: document.getElementById("f-secteur").value.trim(),
+        contenu_supplementaire: document.getElementById("site-tagline").value.trim(),
+        couleur_preferee: document.getElementById("site-couleur").value,
+        pack_recommande: packSiteSelectionne()
+      })
+    });
+    if (!resp.ok) throw new Error("Échec de la génération — réessayez dans un instant.");
+    const resultat = await resp.json();
+    zoneResultat.innerHTML = `
+      <p style="margin:10px 0 6px;"><a class="btn btn-primaire" href="${echapperHtml(resultat.url)}" target="_blank" rel="noopener">Ouvrir l'aperçu en plein écran ↗</a></p>
+      <iframe src="${echapperHtml(resultat.url)}" class="devis-apercu-reel-iframe" title="Aperçu du site généré" loading="lazy"></iframe>
+    `;
+  } catch (err) {
+    const messageAffiche = (err.message && err.message !== "Failed to fetch") ? err.message : "Impossible de contacter le service de génération — réessayez dans un instant.";
+    zoneResultat.innerHTML = `<p class="message-erreur">${echapperHtml(messageAffiche)}</p>`;
+  } finally {
+    bouton.disabled = false;
+    bouton.textContent = "🚀 Générer un vrai aperçu (bêta)";
+  }
 }
 
 // Construit le mini-calculateur d'un barème (radio / checkbox / nombre) et
@@ -294,7 +402,7 @@ function construireApercuSite() {
 // jour inputPrix.value à partir des champs actuellement sélectionnés.
 // inputPrix reste un input number normal : le commercial peut toujours
 // écraser la valeur calculée à la main après coup.
-function construireBareme(item, inputPrix) {
+function construireBareme(item, inputPrix, repereEl) {
   const conteneur = document.createElement("div");
   conteneur.className = "devis-bareme";
 
@@ -317,6 +425,50 @@ function construireBareme(item, inputPrix) {
     });
     inputPrix.value = total;
     recalculerTotalLive();
+    mettreAJourRepereSurMesure(repereEl, total);
+  }
+
+  // Exemples pré-remplis (24/08/2026) : pour qu'un commercial qui ne connaît
+  // pas la mécanique du Sur-Mesure sache quand même chiffrer correctement —
+  // applique un profil type en un clic, reste modifiable ensuite champ par
+  // champ. Volontairement des valeurs de départ, pas figées : à ajuster au
+  // fil de l'expérience terrain comme le reste du barème.
+  if (item.bareme.exemples && item.bareme.exemples.length) {
+    const blocExemples = document.createElement("div");
+    blocExemples.className = "devis-bareme-exemples";
+    const titreExemples = document.createElement("div");
+    titreExemples.className = "devis-bareme-titre";
+    titreExemples.textContent = "Exemples — pour chiffrer vite si vous ne connaissez pas le besoin en détail";
+    blocExemples.appendChild(titreExemples);
+    const rangee = document.createElement("div");
+    rangee.className = "devis-bareme-exemples-rangee";
+    item.bareme.exemples.forEach((exemple) => {
+      const bouton = document.createElement("button");
+      bouton.type = "button";
+      bouton.className = "devis-bareme-exemple-btn";
+      bouton.textContent = exemple.label;
+      bouton.addEventListener("click", () => {
+        item.bareme.champs.forEach((champ) => {
+          const elId = "bareme-" + item.code + "-" + champ.id;
+          const valeur = exemple.valeurs[champ.id];
+          if (valeur === undefined) return;
+          if (champ.type === "radio") {
+            const radio = conteneur.querySelector(`input[name="${elId}"][value="${CSS.escape(valeur)}"]`);
+            if (radio) radio.checked = true;
+          } else if (champ.type === "checkbox") {
+            const el = conteneur.querySelector(`#${CSS.escape(elId)}`);
+            if (el) el.checked = !!valeur;
+          } else if (champ.type === "nombre") {
+            const el = conteneur.querySelector(`#${CSS.escape(elId)}`);
+            if (el) el.value = valeur;
+          }
+        });
+        recalculer();
+      });
+      rangee.appendChild(bouton);
+    });
+    blocExemples.appendChild(rangee);
+    conteneur.appendChild(blocExemples);
   }
 
   item.bareme.champs.forEach((champ) => {
@@ -425,6 +577,14 @@ function rendreCatalogueFormulaire() {
         corps.appendChild(repere);
       }
 
+      let repereSurMesure = null;
+      if (item.bareme) {
+        repereSurMesure = document.createElement("div");
+        repereSurMesure.className = "devis-repere-prive";
+        repereSurMesure.style.display = "none"; // affiché dès le premier calcul du barème
+        corps.appendChild(repereSurMesure);
+      }
+
       if (item.prixLibre) {
         const libre = document.createElement("div");
         libre.className = "devis-item-libre actif";
@@ -439,7 +599,7 @@ function rendreCatalogueFormulaire() {
         inputPrix.addEventListener("input", recalculerTotalLive);
 
         if (item.bareme) {
-          const { element: baremeEl, recalculer: recalculerBareme } = construireBareme(item, inputPrix);
+          const { element: baremeEl, recalculer: recalculerBareme } = construireBareme(item, inputPrix, repereSurMesure);
           libre.appendChild(baremeEl);
           const labelPrix = document.createElement("div");
           labelPrix.className = "devis-bareme-titre";
@@ -544,6 +704,7 @@ function recalculerTotalLive() {
 
 let ETAPES = [];
 let etapeActuelle = 0;
+let sessionCommerciale = null; // rempli par initialiserFormulaire, utilisé par genererVraiApercuSite
 
 function construireListeEtapes() {
   ETAPES = ["prospect", ...CATALOGUE_DEVIS.map((g, i) => "cat-" + i), "recap"];
@@ -600,6 +761,7 @@ function allerEtape(index) {
 async function initialiserFormulaire() {
   const session = await requireAuth("connexion-commercial.html");
   if (!session) return;
+  sessionCommerciale = session;
 
   const sb = window.supabaseClient;
   const { data: commercial } = await sb
