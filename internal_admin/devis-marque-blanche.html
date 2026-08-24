@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Devis marque blanche — Le Binôme Numérique</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --couleur-principale: #1F6F78;
+    --couleur-texte: #1a1a1a;
+    --couleur-fond-clair: #f7f7f8;
+    --couleur-bordure: #e2e2e4;
+    --couleur-danger: #B23A2E;
+    --couleur-ok: #2E7D32;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--couleur-texte);
+    background: var(--couleur-fond-clair);
+    line-height: 1.5;
+  }
+  header { background: #1a1a1a; color: #fff; padding: 20px 24px; }
+  header h1 { margin: 0; font-size: 1.3rem; }
+  header p { margin: 4px 0 0; color: #ccc; font-size: 0.9rem; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px; }
+  .carte { background: #fff; border: 1px solid var(--couleur-bordure); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+  .carte h2 { margin-top: 0; font-size: 1.1rem; }
+  .note { color: #555; font-size: 0.88rem; }
+  .champ { margin-bottom: 14px; }
+  .champ label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+  .champ input, .champ select, .champ textarea {
+    width: 100%; padding: 9px 11px; border: 1px solid var(--couleur-bordure); border-radius: 6px;
+    font-size: 0.92rem; font-family: inherit;
+  }
+  .champ-cle { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .champ-cle input { flex: 1; min-width: 240px; padding: 10px 12px; border: 1px solid var(--couleur-bordure); border-radius: 6px; font-size: 0.95rem; }
+  .btn {
+    border: none; border-radius: 6px; padding: 10px 20px; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; background: var(--couleur-principale); color: #fff;
+  }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  .btn-secondaire { background: #fff; color: var(--couleur-principale); border: 1px solid var(--couleur-principale); }
+  .btn-lien { background: none; border: none; color: var(--couleur-danger); font-size: 0.82rem; cursor: pointer; text-decoration: underline; padding: 0; }
+  .rangee-bareme { border: 1px solid var(--couleur-bordure); border-radius: 8px; padding: 12px; margin-bottom: 10px; background: var(--couleur-fond-clair); }
+  .rangee-bareme .ligne { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .rangee-bareme .ligne > * { flex: 1; min-width: 120px; }
+  #message { padding: 12px 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; display: none; }
+  #message.err { display: block; background: #fdecea; color: var(--couleur-danger); }
+  #message.ok { display: block; background: #eaf5ec; color: var(--couleur-ok); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--couleur-bordure); }
+  th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.03em; color: #666; }
+  .badge { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #555; color: #fff; }
+  code { background: #eef; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; }
+  pre.snippet { background: #1a1a1a; color: #eee; padding: 14px; border-radius: 8px; overflow-x: auto; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Le Binôme Numérique — Devis en marque blanche</h1>
+  <p>Créer et lister les configurateurs de devis vendus à des entreprises externes (produit "Devis en marque blanche", cadré le 24/08/2026).</p>
+</header>
+
+<main>
+  <div id="message"></div>
+
+  <div class="carte" id="carte-cle">
+    <h2>Clé d'accès</h2>
+    <p class="note">Page interne non indexée. Colle la clé admin une seule fois — elle reste ensuite enregistrée dans ce navigateur.</p>
+    <div class="champ-cle">
+      <input type="password" id="f-cle" placeholder="Clé admin">
+      <button class="btn" id="btn-valider-cle">Continuer</button>
+    </div>
+  </div>
+
+  <div id="zone-outil" style="display:none;">
+
+    <div class="carte">
+      <h2>Créer une configuration</h2>
+      <p class="note">
+        Le client final n'a pas d'espace self-service pour l'instant — cette page sert au fondateur pour
+        configurer un devis en marque blanche après une vente manuelle, puis transmettre le lien au client.
+        Ses leads (les devis remplis par SES propres prospects) lui sont envoyés par email, jamais à BN.
+      </p>
+
+      <div class="champ">
+        <label for="f-compte-client-id">ID du compte client (comptes_clients.id, Supabase Studio)</label>
+        <input type="text" id="f-compte-client-id" placeholder="UUID du compte client">
+      </div>
+
+      <div class="champ">
+        <label for="f-nom-entreprise">Nom de l'entreprise (affiché sur la page de devis)</label>
+        <input type="text" id="f-nom-entreprise" placeholder="Ex: Plomberie Dupont">
+      </div>
+
+      <div class="champ">
+        <label for="f-couleur">Couleur principale</label>
+        <input type="color" id="f-couleur" value="#1F6F78" style="height:42px; padding:4px;">
+      </div>
+
+      <div class="champ">
+        <label for="f-email-notif">Email de notification des leads (celui du client, pas le tien)</label>
+        <input type="email" id="f-email-notif" placeholder="contact@client.fr">
+      </div>
+
+      <div class="champ">
+        <label for="f-formule">Formule</label>
+        <select id="f-formule">
+          <option value="starter">Starter — 290 € setup + 29 €/mois</option>
+          <option value="pro">Pro — 490 € setup + 59 €/mois</option>
+        </select>
+      </div>
+
+      <div class="champ">
+        <label for="f-bareme-base">Prix de base du devis</label>
+        <input type="number" id="f-bareme-base" placeholder="Ex: 50">
+      </div>
+      <div class="champ">
+        <label>Champs du barème</label>
+        <div id="liste-champs-bareme"></div>
+        <button type="button" class="btn btn-secondaire" id="btn-ajouter-champ">+ Ajouter un champ</button>
+      </div>
+
+      <button class="btn" id="btn-creer">Créer la configuration</button>
+    </div>
+
+    <div class="carte" id="carte-resultat" style="display:none;">
+      <h2>Configuration créée</h2>
+      <p class="note">Lien à transmettre au client (à intégrer sur son site en iframe, ou à partager directement) :</p>
+      <pre class="snippet" id="lien-devis"></pre>
+    </div>
+
+    <div class="carte">
+      <h2>Configurations existantes</h2>
+      <button class="btn-lien" id="btn-actualiser" style="color:var(--couleur-principale);">Actualiser</button>
+      <div id="etat-chargement" style="margin-top:10px;">Chargement…</div>
+      <div id="etat-vide" style="display:none;">Aucune configuration créée pour l'instant.</div>
+      <table id="table-liste" style="display:none; margin-top:10px;">
+        <thead>
+          <tr><th>Entreprise</th><th>Compte client</th><th>Formule</th><th>Lien</th></tr>
+        </thead>
+        <tbody id="corps-table"></tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  var URL_LISTE = 'https://lbn.app.n8n.cloud/webhook/admin-devis-mb-liste';
+  var URL_CREER = 'https://lbn.app.n8n.cloud/webhook/admin-devis-mb-creer';
+  var URL_PAGE_PUBLIQUE = 'https://lbbnntest-lab.github.io/lebinomenumerique-site/devis-marque-blanche.html';
+  var CLE_STOCKAGE = 'lbn_admin_cle_devis_mb';
+
+  var elMessage = document.getElementById('message');
+  var elCarteCle = document.getElementById('carte-cle');
+  var elZoneOutil = document.getElementById('zone-outil');
+
+  function afficherMessage(texte, ok) {
+    elMessage.textContent = texte;
+    elMessage.className = ok ? 'ok' : 'err';
+    elMessage.style.display = 'block';
+  }
+  function masquerMessage() { elMessage.style.display = 'none'; }
+
+  var cleActuelle = null;
+
+  // ---------- Barème dynamique ----------
+  var champsBareme = [];
+  function rendreChampsBareme() {
+    var conteneur = document.getElementById('liste-champs-bareme');
+    conteneur.innerHTML = '';
+    champsBareme.forEach(function (champ, index) {
+      var div = document.createElement('div');
+      div.className = 'rangee-bareme';
+      var ligne1 = document.createElement('div');
+      ligne1.className = 'ligne';
+
+      var inputId = document.createElement('input');
+      inputId.placeholder = 'Identifiant (ex: nb_pieces)';
+      inputId.value = champ.id || '';
+      inputId.addEventListener('input', function () { champ.id = inputId.value; });
+      ligne1.appendChild(inputId);
+
+      var inputLabel = document.createElement('input');
+      inputLabel.placeholder = 'Libellé affiché';
+      inputLabel.value = champ.label || '';
+      inputLabel.addEventListener('input', function () { champ.label = inputLabel.value; });
+      ligne1.appendChild(inputLabel);
+
+      var selectType = document.createElement('select');
+      ['nombre', 'checkbox', 'radio'].forEach(function (t) {
+        var opt = document.createElement('option');
+        opt.value = t; opt.textContent = t;
+        if (champ.type === t) opt.selected = true;
+        selectType.appendChild(opt);
+      });
+      selectType.addEventListener('change', function () { champ.type = selectType.value; rendreChampsBareme(); });
+      ligne1.appendChild(selectType);
+
+      var btnSupprimer = document.createElement('button');
+      btnSupprimer.type = 'button';
+      btnSupprimer.className = 'btn-lien';
+      btnSupprimer.style.color = 'var(--couleur-danger)';
+      btnSupprimer.textContent = 'Retirer';
+      btnSupprimer.addEventListener('click', function () { champsBareme.splice(index, 1); rendreChampsBareme(); });
+      ligne1.appendChild(btnSupprimer);
+
+      div.appendChild(ligne1);
+
+      if (champ.type === 'nombre') {
+        var ligne2 = document.createElement('div');
+        ligne2.className = 'ligne';
+        var inputUnite = document.createElement('input');
+        inputUnite.type = 'number';
+        inputUnite.placeholder = 'Prix par unité (€)';
+        inputUnite.value = champ.unite != null ? champ.unite : '';
+        inputUnite.addEventListener('input', function () { champ.unite = parseFloat(inputUnite.value) || 0; });
+        ligne2.appendChild(inputUnite);
+        div.appendChild(ligne2);
+      } else if (champ.type === 'checkbox') {
+        var ligne2b = document.createElement('div');
+        ligne2b.className = 'ligne';
+        var inputValeur = document.createElement('input');
+        inputValeur.type = 'number';
+        inputValeur.placeholder = 'Supplément si coché (€)';
+        inputValeur.value = champ.valeur != null ? champ.valeur : '';
+        inputValeur.addEventListener('input', function () { champ.valeur = parseFloat(inputValeur.value) || 0; });
+        ligne2b.appendChild(inputValeur);
+        div.appendChild(ligne2b);
+      } else if (champ.type === 'radio') {
+        if (!champ.options) champ.options = [{ label: '', valeur: 0 }];
+        champ.options.forEach(function (option, oi) {
+          var ligneOption = document.createElement('div');
+          ligneOption.className = 'ligne';
+          var inputOptionLabel = document.createElement('input');
+          inputOptionLabel.placeholder = 'Option (ex: Standard)';
+          inputOptionLabel.value = option.label || '';
+          inputOptionLabel.addEventListener('input', function () { option.label = inputOptionLabel.value; });
+          ligneOption.appendChild(inputOptionLabel);
+          var inputOptionValeur = document.createElement('input');
+          inputOptionValeur.type = 'number';
+          inputOptionValeur.placeholder = 'Supplément (€)';
+          inputOptionValeur.value = option.valeur != null ? option.valeur : '';
+          inputOptionValeur.addEventListener('input', function () { option.valeur = parseFloat(inputOptionValeur.value) || 0; });
+          ligneOption.appendChild(inputOptionValeur);
+          div.appendChild(ligneOption);
+        });
+        var btnAjouterOption = document.createElement('button');
+        btnAjouterOption.type = 'button';
+        btnAjouterOption.className = 'btn-lien';
+        btnAjouterOption.style.color = 'var(--couleur-principale)';
+        btnAjouterOption.textContent = '+ Ajouter une option';
+        btnAjouterOption.addEventListener('click', function () { champ.options.push({ label: '', valeur: 0 }); rendreChampsBareme(); });
+        div.appendChild(btnAjouterOption);
+      }
+
+      conteneur.appendChild(div);
+    });
+  }
+  document.getElementById('btn-ajouter-champ').addEventListener('click', function () {
+    champsBareme.push({ id: '', label: '', type: 'nombre', unite: 0 });
+    rendreChampsBareme();
+  });
+
+  // ---------- Liste ----------
+  function formaterCompteClient(c) {
+    if (!c) return '—';
+    return (c.raison_sociale || '') + (c.email ? ' (' + c.email + ')' : '');
+  }
+
+  function rendreLigne(config) {
+    var tr = document.createElement('tr');
+
+    var tdEntreprise = document.createElement('td');
+    tdEntreprise.textContent = config.nom_entreprise;
+    tr.appendChild(tdEntreprise);
+
+    var tdCompte = document.createElement('td');
+    tdCompte.textContent = formaterCompteClient(config.comptes_clients);
+    tr.appendChild(tdCompte);
+
+    var tdFormule = document.createElement('td');
+    var badge = document.createElement('span');
+    badge.className = 'badge';
+    badge.textContent = config.formule === 'pro' ? 'Pro' : 'Starter';
+    tdFormule.appendChild(badge);
+    tr.appendChild(tdFormule);
+
+    var tdLien = document.createElement('td');
+    var lien = document.createElement('code');
+    lien.textContent = URL_PAGE_PUBLIQUE + '?token=' + config.token_widget;
+    tdLien.appendChild(lien);
+    tr.appendChild(tdLien);
+
+    return tr;
+  }
+
+  function chargerListe() {
+    var elChargement = document.getElementById('etat-chargement');
+    var elVide = document.getElementById('etat-vide');
+    var elTable = document.getElementById('table-liste');
+    var elCorps = document.getElementById('corps-table');
+
+    elChargement.style.display = 'block';
+    elVide.style.display = 'none';
+    elTable.style.display = 'none';
+
+    fetch(URL_LISTE + '?cle=' + encodeURIComponent(cleActuelle))
+      .then(function (r) {
+        if (r.status === 403) throw new Error('cle');
+        if (!r.ok) throw new Error('reseau');
+        return r.json();
+      })
+      .then(function (data) {
+        elChargement.style.display = 'none';
+        var configs = data.configs || [];
+        elCorps.innerHTML = '';
+        if (configs.length === 0) {
+          elVide.style.display = 'block';
+          return;
+        }
+        elTable.style.display = 'table';
+        configs.forEach(function (c) { elCorps.appendChild(rendreLigne(c)); });
+      })
+      .catch(function (err) {
+        elChargement.style.display = 'none';
+        if (err.message === 'cle') {
+          localStorage.removeItem(CLE_STOCKAGE);
+          elCarteCle.style.display = 'block';
+          elZoneOutil.style.display = 'none';
+          afficherMessage('Clé incorrecte — réessaie.', false);
+        } else {
+          afficherMessage("Impossible de charger la liste — réessaie.", false);
+        }
+      });
+  }
+
+  // ---------- Création ----------
+  document.getElementById('btn-creer').addEventListener('click', function () {
+    masquerMessage();
+    var compteClientId = document.getElementById('f-compte-client-id').value.trim();
+    var nomEntreprise = document.getElementById('f-nom-entreprise').value.trim();
+    var emailNotif = document.getElementById('f-email-notif').value.trim();
+
+    if (!compteClientId || !nomEntreprise || !emailNotif) {
+      afficherMessage("L'ID du compte client, le nom de l'entreprise et l'email de notification sont requis.", false);
+      return;
+    }
+
+    var base = parseFloat(document.getElementById('f-bareme-base').value) || 0;
+    var body = {
+      cle: cleActuelle,
+      compte_client_id: compteClientId,
+      nom_entreprise: nomEntreprise,
+      couleur_principale: document.getElementById('f-couleur').value,
+      email_notification_leads: emailNotif,
+      formule: document.getElementById('f-formule').value,
+      bareme: { base: base, champs: champsBareme.filter(function (c) { return c.id && c.label; }) }
+    };
+
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Création...';
+
+    fetch(URL_CREER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+      .then(function (r) {
+        if (r.status === 403) throw new Error('cle');
+        if (!r.ok) return r.text().then(function (t) { throw new Error(t || 'Échec de la création.'); });
+        return r.json();
+      })
+      .then(function (data) {
+        var config = Array.isArray(data) ? data[0] : data;
+        document.getElementById('lien-devis').textContent = URL_PAGE_PUBLIQUE + '?token=' + config.token_widget;
+        document.getElementById('carte-resultat').style.display = 'block';
+        afficherMessage('Configuration créée avec succès.', true);
+        chargerListe();
+      })
+      .catch(function (err) {
+        afficherMessage(err.message === 'cle' ? 'Clé incorrecte — réessaie.' : (err.message || 'Une erreur est survenue.'), false);
+      })
+      .finally(function () {
+        btn.disabled = false;
+        btn.textContent = 'Créer la configuration';
+      });
+  });
+
+  document.getElementById('btn-actualiser').addEventListener('click', chargerListe);
+
+  document.getElementById('btn-valider-cle').addEventListener('click', function () {
+    var cle = document.getElementById('f-cle').value.trim();
+    if (!cle) return;
+    localStorage.setItem(CLE_STOCKAGE, cle);
+    cleActuelle = cle;
+    elCarteCle.style.display = 'none';
+    elZoneOutil.style.display = 'block';
+    rendreChampsBareme();
+    chargerListe();
+  });
+
+  var cleEnregistree = localStorage.getItem(CLE_STOCKAGE);
+  if (cleEnregistree) {
+    cleActuelle = cleEnregistree;
+    elCarteCle.style.display = 'none';
+    elZoneOutil.style.display = 'block';
+    rendreChampsBareme();
+    chargerListe();
+  }
+})();
+</script>
+
+</body>
+</html>

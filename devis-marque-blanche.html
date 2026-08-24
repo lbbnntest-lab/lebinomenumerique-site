@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Devis en ligne</title>
+<style>
+  :root { --couleur-accent: #1F6F78; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: #1a1a1a;
+    background: #f7f7f8;
+    line-height: 1.5;
+  }
+  main { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
+  h1 { font-size: 1.4rem; margin-bottom: 4px; }
+  .sous-titre { color: #555; font-size: 0.92rem; margin-bottom: 24px; }
+  .carte { background: #fff; border: 1px solid #e2e2e4; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .champ { margin-bottom: 16px; }
+  .champ label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
+  .champ input[type="text"], .champ input[type="email"], .champ input[type="tel"], .champ input[type="number"] {
+    width: 100%; padding: 10px 12px; border: 1px solid #d7d7db; border-radius: 8px; font-size: 0.95rem; font-family: inherit;
+  }
+  .option-radio, .option-checkbox { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: 0.92rem; }
+  .option-radio input, .option-checkbox input { width: auto; }
+  .bloc-total { background: var(--couleur-accent); color: #fff; border-radius: 12px; padding: 20px 24px; text-align: center; margin-bottom: 20px; }
+  .bloc-total .montant { font-size: 2rem; font-weight: 800; }
+  .btn { border: none; border-radius: 8px; padding: 13px 24px; font-size: 1rem; font-weight: 700; cursor: pointer; background: var(--couleur-accent); color: #fff; width: 100%; }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  #message { padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; display: none; }
+  #message.err { display: block; background: #fdecea; color: #B23A2E; }
+  #message.ok { display: block; background: #eaf5ec; color: #2E7D32; }
+  #etat-chargement, #etat-erreur { text-align: center; color: #666; padding: 40px 0; }
+  #zone-formulaire { display: none; }
+  #zone-confirmation { display: none; text-align: center; padding: 20px 0; }
+  #zone-confirmation .montant { font-size: 2.2rem; font-weight: 800; color: var(--couleur-accent); margin: 10px 0; }
+  footer { text-align: center; color: #999; font-size: 0.78rem; margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<main>
+  <div id="etat-chargement">Chargement du configurateur…</div>
+  <div id="etat-erreur" style="display:none;">Ce configurateur de devis n'est pas disponible.</div>
+
+  <div id="zone-formulaire">
+    <h1 id="titre-entreprise"></h1>
+    <p class="sous-titre">Obtenez une estimation immédiate — sans engagement.</p>
+
+    <div class="carte">
+      <div id="liste-champs-devis"></div>
+    </div>
+
+    <div class="bloc-total">
+      <div>Estimation</div>
+      <div class="montant" id="montant-affiche">0 €</div>
+    </div>
+
+    <div class="carte">
+      <div id="message"></div>
+      <div class="champ">
+        <label for="f-nom">Nom</label>
+        <input type="text" id="f-nom">
+      </div>
+      <div class="champ">
+        <label for="f-email">Email</label>
+        <input type="email" id="f-email">
+      </div>
+      <div class="champ">
+        <label for="f-telephone">Téléphone</label>
+        <input type="tel" id="f-telephone">
+      </div>
+      <button class="btn" id="btn-envoyer">Recevoir mon devis</button>
+    </div>
+  </div>
+
+  <div id="zone-confirmation">
+    <h1>Merci !</h1>
+    <p>Votre estimation :</p>
+    <div class="montant" id="montant-confirmation"></div>
+    <p>Vous serez recontacté(e) rapidement.</p>
+  </div>
+
+  <footer>Configurateur propulsé par Le Binôme Numérique</footer>
+</main>
+
+<script>
+(function () {
+  var N8N_BASE_URL = 'https://lbn.app.n8n.cloud/webhook';
+  var params = new URLSearchParams(window.location.search);
+  var token = params.get('token');
+
+  var elChargement = document.getElementById('etat-chargement');
+  var elErreur = document.getElementById('etat-erreur');
+  var elFormulaire = document.getElementById('zone-formulaire');
+  var elListeChamps = document.getElementById('liste-champs-devis');
+  var elMontant = document.getElementById('montant-affiche');
+  var elMessage = document.getElementById('message');
+
+  var config = null;
+
+  function afficherMessage(texte, ok) {
+    elMessage.textContent = texte;
+    elMessage.className = ok ? 'ok' : 'err';
+    elMessage.style.display = 'block';
+  }
+
+  function calculerTotal() {
+    if (!config || !config.bareme) return 0;
+    var total = config.bareme.base || 0;
+    (config.bareme.champs || []).forEach(function (champ) {
+      if (champ.type === 'radio') {
+        var coche = document.querySelector('input[name="champ_' + champ.id + '"]:checked');
+        if (coche) total += parseFloat(coche.value) || 0;
+      } else if (champ.type === 'checkbox') {
+        var caseACocher = document.getElementById('champ_' + champ.id);
+        if (caseACocher && caseACocher.checked) total += champ.valeur || 0;
+      } else if (champ.type === 'nombre') {
+        var input = document.getElementById('champ_' + champ.id);
+        var n = input ? (parseFloat(input.value) || 0) : 0;
+        total += n * (champ.unite || 0);
+      }
+    });
+    return total;
+  }
+
+  function recalculer() {
+    elMontant.textContent = calculerTotal().toFixed(0) + ' €';
+  }
+
+  function collecterReponses() {
+    var reponses = {};
+    (config.bareme.champs || []).forEach(function (champ) {
+      if (champ.type === 'radio') {
+        var coche = document.querySelector('input[name="champ_' + champ.id + '"]:checked');
+        if (coche) reponses[champ.id] = coche.dataset.label;
+      } else if (champ.type === 'checkbox') {
+        var caseACocher = document.getElementById('champ_' + champ.id);
+        reponses[champ.id] = !!(caseACocher && caseACocher.checked);
+      } else if (champ.type === 'nombre') {
+        var input = document.getElementById('champ_' + champ.id);
+        reponses[champ.id] = input ? (parseFloat(input.value) || 0) : 0;
+      }
+    });
+    return reponses;
+  }
+
+  function rendreChamp(champ) {
+    var bloc = document.createElement('div');
+    bloc.className = 'champ';
+
+    if (champ.type === 'radio') {
+      var label = document.createElement('label');
+      label.textContent = champ.label;
+      bloc.appendChild(label);
+      (champ.options || []).forEach(function (option, i) {
+        var ligne = document.createElement('label');
+        ligne.className = 'option-radio';
+        var input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'champ_' + champ.id;
+        input.value = option.valeur;
+        input.dataset.label = option.label;
+        if (i === 0) input.checked = true;
+        input.addEventListener('change', recalculer);
+        ligne.appendChild(input);
+        ligne.appendChild(document.createTextNode(option.label + (option.valeur ? ' (+' + option.valeur + ' €)' : '')));
+        bloc.appendChild(ligne);
+      });
+    } else if (champ.type === 'checkbox') {
+      var ligneCb = document.createElement('label');
+      ligneCb.className = 'option-checkbox';
+      var inputCb = document.createElement('input');
+      inputCb.type = 'checkbox';
+      inputCb.id = 'champ_' + champ.id;
+      inputCb.addEventListener('change', recalculer);
+      ligneCb.appendChild(inputCb);
+      ligneCb.appendChild(document.createTextNode(champ.label + (champ.valeur ? ' (+' + champ.valeur + ' €)' : '')));
+      bloc.appendChild(ligneCb);
+    } else if (champ.type === 'nombre') {
+      var labelN = document.createElement('label');
+      labelN.setAttribute('for', 'champ_' + champ.id);
+      labelN.textContent = champ.label;
+      bloc.appendChild(labelN);
+      var inputN = document.createElement('input');
+      inputN.type = 'number';
+      inputN.id = 'champ_' + champ.id;
+      inputN.min = '0';
+      inputN.value = '0';
+      inputN.addEventListener('input', recalculer);
+      bloc.appendChild(inputN);
+    }
+
+    return bloc;
+  }
+
+  fetch(N8N_BASE_URL + '/devis-mb-config?token=' + encodeURIComponent(token || ''))
+    .then(function (r) { if (!r.ok) throw new Error('introuvable'); return r.json(); })
+    .then(function (data) {
+      config = data;
+      document.documentElement.style.setProperty('--couleur-accent', config.couleur_principale || '#1F6F78');
+      document.title = 'Devis — ' + config.nom_entreprise;
+      document.getElementById('titre-entreprise').textContent = 'Devis — ' + config.nom_entreprise;
+
+      elListeChamps.innerHTML = '';
+      (config.bareme.champs || []).forEach(function (champ) { elListeChamps.appendChild(rendreChamp(champ)); });
+
+      elChargement.style.display = 'none';
+      elFormulaire.style.display = 'block';
+      recalculer();
+    })
+    .catch(function () {
+      elChargement.style.display = 'none';
+      elErreur.style.display = 'block';
+    });
+
+  document.getElementById('btn-envoyer').addEventListener('click', function () {
+    var btn = this;
+    var nom = document.getElementById('f-nom').value.trim();
+    var email = document.getElementById('f-email').value.trim();
+    var telephone = document.getElementById('f-telephone').value.trim();
+
+    if (!email && !telephone) {
+      afficherMessage('Merci de renseigner au moins un email ou un téléphone pour être recontacté(e).', false);
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Envoi en cours...';
+
+    fetch(N8N_BASE_URL + '/devis-mb-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: token, nom: nom || null, email: email || null, telephone: telephone || null, reponses: collecterReponses() })
+    })
+      .then(function (r) { if (!r.ok) throw new Error('Échec de l\'envoi.'); return r.json(); })
+      .then(function (data) {
+        document.getElementById('montant-confirmation').textContent = Math.round(data.total) + ' €';
+        elFormulaire.style.display = 'none';
+        document.getElementById('zone-confirmation').style.display = 'block';
+      })
+      .catch(function () {
+        afficherMessage('Une erreur est survenue — réessayez.', false);
+        btn.disabled = false;
+        btn.textContent = 'Recevoir mon devis';
+      });
+  });
+})();
+</script>
+
+</body>
+</html>
