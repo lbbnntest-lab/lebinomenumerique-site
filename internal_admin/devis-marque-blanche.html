@@ -114,6 +114,22 @@
       </div>
 
       <div class="champ">
+        <label for="f-adresse">Adresse de l'entreprise (optionnel — mentions légales du PDF)</label>
+        <input type="text" id="f-adresse" placeholder="45 avenue de la Mer, 76200 Dieppe">
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div class="champ">
+          <label for="f-siret">SIRET (optionnel)</label>
+          <input type="text" id="f-siret" placeholder="123 456 789 00012">
+        </div>
+        <div class="champ">
+          <label for="f-numero-tva">N° TVA (optionnel)</label>
+          <input type="text" id="f-numero-tva" placeholder="FR 48 123456789">
+        </div>
+      </div>
+
+      <div class="champ">
         <label for="f-email-notif">Email de notification des leads (celui du client, pas le tien)</label>
         <input type="email" id="f-email-notif" placeholder="contact@client.fr">
       </div>
@@ -511,6 +527,9 @@
       nom_entreprise: nomEntreprise,
       couleur_principale: document.getElementById('f-couleur').value,
       logo_url: document.getElementById('f-logo-url').value.trim() || null,
+      adresse: document.getElementById('f-adresse').value.trim() || null,
+      siret: document.getElementById('f-siret').value.trim() || null,
+      numero_tva: document.getElementById('f-numero-tva').value.trim() || null,
       email_notification_leads: emailNotif,
       formule: document.getElementById('f-formule').value,
       mode_utilisation: document.getElementById('f-mode-utilisation').value,
