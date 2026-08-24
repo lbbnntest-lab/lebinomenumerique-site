@@ -242,6 +242,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // photos (privilégiées par Claude à la génération) et valider chaque post
   // avant de le publier lui-même (publication manuelle, pas d'API sociale).
   let calendrierSocialId = null;
+  let photosClientDisponibles = []; // rafraîchi par chargerMesPhotos(), réutilisé par l'éditeur de post
 
   const LIBELLES_STATUT_POST = {
     en_attente_validation: { texte: "En attente de validation", classe: "attente" },
@@ -249,11 +250,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     publie: { texte: "Publié", classe: "publie" }
   };
 
+  // Le client peut modifier le texte et/ou remplacer la photo (Pexels ou une
+  // autre photo client) d'un post avant de le valider — utile s'il aime le
+  // texte généré mais préfère mettre sa propre photo. Pas de restriction de
+  // colonnes côté RLS (la policy autorise déjà toute mise à jour sur ses
+  // propres posts), donc aucun changement backend nécessaire.
+  function rendreEditeurPost(p) {
+    const optionsPhotos = photosClientDisponibles.map((photo) => `
+      <img src="${photo.url_publique}" class="photo-selectionnable${photo.id === p.photo_client_id ? " selectionnee" : ""}"
+           data-photo-id="${photo.id}" data-photo-url="${photo.url_publique}" title="${photo.description ? echapperHtmlDevis(photo.description) : ""}">
+    `).join("");
+    return `
+      <div class="zone-edition-post hidden" data-edition-id="${p.id}">
+        <textarea class="edition-texte" rows="4">${echapperHtmlDevis(p.texte_post)}</textarea>
+        <p class="carte-devis-meta" style="margin-top:8px;">Choisir une photo (optionnel) :</p>
+        <div class="grille-photos-edition">
+          <div class="photo-option-aucune${!p.photo_client_id ? " selectionnee" : ""}" data-photo-id="" data-photo-url="">Pas de photo perso</div>
+          ${optionsPhotos}
+        </div>
+        <button class="btn btn-primaire btn-enregistrer-edition" data-id="${p.id}" style="margin-top:10px;">Enregistrer</button>
+        <button class="btn-lien btn-annuler-edition" data-id="${p.id}" style="margin-left:10px;">Annuler</button>
+      </div>`;
+  }
+
   async function chargerMesPosts() {
     const conteneur = document.getElementById("liste-mes-posts-sociaux");
     const { data: posts, error } = await sb
       .from("posts_calendrier_social")
-      .select("id, date_publication_prevue, texte_post, image_url, statut")
+      .select("id, date_publication_prevue, texte_post, image_url, photo_client_id, statut")
       .eq("calendrier_id", calendrierSocialId)
       .order("date_publication_prevue", { ascending: true });
 
@@ -272,11 +296,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     conteneur.innerHTML = liste.map((p) => {
       const dateFormatee = new Date(p.date_publication_prevue).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
       const statutInfo = LIBELLES_STATUT_POST[p.statut] || { texte: p.statut, classe: "attente" };
-      let bouton = "";
+      let boutons = "";
       if (p.statut === "en_attente_validation") {
-        bouton = `<button class="btn btn-secondaire btn-valider-post" data-id="${p.id}" style="margin-top:10px;">Valider ce post</button>`;
+        boutons = `<button class="btn btn-secondaire btn-valider-post" data-id="${p.id}" style="margin-top:10px;">Valider ce post</button>`;
       } else if (p.statut === "a_publier") {
-        bouton = `<button class="btn btn-secondaire btn-marquer-publie" data-id="${p.id}" style="margin-top:10px;">Marquer comme publié</button>`;
+        boutons = `<button class="btn btn-secondaire btn-marquer-publie" data-id="${p.id}" style="margin-top:10px;">Marquer comme publié</button>`;
+      }
+      if (p.statut !== "publie") {
+        boutons += `<button class="btn-lien btn-modifier-post" data-id="${p.id}" style="margin-top:10px; margin-left:10px;">Modifier</button>`;
       }
       return `
         <div class="carte-post-social">
@@ -284,7 +311,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="contenu-post">
             <div class="carte-devis-meta">${dateFormatee}<span class="badge-statut-post ${statutInfo.classe}">${statutInfo.texte}</span></div>
             <p class="texte-post">${echapperHtmlDevis(p.texte_post)}</p>
-            ${bouton}
+            ${boutons}
+            ${p.statut !== "publie" ? rendreEditeurPost(p) : ""}
           </div>
         </div>`;
     }).join("");
@@ -303,6 +331,41 @@ document.addEventListener("DOMContentLoaded", async () => {
         await chargerMesPosts();
       });
     });
+    conteneur.querySelectorAll(".btn-modifier-post").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        conteneur.querySelector(`.zone-edition-post[data-edition-id="${btn.dataset.id}"]`)?.classList.toggle("hidden");
+      });
+    });
+    conteneur.querySelectorAll(".btn-annuler-edition").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        conteneur.querySelector(`.zone-edition-post[data-edition-id="${btn.dataset.id}"]`)?.classList.add("hidden");
+      });
+    });
+    conteneur.querySelectorAll(".zone-edition-post").forEach((zone) => {
+      zone.querySelectorAll(".photo-selectionnable, .photo-option-aucune").forEach((el) => {
+        el.addEventListener("click", () => {
+          zone.querySelectorAll(".photo-selectionnable, .photo-option-aucune").forEach((autre) => autre.classList.remove("selectionnee"));
+          el.classList.add("selectionnee");
+        });
+      });
+    });
+    conteneur.querySelectorAll(".btn-enregistrer-edition").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const zone = conteneur.querySelector(`.zone-edition-post[data-edition-id="${btn.dataset.id}"]`);
+        const nouveauTexte = zone.querySelector(".edition-texte").value.trim();
+        const elementSelectionne = zone.querySelector(".photo-selectionnable.selectionnee, .photo-option-aucune.selectionnee");
+        if (!nouveauTexte) return;
+
+        btn.disabled = true;
+        btn.textContent = "Enregistrement...";
+        await sb.from("posts_calendrier_social").update({
+          texte_post: nouveauTexte,
+          photo_client_id: elementSelectionne?.dataset.photoId || null,
+          image_url: elementSelectionne?.dataset.photoUrl || null
+        }).eq("id", btn.dataset.id);
+        await chargerMesPosts();
+      });
+    });
   }
 
   async function chargerMesPhotos() {
@@ -313,7 +376,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       .eq("calendrier_id", calendrierSocialId)
       .order("created_at", { ascending: false });
 
-    conteneur.innerHTML = (photos || []).map((p) => `<img src="${p.url_publique}" title="${p.description ? echapperHtmlDevis(p.description) : ""}${p.utilisee ? " (déjà utilisée)" : ""}" style="${p.utilisee ? "opacity:.5;" : ""}">`).join("");
+    photosClientDisponibles = photos || [];
+    conteneur.innerHTML = photosClientDisponibles.map((p) => `<img src="${p.url_publique}" title="${p.description ? echapperHtmlDevis(p.description) : ""}${p.utilisee ? " (déjà utilisée)" : ""}" style="${p.utilisee ? "opacity:.5;" : ""}">`).join("");
   }
 
   async function chargerMesContenus() {
@@ -329,7 +393,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     calendrierSocialId = calendrier.id;
     document.getElementById("contenus").classList.remove("hidden");
-    await Promise.all([chargerMesPosts(), chargerMesPhotos()]);
+    await chargerMesPhotos(); // doit se charger avant les posts : leur éditeur affiche la liste des photos disponibles
+    await chargerMesPosts();
   }
 
   function fichierEnBase64(fichier) {
@@ -376,6 +441,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       inputFichier.value = "";
       inputDescription.value = "";
       await chargerMesPhotos();
+      await chargerMesPosts(); // les éditeurs de post doivent proposer la photo qui vient d'être ajoutée
     } catch (err) {
       messageEl.innerHTML = `<span class="message-erreur">${err.message || "Une erreur est survenue."}</span>`;
     } finally {
