@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Mon devis en ligne — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .zone-config { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
+  .carte-config { background: var(--blanc); border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .champ { margin-bottom: 16px; }
+  .champ label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
+  .champ input, .champ select { width: 100%; padding: 9px 11px; border: 1px solid #d7d7db; border-radius: 8px; font-size: 0.92rem; font-family: inherit; }
+  .rangee-bareme { border: 1px solid #e2e2e4; border-radius: 8px; padding: 12px; margin-bottom: 10px; background: #f7f7f8; }
+  .rangee-bareme.incomplete { border-color: #B23A2E; background: #fdecea; }
+  .rangee-bareme .ligne { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .rangee-bareme .ligne > * { flex: 1; min-width: 120px; }
+  .avertissement-champ { color: #B23A2E; font-size: 0.78rem; margin: -4px 0 8px; }
+  .btn-lien { background: none; border: none; color: #B23A2E; font-size: 0.82rem; cursor: pointer; text-decoration: underline; padding: 0; }
+  #message { padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; display: none; }
+  #message.err { display: block; background: #fdecea; color: #B23A2E; }
+  #message.ok { display: block; background: #eaf5ec; color: #2E7D32; }
+  #etat-chargement, #etat-vide, #etat-erreur { text-align: center; color: #666; padding: 40px 0; }
+  #zone-formulaire { display: none; }
+  code { background: #eef; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; word-break: break-all; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
+    <nav>
+      <a href="dashboard-client.html">Mon espace</a>
+      <a href="#" onclick="logout()">Se déconnecter</a>
+    </nav>
+  </div>
+</header>
+
+<div class="zone-config">
+  <h2>Mon devis en ligne</h2>
+  <p class="sous-titre-section">Ajustez le barème, le logo et les informations affichées sur votre configurateur de devis.</p>
+
+  <div id="etat-chargement">Chargement…</div>
+  <div id="etat-vide" style="display:none;">Vous n'avez pas encore ce produit — contactez votre conseiller pour en savoir plus.</div>
+  <div id="etat-erreur" style="display:none;">Une erreur est survenue — réessayez plus tard.</div>
+
+  <div id="zone-formulaire">
+    <div class="carte-config">
+      <p class="note" style="color:#555; font-size:0.88rem;">Votre lien à partager avec vos clients :</p>
+      <code id="mon-lien"></code>
+    </div>
+
+    <div class="carte-config">
+      <div id="message"></div>
+
+      <div class="champ">
+        <label for="f-nom-entreprise">Nom de l'entreprise</label>
+        <input type="text" id="f-nom-entreprise">
+      </div>
+      <div class="champ">
+        <label for="f-couleur">Couleur principale</label>
+        <input type="color" id="f-couleur" style="height:42px; padding:4px;">
+      </div>
+      <div class="champ">
+        <label for="f-logo-url">URL du logo (affiché sur le devis imprimé/PDF)</label>
+        <input type="text" id="f-logo-url" placeholder="https://.../logo.png">
+      </div>
+      <div class="champ">
+        <label for="f-adresse">Adresse de l'entreprise</label>
+        <input type="text" id="f-adresse">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div class="champ">
+          <label for="f-siret">SIRET</label>
+          <input type="text" id="f-siret">
+        </div>
+        <div class="champ">
+          <label for="f-numero-tva">N° TVA</label>
+          <input type="text" id="f-numero-tva">
+        </div>
+      </div>
+      <div class="champ">
+        <label for="f-mode-utilisation">Mode d'utilisation</label>
+        <select id="f-mode-utilisation">
+          <option value="site">Site — mes clients remplissent eux-mêmes le devis</option>
+          <option value="terrain">Terrain — je remplis moi-même sur place</option>
+        </select>
+      </div>
+      <div class="champ">
+        <label>Formule (contactez votre conseiller pour changer de formule)</label>
+        <input type="text" id="f-formule" disabled>
+      </div>
+
+      <div class="champ">
+        <label for="f-bareme-base">Prix de base du devis (€)</label>
+        <input type="number" id="f-bareme-base">
+      </div>
+      <div class="champ">
+        <label>Options du barème</label>
+        <div id="liste-champs-bareme"></div>
+        <button type="button" class="btn btn-secondaire" id="btn-ajouter-champ">+ Ajouter une option</button>
+      </div>
+
+      <button class="btn btn-primaire" id="btn-enregistrer">Enregistrer les modifications</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+(function () {
+  var URL_PAGE_PUBLIQUE = 'https://lbbnntest-lab.github.io/lebinomenumerique-site/devis-marque-blanche.html';
+  var champsBareme = [];
+  var session = null;
+
+  function afficherMessage(texte, ok) {
+    var el = document.getElementById('message');
+    el.textContent = texte;
+    el.className = ok ? 'ok' : 'err';
+    el.style.display = 'block';
+  }
+
+  function champEstComplet(champ) {
+    return !!(champ.id && champ.id.trim() && champ.label && champ.label.trim());
+  }
+
+  function majValiditeRangee(div, champ) {
+    var complet = champEstComplet(champ);
+    div.classList.toggle('incomplete', !complet);
+    var avert = div.querySelector('.avertissement-champ');
+    if (avert) avert.style.display = complet ? 'none' : 'block';
+  }
+
+  function rendreChampsBareme() {
+    var conteneur = document.getElementById('liste-champs-bareme');
+    conteneur.innerHTML = '';
+    champsBareme.forEach(function (champ, index) {
+      var div = document.createElement('div');
+      div.className = 'rangee-bareme';
+      var ligne1 = document.createElement('div');
+      ligne1.className = 'ligne';
+
+      var inputId = document.createElement('input');
+      inputId.placeholder = 'Identifiant interne (ex: nb_pieces)';
+      inputId.value = champ.id || '';
+      inputId.addEventListener('input', function () { champ.id = inputId.value; majValiditeRangee(div, champ); });
+      ligne1.appendChild(inputId);
+
+      var inputLabel = document.createElement('input');
+      inputLabel.placeholder = 'Libellé affiché au client';
+      inputLabel.value = champ.label || '';
+      inputLabel.addEventListener('input', function () { champ.label = inputLabel.value; majValiditeRangee(div, champ); });
+      ligne1.appendChild(inputLabel);
+
+      var selectType = document.createElement('select');
+      ['nombre', 'checkbox', 'radio'].forEach(function (t) {
+        var opt = document.createElement('option');
+        opt.value = t; opt.textContent = t === 'nombre' ? 'Nombre' : (t === 'checkbox' ? 'Case à cocher' : 'Choix multiple');
+        if (champ.type === t) opt.selected = true;
+        selectType.appendChild(opt);
+      });
+      selectType.addEventListener('change', function () { champ.type = selectType.value; rendreChampsBareme(); });
+      ligne1.appendChild(selectType);
+
+      var btnSupprimer = document.createElement('button');
+      btnSupprimer.type = 'button';
+      btnSupprimer.className = 'btn-lien';
+      btnSupprimer.textContent = 'Retirer';
+      btnSupprimer.addEventListener('click', function () { champsBareme.splice(index, 1); rendreChampsBareme(); });
+      ligne1.appendChild(btnSupprimer);
+
+      div.appendChild(ligne1);
+
+      var avertissement = document.createElement('p');
+      avertissement.className = 'avertissement-champ';
+      avertissement.textContent = 'Identifiant et libellé requis.';
+      avertissement.style.display = 'none';
+      div.appendChild(avertissement);
+      majValiditeRangee(div, champ);
+
+      if (champ.type === 'nombre') {
+        var ligne2 = document.createElement('div');
+        ligne2.className = 'ligne';
+        var inputUnite = document.createElement('input');
+        inputUnite.type = 'number';
+        inputUnite.placeholder = 'Prix par unité (€)';
+        inputUnite.value = champ.unite != null ? champ.unite : '';
+        inputUnite.addEventListener('input', function () { champ.unite = parseFloat(inputUnite.value) || 0; });
+        ligne2.appendChild(inputUnite);
+        div.appendChild(ligne2);
+      } else if (champ.type === 'checkbox') {
+        var ligne2b = document.createElement('div');
+        ligne2b.className = 'ligne';
+        var inputValeur = document.createElement('input');
+        inputValeur.type = 'number';
+        inputValeur.placeholder = 'Supplément si coché (€)';
+        inputValeur.value = champ.valeur != null ? champ.valeur : '';
+        inputValeur.addEventListener('input', function () { champ.valeur = parseFloat(inputValeur.value) || 0; });
+        ligne2b.appendChild(inputValeur);
+        div.appendChild(ligne2b);
+      } else if (champ.type === 'radio') {
+        if (!champ.options) champ.options = [{ label: '', valeur: 0 }];
+        champ.options.forEach(function (option) {
+          var ligneOption = document.createElement('div');
+          ligneOption.className = 'ligne';
+          var inputOptionLabel = document.createElement('input');
+          inputOptionLabel.placeholder = 'Option (ex: Standard)';
+          inputOptionLabel.value = option.label || '';
+          inputOptionLabel.addEventListener('input', function () { option.label = inputOptionLabel.value; });
+          ligneOption.appendChild(inputOptionLabel);
+          var inputOptionValeur = document.createElement('input');
+          inputOptionValeur.type = 'number';
+          inputOptionValeur.placeholder = 'Supplément (€)';
+          inputOptionValeur.value = option.valeur != null ? option.valeur : '';
+          inputOptionValeur.addEventListener('input', function () { option.valeur = parseFloat(inputOptionValeur.value) || 0; });
+          ligneOption.appendChild(inputOptionValeur);
+          div.appendChild(ligneOption);
+        });
+        var btnAjouterOption = document.createElement('button');
+        btnAjouterOption.type = 'button';
+        btnAjouterOption.className = 'btn-lien';
+        btnAjouterOption.style.color = 'var(--bleu-primaire)';
+        btnAjouterOption.textContent = '+ Ajouter une option';
+        btnAjouterOption.addEventListener('click', function () { champ.options.push({ label: '', valeur: 0 }); rendreChampsBareme(); });
+        div.appendChild(btnAjouterOption);
+      }
+
+      conteneur.appendChild(div);
+    });
+  }
+  document.getElementById('btn-ajouter-champ').addEventListener('click', function () {
+    champsBareme.push({ id: '', label: '', type: 'nombre', unite: 0 });
+    rendreChampsBareme();
+  });
+
+  document.addEventListener('DOMContentLoaded', async function () {
+    session = await requireAuth('connexion.html');
+    if (!session) return;
+
+    try {
+      var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/devis-mb-client-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: session.access_token })
+      });
+      document.getElementById('etat-chargement').style.display = 'none';
+
+      if (resp.status === 404) {
+        document.getElementById('etat-vide').style.display = 'block';
+        return;
+      }
+      if (!resp.ok) throw new Error('reseau');
+
+      var config = await resp.json();
+
+      document.getElementById('mon-lien').textContent = URL_PAGE_PUBLIQUE + '?token=' + config.token_widget;
+      document.getElementById('f-nom-entreprise').value = config.nom_entreprise || '';
+      document.getElementById('f-couleur').value = config.couleur_principale || '#1F6F78';
+      document.getElementById('f-logo-url').value = config.logo_url || '';
+      document.getElementById('f-adresse').value = config.adresse || '';
+      document.getElementById('f-siret').value = config.siret || '';
+      document.getElementById('f-numero-tva').value = config.numero_tva || '';
+      document.getElementById('f-mode-utilisation').value = config.mode_utilisation || 'site';
+      document.getElementById('f-formule').value = config.formule === 'pro' ? 'Pro' : 'Starter';
+      document.getElementById('f-bareme-base').value = (config.bareme && config.bareme.base) || 0;
+      champsBareme = (config.bareme && config.bareme.champs) || [];
+      rendreChampsBareme();
+
+      document.getElementById('zone-formulaire').style.display = 'block';
+    } catch (err) {
+      document.getElementById('etat-chargement').style.display = 'none';
+      document.getElementById('etat-erreur').style.display = 'block';
+    }
+  });
+
+  document.getElementById('btn-enregistrer').addEventListener('click', async function () {
+    var messageEl = document.getElementById('message');
+    var btn = this;
+    messageEl.style.display = 'none';
+
+    var champIncomplet = champsBareme.find(function (c) { return !champEstComplet(c); });
+    if (champIncomplet) {
+      afficherMessage("Une option du barème est incomplète (identifiant ou libellé manquant) — complète-la ou retire-la avant d'enregistrer.", false);
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement...';
+
+    try {
+      var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/devis-mb-client-modifier', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_token: session.access_token,
+          nom_entreprise: document.getElementById('f-nom-entreprise').value.trim(),
+          couleur_principale: document.getElementById('f-couleur').value,
+          logo_url: document.getElementById('f-logo-url').value.trim() || null,
+          adresse: document.getElementById('f-adresse').value.trim() || null,
+          siret: document.getElementById('f-siret').value.trim() || null,
+          numero_tva: document.getElementById('f-numero-tva').value.trim() || null,
+          mode_utilisation: document.getElementById('f-mode-utilisation').value,
+          bareme: { base: parseFloat(document.getElementById('f-bareme-base').value) || 0, champs: champsBareme }
+        })
+      });
+      if (!resp.ok) throw new Error('Échec de l\'enregistrement.');
+      afficherMessage('Modifications enregistrées.', true);
+    } catch (err) {
+      afficherMessage(err.message || 'Une erreur est survenue.', false);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enregistrer les modifications';
+    }
+  });
+})();
+</script>
+</body>
+</html>

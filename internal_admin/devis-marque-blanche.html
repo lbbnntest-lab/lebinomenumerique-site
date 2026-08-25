@@ -85,12 +85,13 @@
 
   <div id="zone-outil" style="display:none;">
 
-    <div class="carte">
-      <h2>Créer une configuration</h2>
+    <div class="carte" id="carte-formulaire">
+      <h2 id="titre-formulaire">Créer une configuration</h2>
       <p class="note">
-        Le client final n'a pas d'espace self-service pour l'instant — cette page sert au fondateur pour
-        configurer un devis en marque blanche après une vente manuelle, puis transmettre le lien au client.
-        Ses leads (les devis remplis par SES propres prospects) lui sont envoyés par email, jamais à BN.
+        Cette page sert au fondateur pour configurer un devis en marque blanche après une vente manuelle, puis
+        transmettre le lien au client — le client peut aussi modifier sa propre config ensuite depuis son espace
+        (page <code>mon-devis-config.html</code>). Ses leads (les devis remplis par SES propres prospects) lui
+        sont envoyés par email, jamais à BN.
       </p>
 
       <div class="champ">
@@ -177,6 +178,7 @@
       </div>
 
       <button class="btn" id="btn-creer">Créer la configuration</button>
+      <button class="btn-lien" id="btn-annuler-edition" style="display:none; margin-left:12px;">Annuler la modification</button>
     </div>
 
     <div class="carte" id="carte-resultat" style="display:none;">
@@ -192,7 +194,7 @@
       <div id="etat-vide" style="display:none;">Aucune configuration créée pour l'instant.</div>
       <table id="table-liste" style="display:none; margin-top:10px;">
         <thead>
-          <tr><th>Entreprise</th><th>Compte client</th><th>Formule</th><th>Mode</th><th>Lien</th></tr>
+          <tr><th>Entreprise</th><th>Compte client</th><th>Formule</th><th>Mode</th><th>Lien</th><th></th></tr>
         </thead>
         <tbody id="corps-table"></tbody>
       </table>
@@ -205,6 +207,7 @@
 (function () {
   var URL_LISTE = 'https://lbn.app.n8n.cloud/webhook/admin-devis-mb-liste';
   var URL_CREER = 'https://lbn.app.n8n.cloud/webhook/admin-devis-mb-creer';
+  var URL_MODIFIER = 'https://lbn.app.n8n.cloud/webhook/admin-devis-mb-modifier';
   var URL_PAGE_PUBLIQUE = 'https://lbbnntest-lab.github.io/lebinomenumerique-site/devis-marque-blanche.html';
   var CLE_STOCKAGE = 'lbn_admin_cle_devis_mb';
 
@@ -459,7 +462,62 @@
     tdLien.appendChild(lien);
     tr.appendChild(tdLien);
 
+    var tdAction = document.createElement('td');
+    var btnModifier = document.createElement('button');
+    btnModifier.className = 'btn btn-secondaire';
+    btnModifier.style.padding = '5px 12px';
+    btnModifier.style.fontSize = '0.82rem';
+    btnModifier.textContent = 'Modifier';
+    btnModifier.addEventListener('click', function () { entrerEnModeEdition(config); });
+    tdAction.appendChild(btnModifier);
+    tr.appendChild(tdAction);
+
     return tr;
+  }
+
+  // ---------- Modification ----------
+  var idEnEdition = null;
+
+  function entrerEnModeEdition(config) {
+    idEnEdition = config.id;
+
+    document.getElementById('f-compte-client-id').value = config.compte_client_id;
+    document.getElementById('f-compte-client-id').disabled = true;
+    document.getElementById('f-nom-entreprise').value = config.nom_entreprise || '';
+    document.getElementById('f-couleur').value = config.couleur_principale || '#1F6F78';
+    document.getElementById('f-logo-url').value = config.logo_url || '';
+    document.getElementById('f-adresse').value = config.adresse || '';
+    document.getElementById('f-siret').value = config.siret || '';
+    document.getElementById('f-numero-tva').value = config.numero_tva || '';
+    document.getElementById('f-email-notif').value = config.email_notification_leads || '';
+    document.getElementById('f-formule').value = config.formule || 'starter';
+    document.getElementById('f-mode-utilisation').value = config.mode_utilisation || 'site';
+    document.getElementById('f-bareme-base').value = (config.bareme && config.bareme.base) || 0;
+    champsBareme = JSON.parse(JSON.stringify((config.bareme && config.bareme.champs) || []));
+    rendreChampsBareme();
+
+    document.getElementById('btn-creer').textContent = 'Enregistrer les modifications';
+    document.getElementById('btn-annuler-edition').style.display = 'inline-block';
+    document.getElementById('titre-formulaire').textContent = 'Modifier la configuration — ' + config.nom_entreprise;
+    document.getElementById('carte-formulaire').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function sortirDuModeEdition() {
+    idEnEdition = null;
+    document.getElementById('f-compte-client-id').disabled = false;
+    document.getElementById('f-compte-client-id').value = '';
+    document.getElementById('f-nom-entreprise').value = '';
+    document.getElementById('f-logo-url').value = '';
+    document.getElementById('f-adresse').value = '';
+    document.getElementById('f-siret').value = '';
+    document.getElementById('f-numero-tva').value = '';
+    document.getElementById('f-email-notif').value = '';
+    document.getElementById('f-bareme-base').value = '';
+    champsBareme = [];
+    rendreChampsBareme();
+    document.getElementById('btn-creer').textContent = 'Créer la configuration';
+    document.getElementById('btn-annuler-edition').style.display = 'none';
+    document.getElementById('titre-formulaire').textContent = 'Créer une configuration';
   }
 
   function chargerListe() {
@@ -502,28 +560,28 @@
       });
   }
 
-  // ---------- Création ----------
+  // ---------- Création / Modification ----------
   document.getElementById('btn-creer').addEventListener('click', function () {
     masquerMessage();
+    var enEdition = !!idEnEdition;
     var compteClientId = document.getElementById('f-compte-client-id').value.trim();
     var nomEntreprise = document.getElementById('f-nom-entreprise').value.trim();
     var emailNotif = document.getElementById('f-email-notif').value.trim();
 
-    if (!compteClientId || !nomEntreprise || !emailNotif) {
+    if ((!enEdition && !compteClientId) || !nomEntreprise || !emailNotif) {
       afficherMessage("L'ID du compte client, le nom de l'entreprise et l'email de notification sont requis.", false);
       return;
     }
 
     var champIncomplet = champsBareme.find(function (c) { return !champEstComplet(c); });
     if (champIncomplet) {
-      afficherMessage("Une option du barème est incomplète (identifiant ou libellé manquant) — complète-la ou retire-la avant de créer la configuration. Regarde l'aperçu ci-dessus, elle est signalée en rouge.", false);
+      afficherMessage("Une option du barème est incomplète (identifiant ou libellé manquant) — complète-la ou retire-la avant de continuer. Regarde l'aperçu ci-dessus, elle est signalée en rouge.", false);
       return;
     }
 
     var base = parseFloat(document.getElementById('f-bareme-base').value) || 0;
     var body = {
       cle: cleActuelle,
-      compte_client_id: compteClientId,
       nom_entreprise: nomEntreprise,
       couleur_principale: document.getElementById('f-couleur').value,
       logo_url: document.getElementById('f-logo-url').value.trim() || null,
@@ -535,26 +593,30 @@
       mode_utilisation: document.getElementById('f-mode-utilisation').value,
       bareme: { base: base, champs: champsBareme }
     };
+    if (enEdition) { body.id = idEnEdition; } else { body.compte_client_id = compteClientId; }
 
     var btn = this;
     btn.disabled = true;
-    btn.textContent = 'Création...';
+    btn.textContent = enEdition ? 'Enregistrement...' : 'Création...';
 
-    fetch(URL_CREER, {
+    fetch(enEdition ? URL_MODIFIER : URL_CREER, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     })
       .then(function (r) {
         if (r.status === 403) throw new Error('cle');
-        if (!r.ok) return r.text().then(function (t) { throw new Error(t || 'Échec de la création.'); });
+        if (!r.ok) return r.text().then(function (t) { throw new Error(t || 'Échec de l\'opération.'); });
         return r.json();
       })
       .then(function (data) {
         var config = Array.isArray(data) ? data[0] : data;
-        document.getElementById('lien-devis').textContent = URL_PAGE_PUBLIQUE + '?token=' + config.token_widget;
-        document.getElementById('carte-resultat').style.display = 'block';
-        afficherMessage('Configuration créée avec succès.', true);
+        if (!enEdition) {
+          document.getElementById('lien-devis').textContent = URL_PAGE_PUBLIQUE + '?token=' + config.token_widget;
+          document.getElementById('carte-resultat').style.display = 'block';
+        }
+        afficherMessage(enEdition ? 'Configuration modifiée avec succès.' : 'Configuration créée avec succès.', true);
+        if (enEdition) sortirDuModeEdition();
         chargerListe();
       })
       .catch(function (err) {
@@ -562,8 +624,13 @@
       })
       .finally(function () {
         btn.disabled = false;
-        btn.textContent = 'Créer la configuration';
+        btn.textContent = idEnEdition ? 'Enregistrer les modifications' : 'Créer la configuration';
       });
+  });
+
+  document.getElementById('btn-annuler-edition').addEventListener('click', function () {
+    masquerMessage();
+    sortirDuModeEdition();
   });
 
   document.getElementById('btn-actualiser').addEventListener('click', chargerListe);
