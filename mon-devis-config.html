@@ -82,6 +82,24 @@
         </div>
       </div>
       <div class="champ">
+        <label for="f-lien-cgv">Lien vers vos CGV (optionnel)</label>
+        <input type="text" id="f-lien-cgv" placeholder="https://.../cgv">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 2fr; gap:16px;">
+        <div class="champ">
+          <label for="f-validite-jours">Validité du devis (jours)</label>
+          <input type="number" id="f-validite-jours" placeholder="30">
+        </div>
+        <div class="champ">
+          <label for="f-conditions-paiement">Conditions de paiement</label>
+          <input type="text" id="f-conditions-paiement" placeholder="Acompte 30% à la commande...">
+        </div>
+      </div>
+      <div class="champ">
+        <label for="f-note-libre">Note libre (affichée sur le devis)</label>
+        <input type="text" id="f-note-libre" placeholder="Merci de votre confiance !">
+      </div>
+      <div class="champ">
         <label for="f-mode-utilisation">Mode d'utilisation</label>
         <select id="f-mode-utilisation">
           <option value="site">Site — mes clients remplissent eux-mêmes le devis</option>
@@ -267,6 +285,10 @@
       document.getElementById('f-adresse').value = config.adresse || '';
       document.getElementById('f-siret').value = config.siret || '';
       document.getElementById('f-numero-tva').value = config.numero_tva || '';
+      document.getElementById('f-lien-cgv').value = config.lien_cgv || '';
+      document.getElementById('f-validite-jours').value = config.validite_jours || '';
+      document.getElementById('f-conditions-paiement').value = config.conditions_paiement || '';
+      document.getElementById('f-note-libre').value = config.note_libre || '';
       document.getElementById('f-mode-utilisation').value = config.mode_utilisation || 'site';
       document.getElementById('f-formule').value = config.formule === 'pro' ? 'Pro' : 'Starter';
       document.getElementById('f-bareme-base').value = (config.bareme && config.bareme.base) || 0;
@@ -306,6 +328,10 @@
           adresse: document.getElementById('f-adresse').value.trim() || null,
           siret: document.getElementById('f-siret').value.trim() || null,
           numero_tva: document.getElementById('f-numero-tva').value.trim() || null,
+          lien_cgv: document.getElementById('f-lien-cgv').value.trim() || null,
+          validite_jours: parseInt(document.getElementById('f-validite-jours').value, 10) || null,
+          conditions_paiement: document.getElementById('f-conditions-paiement').value.trim() || null,
+          note_libre: document.getElementById('f-note-libre').value.trim() || null,
           mode_utilisation: document.getElementById('f-mode-utilisation').value,
           bareme: { base: parseFloat(document.getElementById('f-bareme-base').value) || 0, champs: champsBareme }
         })

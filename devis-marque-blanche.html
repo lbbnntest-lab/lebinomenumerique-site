@@ -75,6 +75,8 @@
       <div class="montant" id="montant-affiche">0 €</div>
     </div>
 
+    <div id="bloc-infos-complementaires" class="carte" style="display:none; font-size:0.88rem; color:#555;"></div>
+
     <div class="champ" id="bloc-montant-manuel" style="display:none;">
       <label for="f-montant-manuel">Montant final à annoncer au client (ajustable)</label>
       <input type="number" id="f-montant-manuel">
@@ -292,6 +294,18 @@
 
       elListeChamps.innerHTML = '';
       (config.bareme.champs || []).forEach(function (champ) { elListeChamps.appendChild(rendreChamp(champ)); });
+
+      function echapperHtml(t) { var div = document.createElement('div'); div.textContent = t == null ? '' : String(t); return div.innerHTML; }
+      var lignesInfos = [];
+      if (config.validite_jours) lignesInfos.push('Devis valable ' + config.validite_jours + ' jours à compter de sa date d\'émission.');
+      if (config.conditions_paiement) lignesInfos.push('Conditions de paiement : ' + echapperHtml(config.conditions_paiement));
+      if (config.note_libre) lignesInfos.push(echapperHtml(config.note_libre));
+      if (config.lien_cgv) lignesInfos.push('<a href="' + echapperHtml(config.lien_cgv) + '" target="_blank" rel="noopener">Voir nos conditions générales de vente</a>');
+      var elInfos = document.getElementById('bloc-infos-complementaires');
+      if (lignesInfos.length) {
+        elInfos.innerHTML = lignesInfos.map(function (l) { return '<p style="margin:4px 0;">' + l + '</p>'; }).join('');
+        elInfos.style.display = 'block';
+      }
 
       if (config.mode_utilisation === 'terrain') {
         // Le pro remplit lui-même en face de son client : pas besoin de forcer la
