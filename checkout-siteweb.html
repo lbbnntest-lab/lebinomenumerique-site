@@ -112,6 +112,25 @@
       <button type="button" class="btn btn-secondaire" id="btn-ajouter-produit" style="margin-bottom:20px;">+ Ajouter un produit</button>
     </div>
 
+    <hr style="margin:24px 0; border:none; border-top:1px solid #e5e7eb;">
+    <p style="font-weight:600; margin-bottom:6px;">Options</p>
+    <div class="champ">
+      <label>Assistant IA sur mon site</label>
+      <select id="option_chatbot_niveau">
+        <option value="0">Aucun assistant</option>
+        <option value="1">Niveau 1 — questions + capture du contact (+29€/mois)</option>
+        <option value="2">Niveau 2 — + prise de RDV (+49€/mois)</option>
+        <option value="3">Niveau 3 — + devis auto + alerte urgence (+89€/mois)</option>
+      </select>
+    </div>
+    <div id="champ-chatbot-calcom" class="champ hidden">
+      <label>Lien Cal.com pour la prise de RDV <small>(requis pour les Niveaux 2 et 3)</small></label>
+      <input type="url" id="chatbot_cal_com_link" placeholder="https://cal.com/...">
+    </div>
+    <p id="note-chatbot-n3" class="champ hidden" style="font-size:.85rem; color:var(--gris-texte); margin-top:-8px;">
+      Le barème de calcul du devis se configure depuis votre espace client après l'achat.
+    </p>
+
     <button type="submit" class="btn btn-primaire" style="width:100%;" id="btn-submit">Continuer vers le paiement</button>
     <p style="text-align:center; margin-top:12px; font-size:.85rem; color:var(--gris-texte);">
       Paiement sécurisé par Stripe. L'abonnement Hébergement est résiliable depuis votre espace client, sans effet rétroactif sur le site déjà livré.

@@ -100,7 +100,13 @@ const CATALOGUE_DEVIS = [
             { label: "Multi-pages avec prise de RDV", valeurs: { pages_supp: 3, multilingue: false, reservation: true, espace_membre: false, heures_dev: 10 } },
             { label: "Espace client, multilingue", valeurs: { pages_supp: 5, multilingue: true, reservation: true, espace_membre: true, heures_dev: 20 } }
           ]
-        } }
+        } },
+      { code: "site_chatbot_n1", nom: "Assistant IA du site — Niveau 1 (option)", prix: 29, recurrent: true,
+        description: "Chatbot sur le site généré — répond aux questions, capte le contact. Même tarif que le Chatbot marque blanche Niveau 1, sans setup (provisioning automatique)." },
+      { code: "site_chatbot_n2", nom: "Assistant IA du site — Niveau 2 (option)", prix: 49, recurrent: true,
+        description: "Niveau 1 + prise de RDV (lien Cal.com requis à la commande). Même tarif que le Chatbot marque blanche Niveau 2." },
+      { code: "site_chatbot_n3", nom: "Assistant IA du site — Niveau 3 (option)", prix: 89, recurrent: true,
+        description: "Niveau 2 + devis auto + alerte urgence (barème configuré par le client après achat). Même tarif que le Chatbot marque blanche Niveau 3." }
     ]
   },
   {

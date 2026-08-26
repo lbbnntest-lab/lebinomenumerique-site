@@ -9,6 +9,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnAjouterProduit = document.getElementById("btn-ajouter-produit");
   const MAX_PRODUITS = 30;
 
+  const optionChatbotNiveau = document.getElementById("option_chatbot_niveau");
+  const champChatbotCalcom = document.getElementById("champ-chatbot-calcom");
+  const noteChatbotN3 = document.getElementById("note-chatbot-n3");
+  optionChatbotNiveau.addEventListener("change", () => {
+    const niveau = parseInt(optionChatbotNiveau.value, 10);
+    champChatbotCalcom.classList.toggle("hidden", niveau < 2);
+    noteChatbotN3.classList.toggle("hidden", niveau < 3);
+  });
+
   if (codeReferenceParam) selectPack.value = codeReferenceParam;
   if (codeAffiliationParam) document.getElementById("code_affiliation").value = codeAffiliationParam;
 
@@ -61,6 +70,15 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.disabled = true;
     btn.textContent = "Préparation du paiement...";
 
+    const niveauChatbot = parseInt(optionChatbotNiveau.value, 10);
+    const lienCalComChatbot = document.getElementById("chatbot_cal_com_link").value.trim();
+    if (niveauChatbot >= 2 && !lienCalComChatbot) {
+      zoneMessage.innerHTML = `<p class="message-erreur">Le Niveau ${niveauChatbot} de l'assistant IA nécessite un lien Cal.com pour la prise de RDV.</p>`;
+      btn.disabled = false;
+      btn.textContent = "Continuer vers le paiement";
+      return;
+    }
+
     const payload = {
       code_reference: selectPack.value,
       type_compte: "B2B",
@@ -76,7 +94,9 @@ document.addEventListener("DOMContentLoaded", () => {
       contenu_supplementaire: document.getElementById("contenu_supplementaire").value.trim() || null,
       logo_url: document.getElementById("logo_url").value.trim() || null,
       photos_url: document.getElementById("photos_url").value.trim() || null,
-      produits: collecterProduits()
+      produits: collecterProduits(),
+      option_chatbot_niveau: niveauChatbot,
+      chatbot_cal_com_link: niveauChatbot >= 2 ? lienCalComChatbot : null
     };
 
     try {
