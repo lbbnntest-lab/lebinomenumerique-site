@@ -62,6 +62,34 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter((p) => p.nom);
   }
 
+  const listeAvis = document.getElementById("liste-avis");
+  const btnAjouterAvis = document.getElementById("btn-ajouter-avis");
+  const MAX_AVIS = 3;
+
+  function ajouterLigneAvis() {
+    if (listeAvis.children.length >= MAX_AVIS) return;
+    const ligne = document.createElement("div");
+    ligne.className = "ligne-avis";
+    ligne.style.cssText = "display:grid; grid-template-columns:1fr 2fr auto; gap:8px; margin-bottom:10px; align-items:center;";
+    ligne.innerHTML = `
+      <input type="text" class="avis-auteur" placeholder="Nom du client">
+      <input type="text" class="avis-texte" placeholder="Texte de l'avis">
+      <button type="button" class="btn-supprimer-avis" title="Supprimer" style="background:none; border:none; color:var(--rouge-alerte); font-size:1.2rem; cursor:pointer;">&times;</button>
+    `;
+    ligne.querySelector(".btn-supprimer-avis").addEventListener("click", () => ligne.remove());
+    listeAvis.appendChild(ligne);
+  }
+  btnAjouterAvis.addEventListener("click", ajouterLigneAvis);
+
+  function collecterAvis() {
+    return Array.from(listeAvis.querySelectorAll(".ligne-avis"))
+      .map((ligne) => ({
+        auteur: ligne.querySelector(".avis-auteur").value.trim(),
+        texte: ligne.querySelector(".avis-texte").value.trim()
+      }))
+      .filter((a) => a.auteur && a.texte);
+  }
+
   document.getElementById("form-checkout-siteweb").addEventListener("submit", async (e) => {
     e.preventDefault();
     const zoneMessage = document.getElementById("zone-message");
@@ -92,8 +120,14 @@ document.addEventListener("DOMContentLoaded", () => {
       code_affiliation: document.getElementById("code_affiliation").value || null,
       couleur_preferee: document.getElementById("couleur_preferee").value || null,
       contenu_supplementaire: document.getElementById("contenu_supplementaire").value.trim() || null,
+      nom_dirigeant: document.getElementById("nom_dirigeant").value.trim() || null,
+      histoire_entreprise: document.getElementById("histoire_entreprise").value.trim() || null,
+      differenciateur: document.getElementById("differenciateur").value.trim() || null,
+      zone_intervention: document.getElementById("zone_intervention").value.trim() || null,
+      horaires: document.getElementById("horaires").value.trim() || null,
       logo_url: document.getElementById("logo_url").value.trim() || null,
       photos_url: document.getElementById("photos_url").value.trim() || null,
+      avis_clients: collecterAvis(),
       produits: collecterProduits(),
       option_chatbot_niveau: niveauChatbot,
       chatbot_cal_com_link: niveauChatbot >= 2 ? lienCalComChatbot : null

@@ -94,12 +94,37 @@
       <textarea id="contenu_supplementaire" rows="3" maxlength="480" placeholder="Ex : nos 20 ans d'expérience, notre intervention rapide, notre atelier ouvert le samedi..."></textarea>
     </div>
     <div class="champ">
+      <label>Nom du dirigeant <small>(optionnel, affiché en signature sur la page À propos)</small></label>
+      <input type="text" id="nom_dirigeant">
+    </div>
+    <div class="champ">
+      <label>L'histoire de votre entreprise <small>(optionnel — depuis quand, comment ça a commencé...)</small></label>
+      <textarea id="histoire_entreprise" rows="3" maxlength="600" placeholder="Ex : Créée en 2015 par..., nous intervenons depuis..."></textarea>
+    </div>
+    <div class="champ">
+      <label>Ce qui vous différencie de la concurrence <small>(optionnel)</small></label>
+      <textarea id="differenciateur" rows="2" maxlength="400"></textarea>
+    </div>
+    <div class="champ">
+      <label>Zone d'intervention <small>(optionnel)</small></label>
+      <input type="text" id="zone_intervention" placeholder="Ex : Paris et la petite couronne">
+    </div>
+    <div class="champ">
+      <label>Horaires <small>(optionnel)</small></label>
+      <input type="text" id="horaires" placeholder="Ex : Lun-Ven 8h-18h, Sam sur RDV">
+    </div>
+    <div class="champ">
       <label>Lien vers votre logo <small>(optionnel)</small></label>
       <input type="url" id="logo_url" placeholder="https://...">
     </div>
     <div class="champ">
       <label>Lien vers vos photos <small>(optionnel — fiche Google, Instagram, Drive...)</small></label>
       <input type="url" id="photos_url" placeholder="https://...">
+    </div>
+    <div class="champ">
+      <label>Avis clients <small>(optionnel — jamais reformulés, affichés tels quels sur le site, max 3)</small></label>
+      <div id="liste-avis"></div>
+      <button type="button" class="btn btn-secondaire" id="btn-ajouter-avis">+ Ajouter un avis</button>
     </div>
 
     <div id="champs-catalogue" class="hidden">

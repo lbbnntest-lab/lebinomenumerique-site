@@ -194,11 +194,6 @@
     </div>
 
     <div class="champ">
-      <label for="f-description">Description (section À propos)</label>
-      <textarea id="f-description"></textarea>
-    </div>
-
-    <div class="champ">
       <label for="f-cta">Texte du bouton d'action (CTA)</label>
       <input type="text" id="f-cta" placeholder="ex: Réserver une table, Nous contacter, Demander un devis">
     </div>
@@ -208,55 +203,64 @@
       <input type="text" id="f-couleur" placeholder="ex: bleu, vert, rouge, orange, jaune, violet, rose, noir, gris, marron, turquoise">
     </div>
 
-    <div class="champ">
-      <label for="f-hero-image">Image de fond (URL)</label>
-      <input type="url" id="f-hero-image" placeholder="https://...">
-      <img id="apercu-hero" class="apercu-image" style="display:none;">
+    <div class="grille-2">
+      <div class="champ">
+        <label for="f-hero-image">Image hero (URL)</label>
+        <input type="url" id="f-hero-image" placeholder="https://...">
+        <img id="apercu-hero" class="apercu-image" style="display:none;">
+      </div>
+      <div class="champ">
+        <label for="f-apropos-image">Image À propos (URL)</label>
+        <input type="url" id="f-apropos-image" placeholder="https://...">
+      </div>
     </div>
 
-    <div id="bloc-services" style="display:none;">
-      <div class="grille-2">
-        <div class="champ"><label for="f-service-1-titre">Service 1 — titre</label><input type="text" id="f-service-1-titre"></div>
-        <div class="champ"><label for="f-service-1-description">Service 1 — description</label><input type="text" id="f-service-1-description"></div>
-      </div>
-      <div class="grille-2">
-        <div class="champ"><label for="f-service-2-titre">Service 2 — titre</label><input type="text" id="f-service-2-titre"></div>
-        <div class="champ"><label for="f-service-2-description">Service 2 — description</label><input type="text" id="f-service-2-description"></div>
-      </div>
-      <div class="grille-2">
-        <div class="champ"><label for="f-service-3-titre">Service 3 — titre</label><input type="text" id="f-service-3-titre"></div>
-        <div class="champ"><label for="f-service-3-description">Service 3 — description</label><input type="text" id="f-service-3-description"></div>
-      </div>
+    <h3 style="margin-top:24px;">Accueil</h3>
+    <div class="champ"><label for="f-accueil-intro">Introduction courte</label><textarea id="f-accueil-intro"></textarea></div>
+    <div class="champ">
+      <label>Points forts (cartes courtes de la page d'accueil)</label>
+      <div id="liste-points-forts"></div>
+      <button type="button" class="btn btn-secondaire" id="btn-ajouter-point-fort">+ Ajouter un point fort</button>
+    </div>
+
+    <h3 style="margin-top:24px;">Services</h3>
+    <div class="champ"><label for="f-services-intro">Introduction</label><textarea id="f-services-intro"></textarea></div>
+    <div class="champ">
+      <label>Services détaillés</label>
+      <div id="liste-services"></div>
+      <button type="button" class="btn btn-secondaire" id="btn-ajouter-service">+ Ajouter un service</button>
+    </div>
+
+    <h3 style="margin-top:24px;">À propos</h3>
+    <div class="champ"><label for="f-apropos-histoire">Histoire de l'entreprise</label><textarea id="f-apropos-histoire"></textarea></div>
+    <div class="champ"><label for="f-apropos-differenciation">Ce qui différencie</label><textarea id="f-apropos-differenciation"></textarea></div>
+    <div class="grille-2">
+      <div class="champ"><label for="f-apropos-zone">Zone d'intervention (phrase affichée)</label><input type="text" id="f-apropos-zone"></div>
+      <div class="champ"><label for="f-nom-dirigeant">Nom du dirigeant (signature)</label><input type="text" id="f-nom-dirigeant"></div>
+    </div>
+
+    <h3 style="margin-top:24px;">Contact</h3>
+    <div class="champ"><label for="f-contact-message">Message d'accroche</label><input type="text" id="f-contact-message"></div>
+    <div class="grille-2">
+      <div class="champ"><label for="f-zone-intervention">Zone d'intervention (bloc contact)</label><input type="text" id="f-zone-intervention"></div>
+      <div class="champ"><label for="f-horaires">Horaires</label><input type="text" id="f-horaires"></div>
+    </div>
+
+    <div id="bloc-boutique" style="display:none;">
+      <h3 style="margin-top:24px;">Boutique</h3>
+      <div class="champ"><label for="f-boutique-intro">Introduction</label><textarea id="f-boutique-intro"></textarea></div>
+    </div>
+
+    <h3 style="margin-top:24px;">Avis clients <small style="font-weight:400;">(jamais reformulés, affichés tels quels)</small></h3>
+    <div class="champ">
+      <div id="liste-avis"></div>
+      <button type="button" class="btn btn-secondaire" id="btn-ajouter-avis">+ Ajouter un avis</button>
     </div>
 
     <div id="bloc-produits" style="display:none;">
-      <div class="bloc-produit">
-        <h3>Produit 1</h3>
-        <div class="grille-2">
-          <div class="champ"><label for="f-produit-1-nom">Nom</label><input type="text" id="f-produit-1-nom"></div>
-          <div class="champ"><label for="f-produit-1-prix">Prix (€)</label><input type="number" step="0.01" id="f-produit-1-prix"></div>
-        </div>
-        <div class="champ"><label for="f-produit-1-description">Description</label><input type="text" id="f-produit-1-description"></div>
-        <div class="champ"><label for="f-produit-1-image">Image (URL)</label><input type="url" id="f-produit-1-image"></div>
-      </div>
-      <div class="bloc-produit">
-        <h3>Produit 2</h3>
-        <div class="grille-2">
-          <div class="champ"><label for="f-produit-2-nom">Nom</label><input type="text" id="f-produit-2-nom"></div>
-          <div class="champ"><label for="f-produit-2-prix">Prix (€)</label><input type="number" step="0.01" id="f-produit-2-prix"></div>
-        </div>
-        <div class="champ"><label for="f-produit-2-description">Description</label><input type="text" id="f-produit-2-description"></div>
-        <div class="champ"><label for="f-produit-2-image">Image (URL)</label><input type="url" id="f-produit-2-image"></div>
-      </div>
-      <div class="bloc-produit">
-        <h3>Produit 3</h3>
-        <div class="grille-2">
-          <div class="champ"><label for="f-produit-3-nom">Nom</label><input type="text" id="f-produit-3-nom"></div>
-          <div class="champ"><label for="f-produit-3-prix">Prix (€)</label><input type="number" step="0.01" id="f-produit-3-prix"></div>
-        </div>
-        <div class="champ"><label for="f-produit-3-description">Description</label><input type="text" id="f-produit-3-description"></div>
-        <div class="champ"><label for="f-produit-3-image">Image (URL)</label><input type="url" id="f-produit-3-image"></div>
-      </div>
+      <h3 style="margin-top:24px;">Produits</h3>
+      <div id="liste-produits"></div>
+      <button type="button" class="btn btn-secondaire" id="btn-ajouter-produit">+ Ajouter un produit</button>
     </div>
   </div>
 
@@ -307,65 +311,105 @@
   function valeur(id) { return document.getElementById(id).value; }
   function definir(id, val) { document.getElementById(id).value = val || ''; }
 
+  // Éditeurs de listes génériques (points forts, services, avis, produits) —
+  // même principe que les listes dynamiques de checkout-siteweb.js.
+  function creerEditeurListe(conteneurId, champs) {
+    var conteneur = document.getElementById(conteneurId);
+    function rendre(items) {
+      conteneur.innerHTML = '';
+      (items || []).forEach(function (item, index) {
+        var ligne = document.createElement('div');
+        ligne.className = 'ligne-liste';
+        ligne.style.cssText = 'display:grid; grid-template-columns:' + champs.map(function () { return '1fr'; }).join(' ') + ' auto; gap:8px; margin-bottom:10px; align-items:start;';
+        champs.forEach(function (champ) {
+          var input = document.createElement(champ.textarea ? 'textarea' : 'input');
+          if (!champ.textarea) input.type = 'text';
+          input.placeholder = champ.label;
+          input.value = item[champ.cle] || '';
+          input.dataset.cle = champ.cle;
+          ligne.appendChild(input);
+        });
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = '×';
+        btn.title = 'Supprimer';
+        btn.style.cssText = 'background:none; border:none; color:#B23A2E; font-size:1.2rem; cursor:pointer;';
+        btn.addEventListener('click', function () { ligne.remove(); });
+        ligne.appendChild(btn);
+        conteneur.appendChild(ligne);
+      });
+    }
+    function lire() {
+      return Array.from(conteneur.querySelectorAll('.ligne-liste')).map(function (ligne) {
+        var item = {};
+        ligne.querySelectorAll('[data-cle]').forEach(function (input) { item[input.dataset.cle] = input.value.trim(); });
+        return item;
+      }).filter(function (item) { return champs.some(function (c) { return item[c.cle]; }); });
+    }
+    function ajouterLigne() { rendre(lire().concat([{}])); }
+    return { rendre: rendre, lire: lire, ajouterLigne: ajouterLigne };
+  }
+
+  var editeurPointsForts = creerEditeurListe('liste-points-forts', [{ cle: 'titre', label: 'Titre' }, { cle: 'description', label: 'Description courte' }]);
+  var editeurServices = creerEditeurListe('liste-services', [{ cle: 'titre', label: 'Titre' }, { cle: 'description_longue', label: 'Description détaillée', textarea: true }]);
+  var editeurAvis = creerEditeurListe('liste-avis', [{ cle: 'auteur', label: 'Nom du client' }, { cle: 'texte', label: "Texte de l'avis" }]);
+  var editeurProduits = creerEditeurListe('liste-produits', [{ cle: 'nom', label: 'Nom' }, { cle: 'prix', label: 'Prix (€)' }, { cle: 'description', label: 'Description' }, { cle: 'image_url', label: 'Image (URL)' }]);
+
+  document.getElementById('btn-ajouter-point-fort').addEventListener('click', editeurPointsForts.ajouterLigne);
+  document.getElementById('btn-ajouter-service').addEventListener('click', editeurServices.ajouterLigne);
+  document.getElementById('btn-ajouter-avis').addEventListener('click', editeurAvis.ajouterLigne);
+  document.getElementById('btn-ajouter-produit').addEventListener('click', editeurProduits.ajouterLigne);
+
   function remplirFormulaire(contenu) {
     definir('f-tagline', contenu.tagline);
-    definir('f-description', contenu.description);
     definir('f-cta', contenu.cta_texte);
     definir('f-couleur', contenu.couleur_preferee);
     definir('f-hero-image', contenu.hero_image_url);
+    definir('f-apropos-image', contenu.a_propos_image_url);
     if (contenu.hero_image_url) {
       var img = document.getElementById('apercu-hero');
       img.src = contenu.hero_image_url;
       img.style.display = 'block';
     }
-    definir('f-service-1-titre', contenu.service_1_titre);
-    definir('f-service-1-description', contenu.service_1_description);
-    definir('f-service-2-titre', contenu.service_2_titre);
-    definir('f-service-2-description', contenu.service_2_description);
-    definir('f-service-3-titre', contenu.service_3_titre);
-    definir('f-service-3-description', contenu.service_3_description);
-    definir('f-produit-1-nom', contenu.produit_1_nom);
-    definir('f-produit-1-description', contenu.produit_1_description);
-    definir('f-produit-1-prix', contenu.produit_1_prix);
-    definir('f-produit-1-image', contenu.produit_1_image_url);
-    definir('f-produit-2-nom', contenu.produit_2_nom);
-    definir('f-produit-2-description', contenu.produit_2_description);
-    definir('f-produit-2-prix', contenu.produit_2_prix);
-    definir('f-produit-2-image', contenu.produit_2_image_url);
-    definir('f-produit-3-nom', contenu.produit_3_nom);
-    definir('f-produit-3-description', contenu.produit_3_description);
-    definir('f-produit-3-prix', contenu.produit_3_prix);
-    definir('f-produit-3-image', contenu.produit_3_image_url);
+    definir('f-accueil-intro', contenu.accueil_intro);
+    editeurPointsForts.rendre(contenu.accueil_points_forts);
+    definir('f-services-intro', contenu.services_intro);
+    editeurServices.rendre(contenu.services_liste);
+    definir('f-apropos-histoire', contenu.a_propos_histoire);
+    definir('f-apropos-differenciation', contenu.a_propos_differenciation);
+    definir('f-apropos-zone', contenu.a_propos_zone);
+    definir('f-nom-dirigeant', contenu.nom_dirigeant);
+    definir('f-contact-message', contenu.contact_message);
+    definir('f-zone-intervention', contenu.zone_intervention);
+    definir('f-horaires', contenu.horaires);
+    definir('f-boutique-intro', contenu.boutique_intro);
+    editeurAvis.rendre(contenu.avis_clients);
+    editeurProduits.rendre(contenu.produits);
   }
 
   function lireFormulaire() {
     var contenu = {
       tagline: valeur('f-tagline'),
-      description: valeur('f-description'),
       cta_texte: valeur('f-cta'),
       couleur_preferee: valeur('f-couleur'),
-      hero_image_url: valeur('f-hero-image')
+      hero_image_url: valeur('f-hero-image'),
+      a_propos_image_url: valeur('f-apropos-image'),
+      accueil_intro: valeur('f-accueil-intro'),
+      accueil_points_forts: editeurPointsForts.lire(),
+      services_intro: valeur('f-services-intro'),
+      services_liste: editeurServices.lire(),
+      a_propos_histoire: valeur('f-apropos-histoire'),
+      a_propos_differenciation: valeur('f-apropos-differenciation'),
+      a_propos_zone: valeur('f-apropos-zone'),
+      nom_dirigeant: valeur('f-nom-dirigeant'),
+      contact_message: valeur('f-contact-message'),
+      zone_intervention: valeur('f-zone-intervention'),
+      horaires: valeur('f-horaires'),
+      avis_clients: editeurAvis.lire()
     };
     if (codeReference === 'SITE_ECOMMERCE') {
-      contenu.produit_1_nom = valeur('f-produit-1-nom');
-      contenu.produit_1_description = valeur('f-produit-1-description');
-      contenu.produit_1_prix = valeur('f-produit-1-prix');
-      contenu.produit_1_image_url = valeur('f-produit-1-image');
-      contenu.produit_2_nom = valeur('f-produit-2-nom');
-      contenu.produit_2_description = valeur('f-produit-2-description');
-      contenu.produit_2_prix = valeur('f-produit-2-prix');
-      contenu.produit_2_image_url = valeur('f-produit-2-image');
-      contenu.produit_3_nom = valeur('f-produit-3-nom');
-      contenu.produit_3_description = valeur('f-produit-3-description');
-      contenu.produit_3_prix = valeur('f-produit-3-prix');
-      contenu.produit_3_image_url = valeur('f-produit-3-image');
-    } else {
-      contenu.service_1_titre = valeur('f-service-1-titre');
-      contenu.service_1_description = valeur('f-service-1-description');
-      contenu.service_2_titre = valeur('f-service-2-titre');
-      contenu.service_2_description = valeur('f-service-2-description');
-      contenu.service_3_titre = valeur('f-service-3-titre');
-      contenu.service_3_description = valeur('f-service-3-description');
+      contenu.boutique_intro = valeur('f-boutique-intro');
+      contenu.produits = editeurProduits.lire();
     }
     return contenu;
   }
@@ -397,7 +441,7 @@
         var lien = document.getElementById('lien-apercu');
         lien.href = data.url_previsualisation || '#';
         remplirFormulaire(data.contenu || {});
-        document.getElementById('bloc-services').style.display = (codeReference === 'SITE_ECOMMERCE') ? 'none' : 'block';
+        document.getElementById('bloc-boutique').style.display = (codeReference === 'SITE_ECOMMERCE') ? 'block' : 'none';
         document.getElementById('bloc-produits').style.display = (codeReference === 'SITE_ECOMMERCE') ? 'block' : 'none';
         afficherChecklist(data.checklist);
         elChargement.style.display = 'none';
