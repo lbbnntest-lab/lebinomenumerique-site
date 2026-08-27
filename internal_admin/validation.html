@@ -186,6 +186,43 @@
   </div>
 
   <div class="carte">
+    <h2>Style &amp; structure</h2>
+    <p style="margin-top:0; color:#666; font-size:0.85rem;">Famille détectée sur le secteur : <strong id="famille-detectee">—</strong>. Laisser sur « auto » sauf si le rendu ne colle pas au métier.</p>
+    <div class="grille-2">
+      <div class="champ">
+        <label for="f-famille-forcee">Forcer la famille</label>
+        <select id="f-famille-forcee">
+          <option value="">— détectée automatiquement —</option>
+          <option value="restaurant">Restaurant</option>
+          <option value="artisan">Artisan / services</option>
+          <option value="generique">Générique</option>
+        </select>
+      </div>
+      <div class="champ">
+        <label for="f-style-variante">Variante de style</label>
+        <select id="f-style-variante">
+          <option value="">— auto (choix de l'IA) —</option>
+          <optgroup label="Restaurant">
+            <option value="resto_soir">Ambiance du soir (fond sombre)</option>
+            <option value="resto_jour">Lumineux (fond clair)</option>
+          </optgroup>
+          <optgroup label="Artisan / services">
+            <option value="artisan_solide">Robuste, rassurant</option>
+            <option value="artisan_net">Épuré, haut de gamme</option>
+          </optgroup>
+          <optgroup label="Générique">
+            <option value="generique_net">Générique net</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+    <div class="champ" style="max-width:220px;">
+      <label for="f-annee-creation">Année de création</label>
+      <input type="number" id="f-annee-creation" min="1900" max="2026" placeholder="ex : 1998">
+    </div>
+  </div>
+
+  <div class="carte">
     <h2>Contenu du site</h2>
 
     <div class="champ">
@@ -244,6 +281,16 @@
     <div class="grille-2">
       <div class="champ"><label for="f-zone-intervention">Zone d'intervention (bloc contact)</label><input type="text" id="f-zone-intervention"></div>
       <div class="champ"><label for="f-horaires">Horaires</label><input type="text" id="f-horaires"></div>
+    </div>
+
+    <h3 style="margin-top:24px;">Carte <small style="font-weight:400;">(restaurants — packs Essentiel et Pro)</small></h3>
+    <div class="champ"><label for="f-carte-texte">Plats phares (une ligne par plat, prix en fin de ligne)</label><textarea id="f-carte-texte" rows="5"></textarea></div>
+    <div class="champ"><label for="f-menu-pdf-url">Lien carte complète (PDF)</label><input type="url" id="f-menu-pdf-url" placeholder="https://..."></div>
+
+    <h3 style="margin-top:24px;">Questions fréquentes <small style="font-weight:400;">(3 recommandées)</small></h3>
+    <div class="champ">
+      <div id="liste-faq"></div>
+      <button type="button" class="btn btn-secondaire" id="btn-ajouter-faq">+ Ajouter une question</button>
     </div>
 
     <div id="bloc-boutique" style="display:none;">
@@ -354,9 +401,11 @@
   var editeurServices = creerEditeurListe('liste-services', [{ cle: 'titre', label: 'Titre' }, { cle: 'description_longue', label: 'Description détaillée', textarea: true }]);
   var editeurAvis = creerEditeurListe('liste-avis', [{ cle: 'auteur', label: 'Nom du client' }, { cle: 'texte', label: "Texte de l'avis" }]);
   var editeurProduits = creerEditeurListe('liste-produits', [{ cle: 'nom', label: 'Nom' }, { cle: 'prix', label: 'Prix (€)' }, { cle: 'description', label: 'Description' }, { cle: 'image_url', label: 'Image (URL)' }]);
+  var editeurFaq = creerEditeurListe('liste-faq', [{ cle: 'question', label: 'Question' }, { cle: 'reponse', label: 'Réponse', textarea: true }]);
 
   document.getElementById('btn-ajouter-point-fort').addEventListener('click', editeurPointsForts.ajouterLigne);
   document.getElementById('btn-ajouter-service').addEventListener('click', editeurServices.ajouterLigne);
+  document.getElementById('btn-ajouter-faq').addEventListener('click', editeurFaq.ajouterLigne);
   document.getElementById('btn-ajouter-avis').addEventListener('click', editeurAvis.ajouterLigne);
   document.getElementById('btn-ajouter-produit').addEventListener('click', editeurProduits.ajouterLigne);
 
@@ -383,8 +432,15 @@
     definir('f-zone-intervention', contenu.zone_intervention);
     definir('f-horaires', contenu.horaires);
     definir('f-boutique-intro', contenu.boutique_intro);
+    definir('f-carte-texte', contenu.carte_texte);
+    definir('f-menu-pdf-url', contenu.menu_pdf_url);
+    definir('f-annee-creation', contenu.annee_creation);
+    definir('f-style-variante', contenu.style_variante);
+    definir('f-famille-forcee', contenu.famille_forcee);
+    document.getElementById('famille-detectee').textContent = contenu.famille || '—';
     editeurAvis.rendre(contenu.avis_clients);
     editeurProduits.rendre(contenu.produits);
+    editeurFaq.rendre(contenu.faq);
   }
 
   function lireFormulaire() {
@@ -405,7 +461,13 @@
       contact_message: valeur('f-contact-message'),
       zone_intervention: valeur('f-zone-intervention'),
       horaires: valeur('f-horaires'),
-      avis_clients: editeurAvis.lire()
+      avis_clients: editeurAvis.lire(),
+      carte_texte: valeur('f-carte-texte'),
+      menu_pdf_url: valeur('f-menu-pdf-url'),
+      annee_creation: valeur('f-annee-creation') ? parseInt(valeur('f-annee-creation'), 10) : null,
+      style_variante: valeur('f-style-variante'),
+      famille_forcee: valeur('f-famille-forcee'),
+      faq: editeurFaq.lire()
     };
     if (codeReference === 'SITE_ECOMMERCE') {
       contenu.boutique_intro = valeur('f-boutique-intro');

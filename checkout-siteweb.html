@@ -102,6 +102,10 @@
       <textarea id="histoire_entreprise" rows="3" maxlength="600" placeholder="Ex : Créée en 2015 par..., nous intervenons depuis..."></textarea>
     </div>
     <div class="champ">
+      <label>Année de création <small>(optionnel — affichée en repère sur le site : « Depuis 1998 »)</small></label>
+      <input type="number" id="annee_creation" min="1900" max="2026" placeholder="Ex : 1998">
+    </div>
+    <div class="champ">
       <label>Ce qui vous différencie de la concurrence <small>(optionnel)</small></label>
       <textarea id="differenciateur" rows="2" maxlength="400"></textarea>
     </div>
@@ -125,6 +129,14 @@
       <label>Avis clients <small>(optionnel — jamais reformulés, affichés tels quels sur le site, max 3)</small></label>
       <div id="liste-avis"></div>
       <button type="button" class="btn btn-secondaire" id="btn-ajouter-avis">+ Ajouter un avis</button>
+    </div>
+    <div class="champ">
+      <label>Vos plats phares <small>(restaurants, packs Essentiel et Pro — quelques lignes ; la carte complète va dans le PDF ci-dessous. Le pack E-commerce utilise le catalogue produits)</small></label>
+      <textarea id="carte_texte" rows="4" maxlength="480" placeholder="Ex :&#10;Entrées&#10;Six huîtres — 14 €&#10;Velouté du jour — 8 €&#10;&#10;Plats&#10;Marmite dieppoise — 24 €"></textarea>
+    </div>
+    <div class="champ">
+      <label>Lien vers votre carte complète en PDF <small>(optionnel)</small></label>
+      <input type="url" id="menu_pdf_url" placeholder="https://...">
     </div>
 
     <div id="champs-catalogue" class="hidden">
