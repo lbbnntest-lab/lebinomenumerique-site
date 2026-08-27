@@ -50,6 +50,24 @@ document.addEventListener("DOMContentLoaded", () => {
   selectPack.addEventListener("change", toggleChampsCatalogue);
   btnAjouterProduit.addEventListener("click", ajouterLigneProduit);
 
+  // Champs "carte / plats phares" : seulement pour un restaurant, et seulement
+  // hors pack E-commerce (où le menu = le catalogue produits).
+  const champsRestaurant = document.getElementById("champs-restaurant");
+  const champZoneIntervention = document.getElementById("champ-zone-intervention");
+  const champSecteur = document.getElementById("secteur_activite");
+  const RESTAU_RE = /restaur|resto|brasserie|bistrot|pizz|traiteur|cr[eê]perie|bar [aà]|salon de th[eé]|food ?truck|caf[eé]\b|cantine|snack|burger|kebab|sushi|glacier|boulanger|p[aâ]tissier|chocolatier|food ?court/i;
+  function toggleChampsSecteur() {
+    const estRestau = RESTAU_RE.test(champSecteur ? champSecteur.value : "");
+    const estEcommerce = selectPack.value === "SITE_ECOMMERCE";
+    // carte / plats phares : restaurant, hors E-commerce (menu = catalogue)
+    champsRestaurant.classList.toggle("hidden", !(estRestau && !estEcommerce));
+    // zone d'intervention : pertinent pour un artisan/service, pas un restaurant
+    if (champZoneIntervention) champZoneIntervention.classList.toggle("hidden", estRestau);
+  }
+  toggleChampsSecteur();
+  if (champSecteur) champSecteur.addEventListener("input", toggleChampsSecteur);
+  selectPack.addEventListener("change", toggleChampsSecteur);
+
   function collecterProduits() {
     if (selectPack.value !== "SITE_ECOMMERCE") return [];
     return Array.from(listeProduits.querySelectorAll(".ligne-produit"))

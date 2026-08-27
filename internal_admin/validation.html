@@ -279,13 +279,15 @@
     <h3 style="margin-top:24px;">Contact</h3>
     <div class="champ"><label for="f-contact-message">Message d'accroche</label><input type="text" id="f-contact-message"></div>
     <div class="grille-2">
-      <div class="champ"><label for="f-zone-intervention">Zone d'intervention (bloc contact)</label><input type="text" id="f-zone-intervention"></div>
+      <div class="champ" id="champ-f-zone-intervention"><label for="f-zone-intervention">Zone d'intervention (bloc contact)</label><input type="text" id="f-zone-intervention"></div>
       <div class="champ"><label for="f-horaires">Horaires</label><input type="text" id="f-horaires"></div>
     </div>
 
-    <h3 style="margin-top:24px;">Carte <small style="font-weight:400;">(restaurants — packs Essentiel et Pro)</small></h3>
-    <div class="champ"><label for="f-carte-texte">Plats phares (une ligne par plat, prix en fin de ligne)</label><textarea id="f-carte-texte" rows="5"></textarea></div>
-    <div class="champ"><label for="f-menu-pdf-url">Lien carte complète (PDF)</label><input type="url" id="f-menu-pdf-url" placeholder="https://..."></div>
+    <div id="bloc-carte" style="display:none;">
+      <h3 style="margin-top:24px;">Carte <small style="font-weight:400;">(restaurants — packs Essentiel et Pro)</small></h3>
+      <div class="champ"><label for="f-carte-texte">Plats phares (une ligne par plat, prix en fin de ligne)</label><textarea id="f-carte-texte" rows="5"></textarea></div>
+      <div class="champ"><label for="f-menu-pdf-url">Lien carte complète (PDF)</label><input type="url" id="f-menu-pdf-url" placeholder="https://..."></div>
+    </div>
 
     <h3 style="margin-top:24px;">Questions fréquentes <small style="font-weight:400;">(3 recommandées)</small></h3>
     <div class="champ">
@@ -437,7 +439,11 @@
     definir('f-annee-creation', contenu.annee_creation);
     definir('f-style-variante', contenu.style_variante);
     definir('f-famille-forcee', contenu.famille_forcee);
+    var familleEffective = contenu.famille_forcee || contenu.famille || '';
     document.getElementById('famille-detectee').textContent = contenu.famille || '—';
+    var estRestau = familleEffective === 'restaurant';
+    document.getElementById('bloc-carte').style.display = (estRestau && codeReference !== 'SITE_ECOMMERCE') ? 'block' : 'none';
+    document.getElementById('champ-f-zone-intervention').style.display = estRestau ? 'none' : '';
     editeurAvis.rendre(contenu.avis_clients);
     editeurProduits.rendre(contenu.produits);
     editeurFaq.rendre(contenu.faq);

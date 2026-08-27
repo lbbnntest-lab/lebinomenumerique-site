@@ -109,7 +109,7 @@
       <label>Ce qui vous différencie de la concurrence <small>(optionnel)</small></label>
       <textarea id="differenciateur" rows="2" maxlength="400"></textarea>
     </div>
-    <div class="champ">
+    <div class="champ" id="champ-zone-intervention">
       <label>Zone d'intervention <small>(optionnel)</small></label>
       <input type="text" id="zone_intervention" placeholder="Ex : Paris et la petite couronne">
     </div>
@@ -130,13 +130,15 @@
       <div id="liste-avis"></div>
       <button type="button" class="btn btn-secondaire" id="btn-ajouter-avis">+ Ajouter un avis</button>
     </div>
-    <div class="champ">
-      <label>Vos plats phares <small>(restaurants, packs Essentiel et Pro — quelques lignes ; la carte complète va dans le PDF ci-dessous. Le pack E-commerce utilise le catalogue produits)</small></label>
-      <textarea id="carte_texte" rows="4" maxlength="480" placeholder="Ex :&#10;Entrées&#10;Six huîtres — 14 €&#10;Velouté du jour — 8 €&#10;&#10;Plats&#10;Marmite dieppoise — 24 €"></textarea>
-    </div>
-    <div class="champ">
-      <label>Lien vers votre carte complète en PDF <small>(optionnel)</small></label>
-      <input type="url" id="menu_pdf_url" placeholder="https://...">
+    <div id="champs-restaurant" class="hidden">
+      <div class="champ">
+        <label>Vos plats phares <small>(quelques lignes — la carte complète va dans le PDF ci-dessous)</small></label>
+        <textarea id="carte_texte" rows="4" maxlength="480" placeholder="Ex :&#10;Entrées&#10;Six huîtres — 14 €&#10;Velouté du jour — 8 €&#10;&#10;Plats&#10;Marmite dieppoise — 24 €"></textarea>
+      </div>
+      <div class="champ">
+        <label>Lien vers votre carte complète en PDF <small>(optionnel)</small></label>
+        <input type="url" id="menu_pdf_url" placeholder="https://...">
+      </div>
     </div>
 
     <div id="champs-catalogue" class="hidden">
