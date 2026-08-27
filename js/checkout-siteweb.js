@@ -25,10 +25,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (listeProduits.children.length >= MAX_PRODUITS) return;
     const ligne = document.createElement("div");
     ligne.className = "ligne-produit";
-    ligne.style.cssText = "display:grid; grid-template-columns:2fr 1fr 2fr 2fr auto; gap:8px; margin-bottom:10px; align-items:center;";
+    ligne.style.cssText = "display:grid; grid-template-columns:2fr 1fr 1.4fr 2fr 1.6fr auto; gap:8px; margin-bottom:10px; align-items:center;";
     ligne.innerHTML = `
       <input type="text" class="produit-nom" placeholder="Nom du produit" required>
       <input type="number" class="produit-prix" placeholder="Prix €" min="0" step="0.01" required>
+      <input type="text" class="produit-categorie" placeholder="Catégorie (ex : Entrées)" list="liste-categories-produits">
       <input type="text" class="produit-description" placeholder="Description">
       <input type="url" class="produit-image" placeholder="Lien photo (optionnel)">
       <button type="button" class="btn-supprimer-produit" title="Supprimer" style="background:none; border:none; color:var(--rouge-alerte); font-size:1.2rem; cursor:pointer;">&times;</button>
@@ -74,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .map((ligne) => ({
         nom: ligne.querySelector(".produit-nom").value.trim(),
         prix: parseFloat(ligne.querySelector(".produit-prix").value) || 0,
+        categorie: ligne.querySelector(".produit-categorie").value.trim() || null,
         description: ligne.querySelector(".produit-description").value.trim() || null,
         image_url: ligne.querySelector(".produit-image").value.trim() || null
       }))

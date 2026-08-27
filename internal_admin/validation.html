@@ -402,7 +402,7 @@
   var editeurPointsForts = creerEditeurListe('liste-points-forts', [{ cle: 'titre', label: 'Titre' }, { cle: 'description', label: 'Description courte' }]);
   var editeurServices = creerEditeurListe('liste-services', [{ cle: 'titre', label: 'Titre' }, { cle: 'description_longue', label: 'Description détaillée', textarea: true }]);
   var editeurAvis = creerEditeurListe('liste-avis', [{ cle: 'auteur', label: 'Nom du client' }, { cle: 'texte', label: "Texte de l'avis" }]);
-  var editeurProduits = creerEditeurListe('liste-produits', [{ cle: 'nom', label: 'Nom' }, { cle: 'prix', label: 'Prix (€)' }, { cle: 'description', label: 'Description' }, { cle: 'image_url', label: 'Image (URL)' }]);
+  var editeurProduits = creerEditeurListe('liste-produits', [{ cle: 'nom', label: 'Nom' }, { cle: 'prix', label: 'Prix (€)' }, { cle: 'categorie', label: 'Catégorie' }, { cle: 'description', label: 'Description' }, { cle: 'image_url', label: 'Image (URL)' }]);
   var editeurFaq = creerEditeurListe('liste-faq', [{ cle: 'question', label: 'Question' }, { cle: 'reponse', label: 'Réponse', textarea: true }]);
 
   document.getElementById('btn-ajouter-point-fort').addEventListener('click', editeurPointsForts.ajouterLigne);

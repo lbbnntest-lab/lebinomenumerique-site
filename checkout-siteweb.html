@@ -146,7 +146,16 @@
       <p style="font-weight:600; margin-bottom:6px;">Votre catalogue produits</p>
       <p style="color:var(--gris-texte); font-size:.85rem; margin-bottom:16px;">
         Ajoutez vos produits (jusqu'à 30) — ils seront directement intégrés à votre site, sans étape manuelle de notre côté.
+        La <strong>catégorie</strong> est optionnelle : si vous en renseignez au moins deux, le site affiche des onglets (ex : Entrées / Plats / Desserts).
       </p>
+      <datalist id="liste-categories-produits">
+        <option value="Entrées"></option>
+        <option value="Plats"></option>
+        <option value="Desserts"></option>
+        <option value="Boissons"></option>
+        <option value="À emporter"></option>
+        <option value="Nouveautés"></option>
+      </datalist>
       <div id="liste-produits"></div>
       <button type="button" class="btn btn-secondaire" id="btn-ajouter-produit" style="margin-bottom:20px;">+ Ajouter un produit</button>
     </div>
