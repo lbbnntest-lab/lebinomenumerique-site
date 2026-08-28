@@ -149,7 +149,10 @@
     fetch(`${N8N_BASE_URL}/chatbot-client-config?token=${encodeURIComponent(token)}`)
       .then((r) => { if (!r.ok) throw new Error("config indisponible"); return r.json(); })
       .then((config) => {
-        const couleurHex = COULEURS[(config.couleur_widget || "bleu").toLowerCase()] || COULEURS.bleu;
+        // couleur_widget = un mot de la palette, ou directement un hex (#rrggbb)
+        const brut = (config.couleur_widget || "bleu").trim();
+        const couleurHex = COULEURS[brut.toLowerCase()]
+          || (/^#[0-9a-f]{3,8}$/i.test(brut) ? brut : COULEURS.bleu);
         creerWidget(couleurHex, config.message_accueil);
       })
       .catch(() => {
