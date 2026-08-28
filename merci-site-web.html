@@ -6,6 +6,12 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Merci — votre site est en préparation</title>
 <link rel="stylesheet" href="css/style.css">
+<style>
+  /* Pied de page collé en bas même quand le contenu est court */
+  body { min-height: 100vh; display: flex; flex-direction: column; }
+  body > footer.site { margin-top: auto; }
+  .merci-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 16px; }
+</style>
 </head>
 <body>
 
@@ -15,26 +21,28 @@
   </div>
 </header>
 
-<div class="carte" style="max-width:620px; margin:48px auto; text-align:center;">
-  <h1 style="font-size:1.6rem; margin-bottom:12px;">Merci, votre paiement est confirmé&nbsp;!</h1>
-  <p style="color:var(--gris-texte);">
-    Vous allez recevoir dans quelques minutes un email intitulé
-    «&nbsp;Bienvenue chez Le Binôme Numérique&nbsp;» avec&nbsp;:
-  </p>
-  <ul style="text-align:left; display:inline-block; color:var(--gris-texte); margin:12px 0 20px; line-height:1.9;">
-    <li>le lien pour <strong>définir votre mot de passe</strong> et accéder à votre espace client&nbsp;;</li>
-    <li>le suivi de la <strong>création de votre site</strong>, déjà lancée.</li>
-  </ul>
-  <p style="color:var(--gris-texte);">
-    Pensez à regarder vos spams. Une fois votre mot de passe défini, vous pourrez vous connecter ici&nbsp;:
-  </p>
-  <p style="margin-top:20px;">
-    <a class="btn btn-primaire" href="connexion.html">Aller à la page de connexion</a>
-  </p>
-  <p style="color:var(--gris-texte); font-size:.9rem; margin-top:18px;">
-    Une question&nbsp;? Écrivez-nous à <a href="mailto:bonjour@lebinomenumerique.fr">bonjour@lebinomenumerique.fr</a>.
-  </p>
-</div>
+<main class="merci-main">
+  <div class="carte" style="max-width:620px; text-align:center;">
+    <h1 style="font-size:1.6rem; margin-bottom:12px;">Merci, votre paiement est confirmé&nbsp;!</h1>
+    <p style="color:var(--gris-texte);">
+      Vous allez recevoir dans quelques minutes un email intitulé
+      «&nbsp;Bienvenue chez Le Binôme Numérique&nbsp;» avec&nbsp;:
+    </p>
+    <ul style="text-align:left; display:inline-block; color:var(--gris-texte); margin:12px 0 20px; line-height:1.9;">
+      <li>le lien pour <strong>définir votre mot de passe</strong> et accéder à votre espace client&nbsp;;</li>
+      <li>le suivi de la <strong>création de votre site</strong>, déjà lancée.</li>
+    </ul>
+    <p style="color:var(--gris-texte);">
+      Pensez à regarder vos spams. Une fois votre mot de passe défini, vous pourrez vous connecter ici&nbsp;:
+    </p>
+    <p style="margin-top:20px;">
+      <a class="btn btn-primaire" href="connexion.html">Aller à la page de connexion</a>
+    </p>
+    <p style="color:var(--gris-texte); font-size:.9rem; margin-top:18px;">
+      Une question&nbsp;? Écrivez-nous à <a href="mailto:bonjour@lebinomenumerique.fr">bonjour@lebinomenumerique.fr</a>.
+    </p>
+  </div>
+</main>
 
 <footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
 
