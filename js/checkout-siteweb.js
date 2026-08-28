@@ -51,19 +51,30 @@ document.addEventListener("DOMContentLoaded", () => {
   selectPack.addEventListener("change", toggleChampsCatalogue);
   btnAjouterProduit.addEventListener("click", ajouterLigneProduit);
 
-  // Champs "carte / plats phares" : seulement pour un restaurant, et seulement
-  // hors pack E-commerce (où le menu = le catalogue produits).
+  // Champ "carte / plats phares" (id carte_texte) : sert de source à la carte
+  // d'un restaurant ET à la grille prestations+tarifs d'un salon de beauté.
+  // Masqué en E-commerce (où le catalogue produits tient lieu de carte).
   const champsRestaurant = document.getElementById("champs-restaurant");
   const champZoneIntervention = document.getElementById("champ-zone-intervention");
   const champSecteur = document.getElementById("secteur_activite");
+  const labelCarte = champsRestaurant ? champsRestaurant.querySelector("label") : null;
   const RESTAU_RE = /restaur|resto|brasserie|bistrot|pizz|traiteur|cr[eê]perie|bar [aà]|salon de th[eé]|food ?truck|caf[eé]\b|cantine|snack|burger|kebab|sushi|glacier|boulanger|p[aâ]tissier|chocolatier|food ?court/i;
+  // Doit rester aligné avec RE_BEAUTE de n8n_workflows/src/32_moteur_site.js
+  const BEAUTE_RE = /coiffeu|coiffure|barbier|barbershop|esth[eé]ti|institut de beaut[eé]|\bbeaut[eé]\b|onglerie|manucure|p[eé]dicure|\bspa\b|massage|\b[eé]pil|maquill|extension de cils|\bcils\b|microblading|tatou|piercing|soins du visage|soins du corps|hammam|baln[eé]o/i;
   function toggleChampsSecteur() {
-    const estRestau = RESTAU_RE.test(champSecteur ? champSecteur.value : "");
+    const v = champSecteur ? champSecteur.value : "";
+    const estRestau = RESTAU_RE.test(v);
+    const estBeaute = BEAUTE_RE.test(v);
     const estEcommerce = selectPack.value === "SITE_ECOMMERCE";
-    // carte / plats phares : restaurant, hors E-commerce (menu = catalogue)
-    champsRestaurant.classList.toggle("hidden", !(estRestau && !estEcommerce));
-    // zone d'intervention : pertinent pour un artisan/service, pas un restaurant
-    if (champZoneIntervention) champZoneIntervention.classList.toggle("hidden", estRestau);
+    champsRestaurant.classList.toggle("hidden", !((estRestau || estBeaute) && !estEcommerce));
+    if (labelCarte) {
+      labelCarte.innerHTML = estBeaute
+        ? "Vos prestations et tarifs <small>(une ligne par prestation : Nom — durée — prix)</small>"
+        : "Vos plats phares <small>(quelques lignes — la carte complète va dans le PDF ci-dessous)</small>";
+    }
+    // zone d'intervention : pertinent pour un artisan/service à domicile,
+    // pas pour un lieu qu'on visite (restaurant, salon, boutique).
+    if (champZoneIntervention) champZoneIntervention.classList.toggle("hidden", estRestau || estBeaute);
   }
   toggleChampsSecteur();
   if (champSecteur) champSecteur.addEventListener("input", toggleChampsSecteur);

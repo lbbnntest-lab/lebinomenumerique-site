@@ -195,6 +195,9 @@
           <option value="">— détectée automatiquement —</option>
           <option value="restaurant">Restaurant</option>
           <option value="artisan">Artisan / services</option>
+          <option value="commerce">Commerce / boutique</option>
+          <option value="beaute">Beauté / coiffure</option>
+          <option value="liberal">Profession libérale</option>
           <option value="generique">Générique</option>
         </select>
       </div>
@@ -209,6 +212,18 @@
           <optgroup label="Artisan / services">
             <option value="artisan_solide">Robuste, rassurant</option>
             <option value="artisan_net">Épuré, haut de gamme</option>
+          </optgroup>
+          <optgroup label="Commerce / boutique">
+            <option value="commerce_marche">Chaleureux, fond sombre</option>
+            <option value="commerce_atelier">Clair, moderne</option>
+          </optgroup>
+          <optgroup label="Beauté / coiffure">
+            <option value="beaute_lumiere">Doux, élégant (fond clair)</option>
+            <option value="beaute_studio">Moderne, contrasté (fond sombre)</option>
+          </optgroup>
+          <optgroup label="Profession libérale">
+            <option value="liberal_cabinet">Institutionnel, sérif</option>
+            <option value="liberal_clair">Accessible, rassurant</option>
           </optgroup>
           <optgroup label="Générique">
             <option value="generique_net">Générique net</option>
@@ -284,8 +299,8 @@
     </div>
 
     <div id="bloc-carte" style="display:none;">
-      <h3 style="margin-top:24px;">Carte <small style="font-weight:400;">(restaurants — packs Essentiel et Pro)</small></h3>
-      <div class="champ"><label for="f-carte-texte">Plats phares (une ligne par plat, prix en fin de ligne)</label><textarea id="f-carte-texte" rows="5"></textarea></div>
+      <h3 style="margin-top:24px;">Carte / prestations <small style="font-weight:400;">(restaurants &amp; beauté — packs Essentiel et Pro)</small></h3>
+      <div class="champ"><label for="f-carte-texte">Restaurant : une ligne par plat (prix en fin de ligne). Beauté : Nom — durée — prix. Rubriques séparées par une ligne vide.</label><textarea id="f-carte-texte" rows="5"></textarea></div>
       <div class="champ"><label for="f-menu-pdf-url">Lien carte complète (PDF)</label><input type="url" id="f-menu-pdf-url" placeholder="https://..."></div>
     </div>
 
@@ -442,8 +457,10 @@
     var familleEffective = contenu.famille_forcee || contenu.famille || '';
     document.getElementById('famille-detectee').textContent = contenu.famille || '—';
     var estRestau = familleEffective === 'restaurant';
-    document.getElementById('bloc-carte').style.display = (estRestau && codeReference !== 'SITE_ECOMMERCE') ? 'block' : 'none';
-    document.getElementById('champ-f-zone-intervention').style.display = estRestau ? 'none' : '';
+    var estBeaute = familleEffective === 'beaute';
+    // "Carte" = carte du restaurant OU grille prestations+tarifs du salon (champ carte_texte)
+    document.getElementById('bloc-carte').style.display = ((estRestau || estBeaute) && codeReference !== 'SITE_ECOMMERCE') ? 'block' : 'none';
+    document.getElementById('champ-f-zone-intervention').style.display = (estRestau || estBeaute) ? 'none' : '';
     editeurAvis.rendre(contenu.avis_clients);
     editeurProduits.rendre(contenu.produits);
     editeurFaq.rendre(contenu.faq);
