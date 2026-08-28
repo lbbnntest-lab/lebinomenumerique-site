@@ -58,6 +58,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const champZoneIntervention = document.getElementById("champ-zone-intervention");
   const champSecteur = document.getElementById("secteur_activite");
   const labelCarte = champsRestaurant ? champsRestaurant.querySelector("label") : null;
+  const champCarteTexte = document.getElementById("carte_texte");
+  const PH_RESTAU = "Ex :\nEntrées\nSix huîtres — 14 €\nVelouté du jour — 8 €\n\nPlats\nMarmite dieppoise — 24 €";
+  const PH_BEAUTE = "Ex :\nCoupe & coiffage\nCoupe femme — 1h15 — 52 €\nCoupe homme — 30 min — 25 €\n\nColoration\nColoration racines — 1h30 — 58 €";
   const RESTAU_RE = /restaur|resto|brasserie|bistrot|pizz|traiteur|cr[eê]perie|bar [aà]|salon de th[eé]|food ?truck|caf[eé]\b|cantine|snack|burger|kebab|sushi|glacier|boulanger|p[aâ]tissier|chocolatier|food ?court/i;
   // Doit rester aligné avec RE_BEAUTE de n8n_workflows/src/32_moteur_site.js
   const BEAUTE_RE = /coiffeu|coiffure|barbier|barbershop|esth[eé]ti|institut de beaut[eé]|\bbeaut[eé]\b|onglerie|manucure|p[eé]dicure|\bspa\b|massage|\b[eé]pil|maquill|extension de cils|\bcils\b|microblading|tatou|piercing|soins du visage|soins du corps|hammam|baln[eé]o/i;
@@ -72,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ? "Vos prestations et tarifs <small>(une ligne par prestation : Nom — durée — prix)</small>"
         : "Vos plats phares <small>(quelques lignes — la carte complète va dans le PDF ci-dessous)</small>";
     }
+    if (champCarteTexte) champCarteTexte.placeholder = estBeaute ? PH_BEAUTE : PH_RESTAU;
     // zone d'intervention : pertinent pour un artisan/service à domicile,
     // pas pour un lieu qu'on visite (restaurant, salon, boutique).
     if (champZoneIntervention) champZoneIntervention.classList.toggle("hidden", estRestau || estBeaute);
