@@ -8,14 +8,28 @@ document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
   const email = params.get("email") || "";
 
+  // Ne redirige que si la session ouverte correspond bien à l'email du
+  // paiement qu'on vient de faire. Sinon (session périmée d'un autre compte
+  // de test, ou d'un précédent achat), on la ferme et on reste sur la page
+  // d'attente — sans ça on atterrissait sur le dashboard du MAUVAIS compte,
+  // qui affiche "aucun abonnement" (bug vu sur les achats de sites).
+  const emailNorm = email.trim().toLowerCase();
+  function sessionCorrespond(session) {
+    if (!session) return false;
+    if (!emailNorm) return true; // pas d'email en paramètre : on ne peut pas vérifier
+    return (session.user?.email || "").toLowerCase() === emailNorm;
+  }
+
   const { data: { session } } = await window.supabaseClient.auth.getSession();
-  if (session) {
+  if (session && !sessionCorrespond(session)) {
+    await window.supabaseClient.auth.signOut();
+  } else if (session) {
     window.location.href = "dashboard-client.html";
     return;
   }
 
   window.supabaseClient.auth.onAuthStateChange((event, session) => {
-    if (session) {
+    if (sessionCorrespond(session)) {
       window.location.href = "dashboard-client.html";
     }
   });
