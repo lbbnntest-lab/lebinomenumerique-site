@@ -75,9 +75,9 @@
         <input type="checkbox" id="t-reservation">
         <span class="case-texte"><b>Prendre les réservations de table</b><span>Jour, heure, nombre de personnes, allergènes.</span></span>
       </div>
-      <div class="case">
+      <div class="case" id="case-commande">
         <input type="checkbox" id="t-commande">
-        <span class="case-texte"><b>Prendre les commandes à emporter</b><span>Plats, quantités, heure de retrait.</span></span>
+        <span class="case-texte"><b>Prendre les commandes à emporter</b><span id="t-commande-aide">Plats, quantités, heure de retrait.</span></span>
       </div>
 
       <div class="case" style="border-top:1px solid #eee; padding-top:14px; margin-top:14px;">
@@ -249,6 +249,14 @@
       $('t-rdv').checked = types.indexOf('rdv') >= 0;
       $('t-reservation').checked = types.indexOf('reservation') >= 0;
       $('t-commande').checked = types.indexOf('commande') >= 0;
+
+      // Prise de commande = niveau Sur-mesure uniquement (pour l'instant)
+      if (config.commande_autorisee === false) {
+        $('t-commande').checked = false;
+        $('t-commande').disabled = true;
+        $('case-commande').style.opacity = '0.55';
+        $('t-commande-aide').textContent = 'Disponible avec le niveau Sur-mesure — parlez-en à votre conseiller.';
+      }
 
       $('f-conseil').checked = config.conseil_actif !== false;
 
