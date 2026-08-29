@@ -79,6 +79,11 @@
         <input type="checkbox" id="t-commande">
         <span class="case-texte"><b>Prendre les commandes à emporter</b><span>Plats, quantités, heure de retrait.</span></span>
       </div>
+
+      <div class="case" style="border-top:1px solid #eee; padding-top:14px; margin-top:14px;">
+        <input type="checkbox" id="f-conseil" checked>
+        <span class="case-texte"><b>Conseiller les clients indécis</b><span>L'assistant peut orienter quelqu'un qui ne sait pas quoi choisir, à partir de vos infos et de votre carte. Décochez pour qu'il se limite à prendre la demande.</span></span>
+      </div>
     </div>
 
     <div class="carte-config">
@@ -245,6 +250,8 @@
       $('t-reservation').checked = types.indexOf('reservation') >= 0;
       $('t-commande').checked = types.indexOf('commande') >= 0;
 
+      $('f-conseil').checked = config.conseil_actif !== false;
+
       rendreHoraires(config.horaires);
       $('f-services').value = config.services_tarifs || '';
       $('f-faq').value = config.faq || '';
@@ -282,7 +289,8 @@
         faq: $('f-faq').value.trim() || null,
         menu_source: $('f-menu-source').value,
         menu_texte: $('f-menu-texte').value.trim() || null,
-        annoncer_total: $('f-annoncer-total').checked
+        annoncer_total: $('f-annoncer-total').checked,
+        conseil_actif: $('f-conseil').checked
       };
       if (niveauActuel >= 2) {
         payload.mode_rdv = $('f-mode-rdv').value;
