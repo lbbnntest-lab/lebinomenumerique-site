@@ -33,7 +33,13 @@ window.APP_CONFIG = {
     SECRETARIAT_SOCLE: { mensuel: "price_1U642LPYLCUOQdeImkqupyFb" },
     SECRETARIAT_UTILISATEUR_SUPP: { mensuel: "price_1U642MPYLCUOQdeI0Bj8XQVd" },
     SECRETARIAT_EXPORT_AIRTABLE: { mensuel: "price_1U642NPYLCUOQdeIf2ESjFkw" },
-    SECRETARIAT_SUPPORT_PRIORITAIRE: { mensuel: "price_1U642OPYLCUOQdeI5n3EuoYt" }
+    SECRETARIAT_SUPPORT_PRIORITAIRE: { mensuel: "price_1U642OPYLCUOQdeI5n3EuoYt" },
+
+    // Accueil Téléphonique IA — 3 niveaux (29/08/2026). Mensuel uniquement.
+    // Doivent rester alignés avec plans_tarifaires.stripe_price_id_mensuel (migration 62).
+    TEL_ESSENTIEL: { mensuel: "price_1U9i8vPYLCUOQdeIyV5FYX5x" },
+    TEL_PRO: { mensuel: "price_1U9i9IPYLCUOQdeImM1OW6rS" },
+    TEL_SURMESURE: { mensuel: "price_1U9i9XPYLCUOQdeIZNkm5Pne" }
   },
 
   // Lien de votre type d'événement Cal.com ("Appel découverte 15 min")

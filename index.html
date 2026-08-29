@@ -168,30 +168,57 @@
       <a class="btn btn-primaire" id="lien-choisir-socle" href="inscription.html?type=B2B&plan=SECRETARIAT_SOCLE">Choisir</a>
     </div>
 
-    <div id="telephonie" class="carte-plan" data-chatbot-detail="L'accueil téléphonique IA n'est pas encore disponible à la vente — vous pouvez réserver un appel pour être informé en priorité de l'ouverture.">
-      <h3>Gestion Appels <span class="badge-bientot">Bientôt disponible</span></h3>
-      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">Vos appels décrochés automatiquement, vos clients renseignés (horaires, tarifs, disponibilités) et leurs rendez-vous pris — en complément de Gestion Email. En cours de construction, ouverture prochaine à un nombre limité de clients pilotes.</p>
-      <div class="prix">49€ <span>/ mois (indicatif)</span></div>
-      <ul>
-        <li><strong>Essentiel — 49€/mois :</strong> accueil vocal automatique (horaires, tarifs, disponibilités), prise de message structuré, prise de RDV sous 24h, 60 appels inclus</li>
-        <li><strong>Pro — 95€/mois :</strong> tout Essentiel, plus RDV en temps réel pendant l'appel, alertes SMS incluses, 150 appels inclus</li>
-      </ul>
-      <p style="margin:0 0 16px; color:var(--gris-texte); font-size:.85rem;">Options disponibles à l'ouverture : numéro dédié supplémentaire, accueil bilingue, horaires étendus, script de qualification métier.</p>
-      <a class="btn btn-secondaire" href="#reserver" style="display:block; text-align:center;">Être informé en priorité</a>
+    <div id="telephonie" class="carte-plan" data-chatbot-detail="L'accueil téléphonique IA décroche vos appels : il répond aux questions (horaires, tarifs, services), prend les messages, et selon votre métier prend aussi les rendez-vous, les réservations de table ou les commandes à emporter. Trois niveaux, à partir de 49€/mois. Il peut même conseiller un client qui hésite, à partir de votre carte.">
+      <h3>Gestion Appels</h3>
+      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 16px;">Un standard vocal qui décroche à votre place : il renseigne vos clients (horaires, services, questions fréquentes), prend les messages, et — selon votre métier — les rendez-vous, les réservations de table ou les commandes à emporter. En complément de Gestion Email, ou seul.</p>
+
+      <div style="border:1px solid #e5e7eb; border-radius:10px; padding:14px; margin-bottom:10px;">
+        <p style="margin:0 0 6px; font-weight:600;">Standard <span style="font-weight:400; color:var(--gris-texte);">— 49€ / mois</span></p>
+        <ul style="margin:0 0 10px;">
+          <li>Répond aux questions, prend les messages</li>
+          <li>Rendez-vous et réservations : demande enregistrée, vous confirmez</li>
+          <li>60 appels inclus</li>
+        </ul>
+        <a class="btn btn-secondaire" href="inscription.html?type=B2B&plan=TEL_ESSENTIEL" style="display:block; text-align:center;">Choisir Standard</a>
+      </div>
+
+      <div style="border:1px solid var(--bleu-primaire); border-radius:10px; padding:14px; margin-bottom:10px;">
+        <p style="margin:0 0 6px; font-weight:600;">Avancé <span style="font-weight:400; color:var(--gris-texte);">— 95€ / mois</span></p>
+        <ul style="margin:0 0 10px;">
+          <li>Tout Standard</li>
+          <li>Transfert d'appel vers vous en cas d'urgence</li>
+          <li>Alerte SMS après chaque appel</li>
+          <li>150 appels inclus</li>
+        </ul>
+        <a class="btn btn-primaire" href="inscription.html?type=B2B&plan=TEL_PRO" style="display:block; text-align:center;">Choisir Avancé</a>
+      </div>
+
+      <div style="border:1px solid #e5e7eb; border-radius:10px; padding:14px;">
+        <p style="margin:0 0 6px; font-weight:600;">Sur-mesure <span style="font-weight:400; color:var(--gris-texte);">— dès 149€ / mois</span></p>
+        <ul style="margin:0 0 10px;">
+          <li>Tout Avancé</li>
+          <li>Prise de commande à emporter (carte, suppléments, heure de retrait)</li>
+          <li>Rappels sortants, qualification poussée</li>
+          <li>Connexion agenda / caisse / logiciel métier sur devis</li>
+        </ul>
+        <a class="btn btn-secondaire" href="inscription.html?type=B2B&plan=TEL_SURMESURE" style="display:block; text-align:center;">Choisir Sur-mesure</a>
+      </div>
+
+      <p style="margin:12px 0 0; color:var(--gris-texte); font-size:.85rem;">Options : numéro dédié supplémentaire, accueil bilingue, horaires étendus. Rendez-vous en temps réel (agenda connecté) disponible sur activation.</p>
     </div>
 
-    <div class="carte-plan" data-chatbot-detail="Le Pack Complet réunit Gestion Email et Gestion Appels en une seule facture. La partie email est déjà disponible ; la partie appels ouvre prochainement.">
-      <h3>Pack Complet <span class="badge-bientot">Bientôt disponible</span></h3>
-      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">Gestion Email + Gestion Appels réunies, une seule facture.</p>
-      <div class="prix">134,90€ <span>/ mois (indicatif)</span></div>
-      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.85rem;">au lieu de 138€ (89€ Gestion Email + 49€ Gestion Appels Essentiel séparément)</p>
+    <div class="carte-plan" data-chatbot-detail="Le Pack Complet réunit Gestion Email et Gestion Appels. Pour l'instant chaque bloc se commande séparément (une facture chacun) ; la facture unique à tarif réduit arrive prochainement.">
+      <h3>Pack Complet</h3>
+      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">Gestion Email + Gestion Appels : couvrez emails et appels d'un seul coup.</p>
+      <div class="prix">dès 134,90€ <span>/ mois</span></div>
+      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.85rem;">89€ Gestion Email + 49€ Gestion Appels Standard, commandés séparément pour l'instant. Facture unique à tarif réduit (−3€) bientôt.</p>
       <ul>
         <li>Tout Gestion Email (tri des emails, devis auto, bilan quotidien)</li>
-        <li>Tout Gestion Appels Essentiel (accueil vocal automatique, prise de RDV)</li>
-        <li>Mêmes options cumulables que les 2 blocs (utilisateur supplémentaire, export Airtable, support prioritaire...)</li>
+        <li>Tout Gestion Appels Standard (accueil vocal, messages, RDV / réservations)</li>
+        <li>Options cumulables des deux blocs</li>
       </ul>
-      <a class="btn btn-secondaire" href="inscription.html?type=B2B&plan=SECRETARIAT_SOCLE" style="display:block; text-align:center; margin-bottom:8px;">Démarrer avec Gestion Email</a>
-      <a href="#reserver" style="display:block; text-align:center; font-size:.82rem; color:var(--gris-texte);">Être informé pour la partie appels</a>
+      <a class="btn btn-primaire" href="inscription.html?type=B2B&plan=SECRETARIAT_SOCLE" style="display:block; text-align:center; margin-bottom:8px;">Démarrer avec Gestion Email</a>
+      <a href="#telephonie" style="display:block; text-align:center; font-size:.82rem;">puis ajouter Gestion Appels →</a>
     </div>
 
     <div class="carte-plan au-scroll" data-chatbot-detail="Pour les besoins qui dépassent les 3 blocs ci-dessus : plusieurs sites, workflows métier spécifiques, volumes très élevés, ou intégrations non standard — on étudie votre besoin sur devis.">

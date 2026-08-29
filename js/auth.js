@@ -32,10 +32,11 @@ document.addEventListener("DOMContentLoaded", () => {
     planInput.insertAdjacentElement("afterend", recap);
   }
 
-  // SECRETARIAT_SOCLE et ses briques n'ont qu'un Price ID mensuel pour l'instant
-  // (voir config.js) — masquer le choix de cycle pour éviter d'envoyer un
-  // stripe_price_id undefined si l'utilisateur choisit trimestriel/annuel.
-  if (planInput.value === "SECRETARIAT_SOCLE") {
+  // SECRETARIAT_SOCLE, ses briques et les plans TEL_* n'ont qu'un Price ID
+  // mensuel pour l'instant (voir config.js) — masquer le choix de cycle pour
+  // éviter d'envoyer un stripe_price_id undefined si l'utilisateur choisit
+  // trimestriel/annuel.
+  if (planInput.value === "SECRETARIAT_SOCLE" || planInput.value.startsWith("TEL_")) {
     const cycle = document.getElementById("cycle_facturation");
     cycle.value = "mensuel";
     cycle.closest(".champ").classList.add("hidden");

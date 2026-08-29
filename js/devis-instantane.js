@@ -43,14 +43,16 @@ const CATALOGUE_DEVIS = [
   {
     categorie: "Secrétariat virtuel",
     items: [
-      { code: "gestion_email", nom: "Gestion Email", prix: 89, recurrent: true,
+      { code: "gestion_email", nom: "Gestion Email", prix: 89, recurrent: true, planCode: "SECRETARIAT_SOCLE",
         description: "Tri automatique de vos emails, relance si téléphone manquant, bilan quotidien." },
-      { code: "gestion_appels_essentiel", nom: "Gestion Appels — Essentiel", prix: 49, recurrent: true, bientot: true,
-        description: "Accueil vocal automatique, prise de message, RDV sous 24h." },
-      { code: "gestion_appels_pro", nom: "Gestion Appels — Pro", prix: 95, recurrent: true, bientot: true,
-        description: "RDV pris en temps réel pendant l'appel, alertes SMS." },
-      { code: "pack_complet", nom: "Pack Complet (Email + Appels Essentiel)", prix: 134.90, recurrent: true, bientot: true,
-        description: "Gestion Email + Gestion Appels Essentiel, à prix réduit." },
+      { code: "gestion_appels_standard", nom: "Gestion Appels — Standard", prix: 49, recurrent: true, planCode: "TEL_ESSENTIEL",
+        description: "Accueil vocal : répond aux questions, prend les messages ; RDV et réservations enregistrés, le pro confirme." },
+      { code: "gestion_appels_avance", nom: "Gestion Appels — Avancé", prix: 95, recurrent: true, planCode: "TEL_PRO",
+        description: "Tout Standard, plus transfert d'appel en cas d'urgence et alerte SMS après chaque appel." },
+      { code: "gestion_appels_surmesure", nom: "Gestion Appels — Sur-mesure", prix: 149, recurrent: true, planCode: "TEL_SURMESURE",
+        description: "Tout Avancé, plus prise de commande à emporter, rappels sortants, qualification poussée. Intégrations tierces sur devis." },
+      { code: "pack_complet", nom: "Pack Complet (Email + Appels Standard)", prix: 134.90, recurrent: true, bientot: true,
+        description: "Gestion Email + Gestion Appels Standard, facture unique à prix réduit — bientôt (pour l'instant : commander les deux blocs séparément)." },
       { code: "secretariat_sur_mesure", nom: "Secrétariat Sur-Mesure", prixLibre: true, prixDefaut: 450, recurrent: true,
         description: "Besoin spécifique, à partir de 450 €/mois indicatif.",
         bareme: {
@@ -717,6 +719,7 @@ function lignesSelectionnees() {
           hebergement: item.hebergement || 0,
           hebergementLabel: item.hebergementLabel || "hébergement",
           bientot: !!item.bientot,
+          planCode: item.planCode || null,
           description: description
         });
       }
@@ -952,14 +955,15 @@ function rendreApercu(devis) {
   document.getElementById("d-mention-tva").textContent = mentionTva();
 
   // CTA : lien direct uniquement pour le cas le plus simple et le plus sûr
-  // (Gestion Email seule, déjà commandable en self-service) — tout le reste
-  // (offres "bientôt disponible", sur-mesure, plusieurs offres combinées)
-  // renvoie vers le commercial plutôt que vers un lien de commande qui
-  // n'existe pas encore pour ce mélange.
+  // (une seule offre, commandable en self-service via un plan_code connu) —
+  // tout le reste (offres "bientôt disponible", sur-mesure sans plan_code,
+  // plusieurs offres combinées) renvoie vers le commercial plutôt que vers un
+  // lien de commande qui n'existe pas encore pour ce mélange.
   const ctaEl = document.getElementById("devis-cta");
-  const uniquementGestionEmail = devis.lignes.length === 1 && devis.lignes[0].code === "gestion_email";
-  if (uniquementGestionEmail) {
-    const lienInscription = `inscription.html?code_affiliation=${encodeURIComponent(devis.commercial.code_affiliation)}&type=B2B&plan=SECRETARIAT_SOCLE`;
+  const ligneUnique = devis.lignes.length === 1 ? devis.lignes[0] : null;
+  const planSelfService = ligneUnique && !ligneUnique.bientot ? ligneUnique.planCode : null;
+  if (planSelfService) {
+    const lienInscription = `inscription.html?code_affiliation=${encodeURIComponent(devis.commercial.code_affiliation)}&type=B2B&plan=${encodeURIComponent(planSelfService)}`;
     ctaEl.innerHTML = `
       <h4>Prêt à démarrer ?</h4>
       <p>La commande se passe en ligne, en quelques minutes, directement par vous.</p>

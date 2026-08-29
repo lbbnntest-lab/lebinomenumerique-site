@@ -5,7 +5,10 @@
 // alignée avec le reste du site, la résolution du vrai Price ID Stripe se fait
 // côté serveur (workflow 36) à partir du plan_code, jamais du prix envoyé ici.
 const OFFRES_SIMPLES_DASHBOARD = [
-  { plan_code: "SECRETARIAT_SOCLE", nom: "Gestion Email", prix: 89, description: "Tri automatique de vos emails, relance si téléphone manquant, bilan quotidien.", bientot: false }
+  { plan_code: "SECRETARIAT_SOCLE", nom: "Gestion Email", prix: 89, description: "Tri automatique de vos emails, relance si téléphone manquant, bilan quotidien.", bientot: false },
+  { plan_code: "TEL_ESSENTIEL", nom: "Gestion Appels — Standard", prix: 49, description: "Accueil vocal : répond aux questions, prend les messages ; RDV et réservations enregistrés, vous confirmez.", bientot: false },
+  { plan_code: "TEL_PRO", nom: "Gestion Appels — Avancé", prix: 95, description: "Tout Standard, plus transfert d'appel en cas d'urgence et alerte SMS après chaque appel.", bientot: false },
+  { plan_code: "TEL_SURMESURE", nom: "Gestion Appels — Sur-mesure", prix: 149, description: "Tout Avancé, plus prise de commande à emporter, rappels sortants, qualification poussée.", bientot: false }
 ];
 
 document.addEventListener("DOMContentLoaded", async () => {
