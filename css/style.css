@@ -84,7 +84,15 @@ body {
   color: var(--bleu-nuit);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  /* Pied de page toujours collé en bas, même quand le contenu est court */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
+body > footer.site { margin-top: auto; }
+/* Pages à carte unique (connexion, inscription, devis...) : carte centrée verticalement */
+body > .carte { margin-top: auto; margin-bottom: auto; }
+body > .carte ~ footer.site { margin-top: 0; }
 
 h1, h2, h3, h4 { font-family: var(--font-titres); letter-spacing: -0.01em; }
 
