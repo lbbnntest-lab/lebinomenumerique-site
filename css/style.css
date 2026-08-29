@@ -552,7 +552,7 @@ footer.site a:hover { color: var(--bleu-primaire-vif); }
   .cookie-banner { flex-direction: column; align-items: stretch; text-align: center; }
 }
 
-section#tarifs h2, section#site-web h2, section#faq h2, section#comment-ca-marche h2, section#reserver h2 {
+section#offres h2, section#site-web h2, section#realisations h2, section#faq h2, section#comment-ca-marche h2, section#reserver h2 {
   font-size: 2rem; margin-bottom: 8px;
 }
 
