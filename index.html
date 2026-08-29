@@ -40,12 +40,20 @@
       <a href="#offres" class="btn btn-primaire">Voir les offres</a>
       <a href="#reserver" class="btn btn-secondaire">Réserver un appel gratuit de 15 min</a>
     </div>
+
+    <div class="hero-preuve">
+      <span>Artisans</span><span>Restaurants</span><span>Professions libérales</span><span>Commerces</span><span>Sans engagement</span>
+    </div>
   </div>
 </section>
 
-<section id="comment-ca-marche" class="section-navy">
+<section id="comment-ca-marche" class="section-navy section">
   <div class="container">
-  <h2 style="text-align:center;">Comment ça marche</h2>
+  <div class="section-tete">
+    <span class="kicker">Simple</span>
+    <h2>Comment ça marche</h2>
+    <p class="lead">Aussi direct qu'un achat en ligne. Pas de démonstration commerciale obligatoire, pas de devis à rallonge.</p>
+  </div>
   <div class="grille-etapes">
     <div class="etape au-scroll">
       <div class="numero">1</div>
@@ -66,12 +74,13 @@
   </div>
 </section>
 
-<section id="offres" class="section-teintee">
+<section id="offres" class="section-teintee section">
   <div class="container">
-  <h2 style="text-align:center;">Nos offres</h2>
-  <p style="text-align:center; max-width:640px; margin:0 auto 24px; color:var(--gris-texte); font-size:.95rem;">
-    Des blocs indépendants : prenez ce dont vous avez besoin aujourd'hui, ajoutez le reste plus tard sans rien reconfigurer. Sans engagement, résiliable en 2 clics.
-  </p>
+  <div class="section-tete">
+    <span class="kicker">Nos offres</span>
+    <h2>Prenez ce dont vous avez besoin, ajoutez le reste plus tard</h2>
+    <p class="lead">Des blocs indépendants, sans reconfiguration quand vous en ajoutez un. Sans engagement, résiliable en 2 clics.</p>
+  </div>
   <div id="plans-b2b" class="grille-plans">
     <div class="carte-plan recommande" data-chatbot-detail="Gestion Email couvre le besoin de base (tri email IA, devis auto, relance, bilan quotidien) — vous ajoutez ensuite seulement les options dont vous avez vraiment besoin, sans payer pour un palier fixe surdimensionné.">
       <h3>Gestion Email</h3>
@@ -189,11 +198,13 @@
   </div>
 </section>
 
-<section id="site-web" class="container" style="padding: 48px 0;">
-  <h2 style="text-align:center;">Besoin d'un site web professionnel ?</h2>
-  <p style="text-align:center; max-width:640px; margin:0 auto 28px; color:var(--gris-texte);">
-    En complément (ou indépendamment) de votre secrétariat virtuel, on vous crée un site web clé en main, sans code. Un forfait de création réglé une fois, puis un abonnement Hébergement (SSL + maintenance) obligatoire, facturé chaque mois — prix total annoncé dès maintenant, sans surprise.
-  </p>
+<section id="site-web" class="section">
+  <div class="container">
+  <div class="section-tete">
+    <span class="kicker">Sites web</span>
+    <h2>Un site web clé en main, sans code</h2>
+    <p class="lead">Forfait de création réglé une fois, puis un abonnement Hébergement (SSL + maintenance) facturé chaque mois. Prix total annoncé dès maintenant, sans surprise.</p>
+  </div>
   <div class="grille-plans">
     <div class="carte-plan au-scroll" data-chatbot-detail="Idéal pour une simple vitrine en ligne — une présence professionnelle rapide, sans complexité, si vous n'avez besoin que d'une page.">
       <h3>Site Essentiel</h3>
@@ -232,46 +243,44 @@
   <div class="bloc-reassurance" style="text-align:left; margin-top:32px;">
     <strong>Vous avez déjà un site, mais il est à l'abandon ?</strong> Design dépassé, plus mis à jour depuis des années, ou juste plus adapté à votre activité aujourd'hui : on repart de votre site actuel comme source d'inspiration et on vous crée une version modernisée, avec la même formule (Essentiel, Pro ou Sur-mesure) que pour une création classique. <a href="devis-site-web.html">Demandez un devis</a> en indiquant l'adresse de votre site actuel.
   </div>
+  </div>
 </section>
 
-<style>
-  .realisations-grille { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:24px; margin-top:28px; }
-  .realisation { border:1px solid #e5e7eb; border-radius:14px; overflow:hidden; background:var(--blanc); display:flex; flex-direction:column; }
-  .realisation .apercu { position:relative; height:220px; overflow:hidden; border-bottom:1px solid #eef0f3; background:#f4f5f7; }
-  .realisation .apercu iframe { position:absolute; top:0; left:0; width:1280px; height:900px; border:0; transform:scale(.328); transform-origin:top left; pointer-events:none; }
-  .realisation .apercu a { position:absolute; inset:0; z-index:2; }
-  .realisation .infos { padding:16px 18px; display:flex; flex-direction:column; gap:6px; }
-  .realisation .infos b { font-size:.98rem; }
-  .realisation .infos span { color:var(--gris-texte); font-size:.85rem; }
-  .realisation .infos a.ouvrir { margin-top:6px; font-size:.88rem; font-weight:600; }
-</style>
-<section id="realisations" class="container" style="padding: 48px 0;">
-  <h2 style="text-align:center;">Ce qu'on fabrique</h2>
-  <p style="text-align:center; max-width:680px; margin:0 auto 8px; color:var(--gris-texte);">
-    Voici des sites de démonstration produits par le même outil que les sites de nos clients. Contenu fictif, mais le rendu, la structure et les fonctionnalités sont ceux que vous obtiendrez.
-  </p>
+<section id="realisations" class="section-teintee section">
+  <div class="container">
+  <div class="section-tete">
+    <span class="kicker">Exemples</span>
+    <h2>Ce qu'on fabrique</h2>
+    <p class="lead">Des sites de démonstration produits par le même outil que ceux de nos clients. Contenu fictif — le rendu, la structure et les fonctionnalités sont ceux que vous obtiendrez.</p>
+  </div>
   <div class="realisations-grille">
     <div class="realisation">
+      <div class="chrome"><i></i><i></i><i></i></div>
       <div class="apercu"><iframe src="exemples/resto-vitrine/index.html" loading="lazy" title="Exemple restaurant vitrine"></iframe><a href="exemples/resto-vitrine/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple restaurant vitrine"></a></div>
       <div class="infos"><b>Restaurant — vitrine</b><span>Formule Essentiel · une page : carte, horaires, avis, contact.</span><a class="ouvrir" href="exemples/resto-vitrine/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
     </div>
     <div class="realisation">
+      <div class="chrome"><i></i><i></i><i></i></div>
       <div class="apercu"><iframe src="exemples/resto-ecommerce/index.html" loading="lazy" title="Exemple restaurant e-commerce"></iframe><a href="exemples/resto-ecommerce/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple restaurant e-commerce"></a></div>
       <div class="infos"><b>Restaurant — click &amp; collect</b><span>Formule E-commerce · commande en ligne, panier, paiement.</span><a class="ouvrir" href="exemples/resto-ecommerce/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
     </div>
     <div class="realisation">
+      <div class="chrome"><i></i><i></i><i></i></div>
       <div class="apercu"><iframe src="exemples/artisan-vitrine/index.html" loading="lazy" title="Exemple artisan vitrine"></iframe><a href="exemples/artisan-vitrine/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple artisan vitrine"></a></div>
       <div class="infos"><b>Artisan — vitrine</b><span>Formule Essentiel · services, zone d'intervention, demande de devis.</span><a class="ouvrir" href="exemples/artisan-vitrine/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
     </div>
     <div class="realisation">
+      <div class="chrome"><i></i><i></i><i></i></div>
       <div class="apercu"><iframe src="exemples/artisan-pro/index.html" loading="lazy" title="Exemple artisan pro"></iframe><a href="exemples/artisan-pro/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple artisan pro"></a></div>
       <div class="infos"><b>Artisan — 4 pages</b><span>Formule Pro · accueil, services détaillés, à propos, contact.</span><a class="ouvrir" href="exemples/artisan-pro/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
     </div>
     <div class="realisation">
+      <div class="chrome"><i></i><i></i><i></i></div>
       <div class="apercu"><iframe src="exemples/liberal-pro/index.html" loading="lazy" title="Exemple profession libérale pro"></iframe><a href="exemples/liberal-pro/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple profession libérale pro"></a></div>
       <div class="infos"><b>Profession libérale — 4 pages</b><span>Formule Pro · domaines d'intervention, prise de rendez-vous.</span><a class="ouvrir" href="exemples/liberal-pro/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
     </div>
     <div class="realisation">
+      <div class="chrome"><i></i><i></i><i></i></div>
       <div class="apercu"><iframe src="exemples/commerce-pro/index.html" loading="lazy" title="Exemple commerce pro"></iframe><a href="exemples/commerce-pro/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple commerce"></a></div>
       <div class="infos"><b>Commerce — 4 pages</b><span>Formule Pro · rayons, sélection, histoire de la boutique.</span><a class="ouvrir" href="exemples/commerce-pro/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
     </div>
@@ -279,14 +288,16 @@
   <p style="text-align:center; margin-top:24px;">
     <a href="exemples/index.html" target="_blank" rel="noopener">Voir tous les exemples (8 sites) →</a>
   </p>
+  </div>
 </section>
 
-<section id="automatisation" class="section-teintee">
-  <div class="container" style="padding: 48px 0;">
-  <h2 style="text-align:center;">Une tâche répétitive vous fait perdre du temps ?</h2>
-  <p style="text-align:center; max-width:700px; margin:0 auto 28px; color:var(--gris-texte);">
-    Au-delà du secrétariat et du site web, on peut automatiser une tâche de bureautique précise, propre à votre métier ou à vos outils internes — celles que ni les blocs ci-dessus ni un site ne couvrent. Par exemple : un petit programme qui marque automatiquement chaque jour les devis expirés comme "perdus" dans votre logiciel de gestion, même sur un poste ancien ou un réseau limité.
-  </p>
+<section id="automatisation" class="section">
+  <div class="container">
+  <div class="section-tete">
+    <span class="kicker">Automatisation</span>
+    <h2>Une tâche répétitive vous fait perdre du temps ?</h2>
+    <p class="lead">On automatise une tâche de bureautique précise, propre à votre métier ou à vos outils internes — celles que ni nos blocs ni un site ne couvrent. Par exemple : marquer chaque jour les devis expirés comme « perdus » dans votre logiciel de gestion, même sur un poste ancien.</p>
+  </div>
   <div class="grille-plans" style="max-width:520px; margin-left:auto; margin-right:auto;">
     <div class="carte-plan" data-chatbot-detail="Automatisation sur mesure : pour une tâche de bureautique précise, propre au métier ou aux outils internes du client, qui ne rentre dans aucune offre standard. Toujours sur devis, après un appel pour comprendre le besoin réel et les contraintes techniques.">
       <h3>Automatisation Sur-Mesure</h3>
@@ -303,12 +314,13 @@
   </div>
 </section>
 
-<section id="autres-services" class="section-teintee">
-  <div class="container" style="padding: 48px 0;">
-  <h2 style="text-align:center;">Nos autres services</h2>
-  <p style="text-align:center; max-width:700px; margin:0 auto 28px; color:var(--gris-texte);">
-    Vente sur devis pour l'instant — décrivez votre besoin en réservant un appel, on configure tout pour vous.
-  </p>
+<section id="autres-services" class="section">
+  <div class="container">
+  <div class="section-tete">
+    <span class="kicker">Autres services</span>
+    <h2>On peut aussi vous aider sur…</h2>
+    <p class="lead">Référencement, conseiller virtuel sur votre site, réseaux sociaux, configurateur de devis à votre marque. Sur devis pour l'instant — décrivez votre besoin en réservant un appel.</p>
+  </div>
   <div class="grille-plans">
     <div class="carte-plan" data-chatbot-detail="Mise en avant Google (SEO) : audit technique one-shot pour un site déjà existant (le vôtre ou fait par nous), avec un suivi mensuel optionnel ensuite. Prix nettement sous le marché agence, réalisable en grande partie par IA.">
       <h3>Mise en avant Google <span class="badge-bientot">Sur devis</span></h3>
@@ -361,11 +373,13 @@
   </div>
 </section>
 
-<section id="reserver" class="container" style="padding: 48px 0;">
-  <h2 style="text-align:center;">Réservez votre appel gratuit</h2>
-  <p style="text-align:center; max-width:640px; margin:0 auto 24px; color:var(--gris-texte);">
-    15 minutes, par téléphone ou visio, sans engagement. Choisissez simplement le créneau qui vous arrange.
-  </p>
+<section id="reserver" class="section-teintee section">
+  <div class="container">
+  <div class="section-tete">
+    <span class="kicker">Un doute ?</span>
+    <h2>Réservez un appel gratuit</h2>
+    <p class="lead">15 minutes, par téléphone ou visio, sans engagement. Choisissez le créneau qui vous arrange.</p>
+  </div>
 
   <div style="max-width:420px; margin:0 auto 32px; text-align:center;">
     <button type="button" id="btn-rdv-physique" class="btn btn-secondaire">Je préfère rencontrer quelqu'un en personne</button>
@@ -380,6 +394,7 @@
   </div>
 
   <div id="cal-embed"></div>
+  </div>
 </section>
 <script>
 (function () {
@@ -406,8 +421,12 @@
 })();
 </script>
 
-<section id="faq" class="container" style="padding: 48px 0; max-width: 760px;">
-  <h2 style="text-align:center;">Questions fréquentes</h2>
+<section id="faq" class="section">
+  <div class="container" style="max-width: 760px;">
+  <div class="section-tete">
+    <span class="kicker">FAQ</span>
+    <h2>Questions fréquentes</h2>
+  </div>
   <div class="faq-item">
     <h4>Comment être sûr que mes emails seront bien traités ?</h4>
     <p>Chaque email est analysé par une IA entraînée sur votre métier, avec nos experts qui peuvent intervenir à tout moment. Ce n'est pas un simple filtre : c'est un vrai assistant qui comprend le contexte de votre activité.</p>
@@ -435,6 +454,7 @@
   <div class="faq-item">
     <h4>Combien de temps avant d'être opérationnel ?</h4>
     <p>Pour Gestion Email : moins de 24h entre votre inscription et le premier email trié automatiquement. Pour un site web ou une offre Sur-Mesure, le délai dépend du projet — il vous est communiqué dès notre premier échange.</p>
+  </div>
   </div>
 </section>
 
