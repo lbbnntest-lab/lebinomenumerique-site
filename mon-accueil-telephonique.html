@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Mon accueil téléphonique — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .zone-config { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
+  .carte-config { background: var(--blanc); border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .carte-config h3 { margin: 0 0 4px; font-size: 1.02rem; }
+  .carte-config .aide { color: #666; font-size: 0.82rem; margin: 0 0 16px; }
+  .champ { margin-bottom: 16px; }
+  .champ label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
+  .champ input, .champ select, .champ textarea { width: 100%; padding: 9px 11px; border: 1px solid #d7d7db; border-radius: 8px; font-size: 0.92rem; font-family: inherit; }
+  .champ textarea { resize: vertical; min-height: 90px; }
+  .champ small { font-weight: 400; color: #666; }
+  .case { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 10px; font-size: 0.9rem; }
+  .case input { width: auto; margin-top: 2px; flex: none; }
+  .case .case-texte b { display: block; font-weight: 600; }
+  .case .case-texte span { color: #666; font-size: 0.82rem; }
+  .grille-horaires { display: grid; grid-template-columns: 120px 1fr; gap: 8px 12px; align-items: center; }
+  .grille-horaires label { font-size: 0.86rem; font-weight: 600; margin: 0; }
+  .grille-horaires input { padding: 7px 10px; }
+  #message { padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; display: none; }
+  #message.err { display: block; background: #fdecea; color: #B23A2E; }
+  #message.ok { display: block; background: #eaf5ec; color: #2E7D32; }
+  #etat-chargement, #etat-vide, #etat-erreur { text-align: center; color: #666; padding: 40px 0; }
+  #zone-formulaire { display: none; }
+  .info-numero { background: #eef2ff; border: 1px solid #d7deff; border-radius: 8px; padding: 12px 14px; font-size: 0.86rem; }
+  .info-numero code { background: #fff; padding: 3px 8px; border-radius: 4px; font-weight: 700; }
+  .badge-niveau { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 0.78rem; font-weight: 600; background: var(--bleu-primaire); color: #fff; margin-left: 8px; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
+    <nav>
+      <a href="dashboard-client.html">Mon espace</a>
+      <a href="#" onclick="logout()">Se déconnecter</a>
+    </nav>
+  </div>
+</header>
+
+<div class="zone-config">
+  <h2>Mon accueil téléphonique <span class="badge-niveau" id="badge-niveau" style="display:none;"></span></h2>
+  <p class="sous-titre-section">Ce que votre standard vocal sait faire et dire quand il répond à vos appels.</p>
+
+  <div id="etat-chargement">Chargement…</div>
+  <div id="etat-vide" style="display:none;">Vous n'avez pas encore ce produit — ajoutez l'accueil téléphonique IA depuis votre espace, ou contactez votre conseiller.</div>
+  <div id="etat-erreur" style="display:none;">Une erreur est survenue — réessayez plus tard.</div>
+
+  <div id="zone-formulaire">
+    <div id="message"></div>
+
+    <div class="carte-config" id="carte-numero" style="display:none;">
+      <div class="info-numero" id="info-numero"></div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Ce que l'assistant peut faire</h3>
+      <p class="aide">La prise de message et les réponses aux questions sont toujours actives. Cochez les autres selon votre métier.</p>
+      <div class="case">
+        <input type="checkbox" id="t-message" checked disabled>
+        <span class="case-texte"><b>Répondre aux questions et prendre les messages</b><span>Toujours actif — horaires, services, questions fréquentes.</span></span>
+      </div>
+      <div class="case">
+        <input type="checkbox" id="t-rdv">
+        <span class="case-texte"><b>Prendre les rendez-vous</b><span>Nom, créneau souhaité, motif.</span></span>
+      </div>
+      <div class="case">
+        <input type="checkbox" id="t-reservation">
+        <span class="case-texte"><b>Prendre les réservations de table</b><span>Jour, heure, nombre de personnes, allergènes.</span></span>
+      </div>
+      <div class="case">
+        <input type="checkbox" id="t-commande">
+        <span class="case-texte"><b>Prendre les commandes à emporter</b><span>Plats, quantités, heure de retrait.</span></span>
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Horaires</h3>
+      <p class="aide">Laissez vide un jour de fermeture, ou écrivez « fermé ». L'assistant ne les annoncera que si vous les renseignez.</p>
+      <div class="grille-horaires" id="grille-horaires"></div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Services et tarifs</h3>
+      <p class="aide">Texte libre, lu tel quel par l'assistant. Il ne dira jamais un tarif que vous n'avez pas écrit ici.</p>
+      <div class="champ">
+        <textarea id="f-services" placeholder="Ex : Détartrage 90 €. Consultation 60 €. Devis gratuit pour les gros travaux."></textarea>
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Questions fréquentes</h3>
+      <p class="aide">Les réponses aux questions que vos clients posent le plus souvent.</p>
+      <div class="champ">
+        <textarea id="f-faq" placeholder="Ex : Acceptez-vous la carte ? Oui, sans minimum. Y a-t-il un parking ? Oui, gratuit devant."></textarea>
+      </div>
+    </div>
+
+    <div class="carte-config" id="carte-menu" style="display:none;">
+      <h3>Menu / carte</h3>
+      <p class="aide">Utilisé pour la prise de commande.</p>
+      <div class="champ">
+        <label for="f-menu-source">D'où vient la carte ?</label>
+        <select id="f-menu-source">
+          <option value="texte">Je la saisis ici</option>
+          <option value="catalogue_ecommerce">Depuis les produits de mon site e-commerce</option>
+        </select>
+      </div>
+      <div class="champ" id="bloc-menu-texte">
+        <label for="f-menu-texte">La carte <small>(un plat par ligne, avec le prix si vous voulez qu'il soit annoncé)</small></label>
+        <textarea id="f-menu-texte" placeholder="Pizza Margherita — 9,50 €&#10;Pizza Reine — 11 €&#10;Tiramisu — 5 €"></textarea>
+      </div>
+      <div class="case">
+        <input type="checkbox" id="f-annoncer-total">
+        <span class="case-texte"><b>L'assistant annonce le montant total au téléphone</b><span>Décochez si vous préférez confirmer les prix vous-même.</span></span>
+      </div>
+    </div>
+
+    <div class="carte-config" id="carte-avance" style="display:none;">
+      <h3>Options avancées</h3>
+      <div class="champ" id="bloc-mode-rdv" style="display:none;">
+        <label for="f-mode-rdv">Confirmation des rendez-vous et réservations</label>
+        <select id="f-mode-rdv">
+          <option value="differe">En différé — vous confirmez chaque demande</option>
+          <option value="temps_reel">En temps réel — agenda connecté (nous configurons la connexion avec vous)</option>
+        </select>
+      </div>
+      <div class="champ">
+        <label for="f-transfert">Numéro de transfert d'appel <small>(laissez vide pour ne jamais transférer)</small></label>
+        <input type="tel" id="f-transfert" placeholder="06 12 34 56 78">
+      </div>
+    </div>
+
+    <button class="btn btn-primaire" id="btn-enregistrer">Enregistrer les modifications</button>
+  </div>
+</div>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+(function () {
+  var JOURS = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+  var NIVEAUX = { 1: 'Standard', 2: 'Avancé', 3: 'Sur-mesure' };
+  var session = null;
+  var niveauActuel = 1;
+
+  function $(id) { return document.getElementById(id); }
+
+  function afficherMessage(texte, ok) {
+    var el = $('message');
+    el.textContent = texte;
+    el.className = ok ? 'ok' : 'err';
+    el.style.display = 'block';
+  }
+
+  function rendreHoraires(horaires) {
+    var conteneur = $('grille-horaires');
+    conteneur.innerHTML = '';
+    horaires = horaires || {};
+    JOURS.forEach(function (jour) {
+      var label = document.createElement('label');
+      label.textContent = jour.charAt(0).toUpperCase() + jour.slice(1);
+      label.setAttribute('for', 'h-' + jour);
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.id = 'h-' + jour;
+      input.placeholder = 'ex : 9h-12h / 14h-18h';
+      input.value = horaires[jour] || '';
+      conteneur.appendChild(label);
+      conteneur.appendChild(input);
+    });
+  }
+
+  function collecterHoraires() {
+    var obj = {};
+    JOURS.forEach(function (jour) {
+      var v = ($('h-' + jour).value || '').trim();
+      if (v) obj[jour] = v;
+    });
+    return obj;
+  }
+
+  function collecterTypes() {
+    var t = ['message'];
+    if ($('t-rdv').checked) t.push('rdv');
+    if ($('t-reservation').checked) t.push('reservation');
+    if ($('t-commande').checked) t.push('commande');
+    return t;
+  }
+
+  function majAffichageConditionnel() {
+    $('carte-menu').style.display = $('t-commande').checked ? 'block' : 'none';
+    $('bloc-menu-texte').style.display = $('f-menu-source').value === 'texte' ? 'block' : 'none';
+    var besoinModeRdv = niveauActuel >= 2 && ($('t-rdv').checked || $('t-reservation').checked);
+    $('bloc-mode-rdv').style.display = besoinModeRdv ? 'block' : 'none';
+  }
+
+  ['t-rdv', 't-reservation', 't-commande', 'f-menu-source'].forEach(function (id) {
+    document.addEventListener('DOMContentLoaded', function () {
+      $(id).addEventListener('change', majAffichageConditionnel);
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', async function () {
+    session = await requireAuth('connexion.html');
+    if (!session) return;
+
+    try {
+      var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/accueil-tel-client-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: session.access_token })
+      });
+      $('etat-chargement').style.display = 'none';
+
+      if (resp.status === 404) { $('etat-vide').style.display = 'block'; return; }
+      if (!resp.ok) throw new Error('reseau');
+
+      var config = await resp.json();
+      niveauActuel = Number(config.niveau) || 1;
+
+      var badge = $('badge-niveau');
+      badge.textContent = 'Niveau ' + niveauActuel + ' — ' + (NIVEAUX[niveauActuel] || '');
+      badge.style.display = 'inline-block';
+
+      var carteNum = $('carte-numero');
+      carteNum.style.display = 'block';
+      $('info-numero').innerHTML = config.numero_dedie
+        ? 'Votre numéro d\'accueil : <code>' + config.numero_dedie + '</code>'
+        : 'Votre numéro dédié est en cours d\'attribution — votre conseiller vous le communiquera. Vous pouvez déjà tout configurer ici.';
+
+      var types = Array.isArray(config.types_accueil) ? config.types_accueil : ['message'];
+      $('t-rdv').checked = types.indexOf('rdv') >= 0;
+      $('t-reservation').checked = types.indexOf('reservation') >= 0;
+      $('t-commande').checked = types.indexOf('commande') >= 0;
+
+      rendreHoraires(config.horaires);
+      $('f-services').value = config.services_tarifs || '';
+      $('f-faq').value = config.faq || '';
+
+      $('f-menu-source').value = config.menu_source || 'texte';
+      $('f-menu-texte').value = config.menu_texte || '';
+      $('f-annoncer-total').checked = config.annoncer_total !== false;
+
+      if (niveauActuel >= 2) {
+        $('carte-avance').style.display = 'block';
+        $('f-mode-rdv').value = config.mode_rdv || 'differe';
+        $('f-transfert').value = config.transfert_numero || '';
+      }
+
+      majAffichageConditionnel();
+      $('zone-formulaire').style.display = 'block';
+    } catch (err) {
+      $('etat-chargement').style.display = 'none';
+      $('etat-erreur').style.display = 'block';
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    $('btn-enregistrer').addEventListener('click', async function () {
+      var btn = this;
+      $('message').style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'Enregistrement...';
+
+      var payload = {
+        access_token: session.access_token,
+        types_accueil: collecterTypes(),
+        horaires: collecterHoraires(),
+        services_tarifs: $('f-services').value.trim() || null,
+        faq: $('f-faq').value.trim() || null,
+        menu_source: $('f-menu-source').value,
+        menu_texte: $('f-menu-texte').value.trim() || null,
+        annoncer_total: $('f-annoncer-total').checked
+      };
+      if (niveauActuel >= 2) {
+        payload.mode_rdv = $('f-mode-rdv').value;
+        payload.transfert_numero = $('f-transfert').value.trim() || null;
+      }
+
+      try {
+        var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/accueil-tel-client-modifier', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!resp.ok) throw new Error('Échec de l\'enregistrement.');
+        afficherMessage('Modifications enregistrées.', true);
+      } catch (err) {
+        afficherMessage(err.message || 'Une erreur est survenue.', false);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Enregistrer les modifications';
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
