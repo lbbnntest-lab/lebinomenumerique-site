@@ -135,8 +135,21 @@ header.site .cta {
 }
 header.site .cta:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(27,111,136,.36); }
 
+.nav-toggle {
+  display: none; background: none; border: 0; font-size: 1.6rem; line-height: 1;
+  cursor: pointer; color: var(--bleu-nuit); padding: 4px 6px;
+}
 @media (max-width: 860px) {
-  header.site nav a:not(.cta) { display: none; }
+  header.site .container { flex-wrap: wrap; }
+  .nav-toggle { display: block; }
+  header.site nav {
+    display: none; width: 100%; flex-direction: column; align-items: stretch;
+    gap: 2px; padding: 8px 0 4px; border-top: 1px solid #e5e7eb; margin-top: 8px;
+  }
+  header.site nav.ouvert { display: flex; }
+  header.site nav a:not(.cta) { display: block; padding: 11px 4px; }
+  header.site nav a:not(.cta)::after { display: none; }
+  header.site .cta { text-align: center; margin-top: 8px; }
 }
 
 /* ---------- Hero ---------- */

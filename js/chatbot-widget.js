@@ -148,10 +148,11 @@
   }
 
   // Survol d'une offre (carte tarifaire) : ouvre le chat et donne un détail
-  // contextuel sur cette offre précise. Délai de 700ms avant déclenchement
+  // contextuel sur cette offre précise. Délai de 2,5 s avant déclenchement
   // (annulé si la souris repart avant, pour ne pas se déclencher au simple
-  // passage en scrollant) et une seule fois par carte et par visite, pour
-  // ne pas être envahissant.
+  // passage de souris ou en scrollant) et une seule fois par carte et par
+  // visite, pour ne pas être envahissant.
+  const DELAI_SURVOL_MS = 2500;
   const cartesDejaSignalees = new WeakSet();
   function configurerSurvolOffres(panneau) {
     const cartes = document.querySelectorAll(".carte-plan[data-chatbot-detail]");
@@ -164,7 +165,7 @@
           panneau.classList.remove("hidden");
           const nomOffre = carte.querySelector("h3")?.textContent || "cette offre";
           ajouterMessage("assistant", `À propos de « ${nomOffre} » : ${carte.dataset.chatbotDetail}`);
-        }, 700);
+        }, DELAI_SURVOL_MS);
       });
       carte.addEventListener("mouseleave", () => {
         if (minuteur) clearTimeout(minuteur);

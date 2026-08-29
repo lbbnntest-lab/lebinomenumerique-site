@@ -3,25 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Le Binôme Numérique — Votre secrétariat virtuel intelligent</title>
+<title>Le Binôme Numérique — le numérique de votre entreprise, géré pour vous</title>
+<meta name="description" content="Tri des emails, accueil téléphonique IA, création de site web, devis, relances : Le Binôme Numérique prend en charge la partie administrative et digitale de votre activité de professionnel.">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <header class="site">
   <div class="container">
-    <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
+    <a class="logo" href="index.html"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</a>
+    <button class="nav-toggle" aria-label="Menu" aria-expanded="false">☰</button>
     <nav>
-      <a href="#offres">Offres</a>
-      <a href="#site-web">Sites web</a>
-      <a href="#realisations">Exemples</a>
-      <a href="#autres-services">Autres services</a>
-      <a href="#faq">Questions fréquentes</a>
-      <!-- Lien "Connexion" remis le 22/08/2026 : la connexion commerciale a été déplacée
-           sur une page séparée (connexion-commercial.html), jamais liée publiquement —
-           ce lien-ci ne mène qu'à l'espace client. -->
+      <a href="gestion-email.html">Gestion Email</a>
+      <a href="gestion-appels.html">Gestion Appels</a>
+      <a href="sites-web.html">Sites web</a>
+      <a href="services.html">Autres services</a>
+      <a href="a-propos.html">À propos</a>
       <a href="connexion.html">Se connecter</a>
-      <a href="#offres" class="cta">Voir les offres</a>
+      <a href="#reserver" class="cta">Réserver un appel</a>
     </nav>
   </div>
 </header>
@@ -37,13 +36,112 @@
     </div>
 
     <div class="deux-cta">
-      <a href="#offres" class="btn btn-primaire">Voir les offres</a>
+      <a href="#offres" class="btn btn-primaire">Découvrir les offres</a>
       <a href="#reserver" class="btn btn-secondaire">Réserver un appel gratuit de 15 min</a>
     </div>
 
     <div class="hero-preuve">
       <span>Artisans</span><span>Restaurants</span><span>Professions libérales</span><span>Commerces</span><span>Sans engagement</span>
     </div>
+  </div>
+</section>
+
+<section id="offres" class="section-teintee section">
+  <div class="container">
+  <div class="section-tete">
+    <span class="kicker">Nos offres</span>
+    <h2>Des blocs indépendants, à assembler selon vos besoins</h2>
+    <p class="lead">Prenez ce qui vous est utile aujourd'hui, ajoutez le reste plus tard sans rien reconfigurer.</p>
+  </div>
+  <div class="grille-plans">
+    <div class="carte-plan">
+      <h3>Gestion Email</h3>
+      <div class="prix">89€ <span>/ mois</span></div>
+      <ul>
+        <li>Tri automatique des emails (RDV, devis, urgence, SAV)</li>
+        <li>Devis pré-remplis, prêts à envoyer</li>
+        <li>Relance automatique, bilan quotidien</li>
+      </ul>
+      <a class="btn btn-secondaire" href="gestion-email.html">En savoir plus →</a>
+    </div>
+    <div class="carte-plan recommande">
+      <h3>Gestion Appels</h3>
+      <div class="prix">dès 49€ <span>/ mois</span></div>
+      <ul>
+        <li>Un standard vocal qui décroche à votre place</li>
+        <li>Messages, rendez-vous, réservations, commandes</li>
+        <li>3 niveaux, selon votre métier</li>
+      </ul>
+      <a class="btn btn-primaire" href="gestion-appels.html">En savoir plus →</a>
+    </div>
+    <div class="carte-plan">
+      <h3>Sites web</h3>
+      <div class="prix">dès 490€ <span>+ hébergement</span></div>
+      <ul>
+        <li>Vitrine, multi-pages avec prise de RDV, ou boutique en ligne</li>
+        <li>Clé en main, sans code, généré pour votre métier</li>
+        <li>Prix total annoncé dès le départ</li>
+      </ul>
+      <a class="btn btn-secondaire" href="sites-web.html">En savoir plus →</a>
+    </div>
+    <div class="carte-plan">
+      <h3>Chatbot pour votre site</h3>
+      <div class="prix">dès 290€ <span>+ 29€/mois</span></div>
+      <ul>
+        <li>Un conseiller virtuel installé sur votre site</li>
+        <li>3 niveaux : infos, prise de RDV, calcul de devis</li>
+      </ul>
+      <a class="btn btn-secondaire" href="services.html#chatbot">En savoir plus →</a>
+    </div>
+    <div class="carte-plan">
+      <h3>Automatisation &amp; services</h3>
+      <div class="prix">Sur devis</div>
+      <ul>
+        <li>Automatiser une tâche répétitive de votre métier</li>
+        <li>Référencement Google, réseaux sociaux, devis à votre marque</li>
+      </ul>
+      <a class="btn btn-secondaire" href="services.html">En savoir plus →</a>
+    </div>
+    <div class="carte-plan">
+      <h3>Pack Complet</h3>
+      <div class="prix">dès 134,90€ <span>/ mois</span></div>
+      <ul>
+        <li>Gestion Email + Gestion Appels</li>
+        <li>Emails et appels couverts d'un seul coup</li>
+      </ul>
+      <a class="btn btn-secondaire" href="gestion-appels.html#pack">En savoir plus →</a>
+    </div>
+  </div>
+  </div>
+</section>
+
+<section id="realisations" class="section">
+  <div class="container">
+  <div class="section-tete">
+    <span class="kicker">Exemples</span>
+    <h2>Ce qu'on fabrique</h2>
+    <p class="lead">Des sites de démonstration produits par le même outil que ceux de nos clients. Contenu fictif, rendu réel.</p>
+  </div>
+  <div class="realisations-grille">
+    <div class="realisation">
+      <div class="chrome"><i></i><i></i><i></i></div>
+      <div class="apercu"><iframe src="exemples/resto-vitrine/index.html" loading="lazy" title="Exemple restaurant vitrine"></iframe><a href="exemples/resto-vitrine/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple restaurant vitrine"></a></div>
+      <div class="infos"><b>Restaurant — vitrine</b><span>Formule Essentiel · carte, horaires, avis, contact.</span><a class="ouvrir" href="exemples/resto-vitrine/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
+    </div>
+    <div class="realisation">
+      <div class="chrome"><i></i><i></i><i></i></div>
+      <div class="apercu"><iframe src="exemples/artisan-pro/index.html" loading="lazy" title="Exemple artisan pro"></iframe><a href="exemples/artisan-pro/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple artisan pro"></a></div>
+      <div class="infos"><b>Artisan — 4 pages</b><span>Formule Pro · services détaillés, à propos, contact.</span><a class="ouvrir" href="exemples/artisan-pro/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
+    </div>
+    <div class="realisation">
+      <div class="chrome"><i></i><i></i><i></i></div>
+      <div class="apercu"><iframe src="exemples/liberal-pro/index.html" loading="lazy" title="Exemple profession libérale pro"></iframe><a href="exemples/liberal-pro/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple profession libérale pro"></a></div>
+      <div class="infos"><b>Profession libérale — 4 pages</b><span>Formule Pro · domaines d'intervention, prise de RDV.</span><a class="ouvrir" href="exemples/liberal-pro/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
+    </div>
+  </div>
+  <p style="text-align:center; margin-top:28px;">
+    <a class="btn btn-secondaire" href="sites-web.html#realisations">Voir les 8 exemples et les formules de site</a>
+  </p>
   </div>
 </section>
 
@@ -58,316 +156,17 @@
     <div class="etape au-scroll">
       <div class="numero">1</div>
       <h3>Choisissez votre formule en ligne</h3>
-      <p>Comparez nos formules et choisissez celle qui vous correspond, en 2 minutes — aussi simple qu'un achat en ligne classique.</p>
+      <p>Comparez les offres et choisissez celle qui vous correspond, en quelques minutes.</p>
     </div>
     <div class="etape au-scroll au-scroll-delai-1">
       <div class="numero">2</div>
       <h3>Payez en toute sécurité</h3>
-      <p>Paiement sécurisé par Stripe, sans engagement, résiliable en ligne en 2 clics, sans justification.</p>
+      <p>Paiement par Stripe, sans engagement, résiliable en ligne en 2 clics, sans justification.</p>
     </div>
     <div class="etape au-scroll au-scroll-delai-2">
       <div class="numero">3</div>
       <h3>La mise en route se fait toute seule</h3>
-      <p>Dès le paiement, votre service se configure automatiquement — premier email trié, site en ligne, standard vocal prêt. Pour les offres sur devis, on revient vers vous sous 24h pour caler les détails.</p>
-    </div>
-  </div>
-  </div>
-</section>
-
-<section id="offres" class="section-teintee section">
-  <div class="container">
-  <div class="section-tete">
-    <span class="kicker">Nos offres</span>
-    <h2>Prenez ce dont vous avez besoin, ajoutez le reste plus tard</h2>
-    <p class="lead">Des blocs indépendants, sans reconfiguration quand vous en ajoutez un. Sans engagement, résiliable en 2 clics.</p>
-  </div>
-  <div id="plans-b2b" class="grille-plans">
-    <div class="carte-plan recommande" data-chatbot-detail="Gestion Email couvre le besoin de base (tri email IA, devis auto, relance, bilan quotidien) — vous ajoutez ensuite seulement les options dont vous avez vraiment besoin, sans payer pour un palier fixe surdimensionné.">
-      <h3>Gestion Email</h3>
-      <div class="prix">89€ <span>/ mois</span></div>
-      <ul>
-        <li>Tri automatique de vos emails (RDV, Devis, Urgence, SAV)</li>
-        <li>Devis automatisés, prêts à envoyer</li>
-        <li>Relance automatique si un numéro de rappel manque <small style="color:var(--gris-texte); font-weight:400;">(pas de standard téléphonique — tri par email)</small></li>
-        <li>Bilan quotidien de l'activité</li>
-        <li>150 demandes traitées / mois <small style="color:var(--gris-texte); font-weight:400;">(au-delà : 0,50€/demande, jamais de blocage)</small></li>
-        <li>1 utilisateur inclus</li>
-      </ul>
-
-      <p style="font-weight:600; margin:16px 0 8px;">Options cumulables <small style="color:var(--gris-texte); font-weight:400;">(à la carte)</small></p>
-      <label style="display:flex; align-items:center; gap:8px; margin-bottom:6px; font-weight:400;">
-        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_UTILISATEUR_SUPP" data-prix="15"> Utilisateur supplémentaire <small style="color:var(--gris-texte);">+15€/mois</small>
-      </label>
-      <label style="display:flex; align-items:center; gap:8px; margin-bottom:6px; font-weight:400;">
-        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_EXPORT_AIRTABLE" data-prix="19"> Export automatique vers Airtable <small style="color:var(--gris-texte);">+19€/mois</small>
-      </label>
-      <label style="display:flex; align-items:center; gap:8px; margin-bottom:12px; font-weight:400;">
-        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_SUPPORT_PRIORITAIRE" data-prix="12"> Support prioritaire <small style="color:var(--gris-texte);">+12€/mois</small>
-      </label>
-
-      <p style="margin:4px 0 4px; font-weight:600;">Total : <span id="total-socle-brique">89</span>€ <span style="font-weight:400;">/ mois</span></p>
-      <p style="margin:0 0 16px; color:var(--gris-texte); font-size:.85rem;">Existe aussi séparément : onboarding personnalisé (149€ HT, une fois).</p>
-      <a class="btn btn-primaire" id="lien-choisir-socle" href="inscription.html?type=B2B&plan=SECRETARIAT_SOCLE">Choisir</a>
-    </div>
-
-    <div id="telephonie" class="carte-plan" data-chatbot-detail="L'accueil téléphonique IA décroche vos appels : il répond aux questions (horaires, tarifs, services), prend les messages, et selon votre métier prend aussi les rendez-vous, les réservations de table ou les commandes à emporter. Trois niveaux, à partir de 49€/mois. Il peut même conseiller un client qui hésite, à partir de votre carte.">
-      <h3>Gestion Appels</h3>
-      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 16px;">Un standard vocal qui décroche à votre place : il renseigne vos clients (horaires, services, questions fréquentes), prend les messages, et — selon votre métier — les rendez-vous, les réservations de table ou les commandes à emporter. En complément de Gestion Email, ou seul.</p>
-
-      <div style="border:1px solid #e5e7eb; border-radius:10px; padding:14px; margin-bottom:10px;">
-        <p style="margin:0 0 6px; font-weight:600;">Standard <span style="font-weight:400; color:var(--gris-texte);">— 49€ / mois</span></p>
-        <ul style="margin:0 0 10px;">
-          <li>Répond aux questions, prend les messages</li>
-          <li>Rendez-vous et réservations : demande enregistrée, vous confirmez</li>
-          <li>60 appels inclus</li>
-        </ul>
-        <a class="btn btn-secondaire" href="inscription.html?type=B2B&plan=TEL_ESSENTIEL" style="display:block; text-align:center;">Choisir Standard</a>
-      </div>
-
-      <div style="border:1px solid var(--bleu-primaire); border-radius:10px; padding:14px; margin-bottom:10px;">
-        <p style="margin:0 0 6px; font-weight:600;">Avancé <span style="font-weight:400; color:var(--gris-texte);">— 95€ / mois</span></p>
-        <ul style="margin:0 0 10px;">
-          <li>Tout Standard</li>
-          <li>Transfert d'appel vers vous en cas d'urgence</li>
-          <li>Alerte SMS après chaque appel</li>
-          <li>150 appels inclus</li>
-        </ul>
-        <a class="btn btn-primaire" href="inscription.html?type=B2B&plan=TEL_PRO" style="display:block; text-align:center;">Choisir Avancé</a>
-      </div>
-
-      <div style="border:1px solid #e5e7eb; border-radius:10px; padding:14px;">
-        <p style="margin:0 0 6px; font-weight:600;">Sur-mesure <span style="font-weight:400; color:var(--gris-texte);">— dès 149€ / mois</span></p>
-        <ul style="margin:0 0 10px;">
-          <li>Tout Avancé</li>
-          <li>Prise de commande à emporter (carte, suppléments, heure de retrait)</li>
-          <li>Rappels sortants, qualification poussée</li>
-          <li>Connexion agenda / caisse / logiciel métier sur devis</li>
-        </ul>
-        <a class="btn btn-secondaire" href="inscription.html?type=B2B&plan=TEL_SURMESURE" style="display:block; text-align:center;">Choisir Sur-mesure</a>
-      </div>
-
-      <p style="margin:12px 0 0; color:var(--gris-texte); font-size:.85rem;">Options : numéro dédié supplémentaire, accueil bilingue, horaires étendus. Rendez-vous en temps réel (agenda connecté) disponible sur activation.</p>
-    </div>
-
-    <div class="carte-plan" data-chatbot-detail="Le Pack Complet réunit Gestion Email et Gestion Appels. Pour l'instant chaque bloc se commande séparément (une facture chacun) ; la facture unique à tarif réduit arrive prochainement.">
-      <h3>Pack Complet</h3>
-      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">Gestion Email + Gestion Appels : couvrez emails et appels d'un seul coup.</p>
-      <div class="prix">dès 134,90€ <span>/ mois</span></div>
-      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.85rem;">89€ Gestion Email + 49€ Gestion Appels Standard, commandés séparément pour l'instant. Facture unique à tarif réduit (−3€) bientôt.</p>
-      <ul>
-        <li>Tout Gestion Email (tri des emails, devis auto, bilan quotidien)</li>
-        <li>Tout Gestion Appels Standard (accueil vocal, messages, RDV / réservations)</li>
-        <li>Options cumulables des deux blocs</li>
-      </ul>
-      <a class="btn btn-primaire" href="inscription.html?type=B2B&plan=SECRETARIAT_SOCLE" style="display:block; text-align:center; margin-bottom:8px;">Démarrer avec Gestion Email</a>
-      <a href="#telephonie" style="display:block; text-align:center; font-size:.82rem;">puis ajouter Gestion Appels →</a>
-    </div>
-
-    <div class="carte-plan au-scroll" data-chatbot-detail="Pour les besoins qui dépassent les 3 blocs ci-dessus : plusieurs sites, workflows métier spécifiques, volumes très élevés, ou intégrations non standard — on étudie votre besoin sur devis.">
-      <h3>Sur-Mesure</h3>
-      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">On s'implique directement dans votre projet, du premier échange à la mise en place — pas un simple formulaire.</p>
-      <div class="prix">Sur devis <span>à partir de 450€/mois</span></div>
-      <ul>
-        <li>Multi-sites / multi-établissements</li>
-        <li>Workflows métier spécifiques</li>
-        <li>Volumes très élevés, intégrations non standard</li>
-      </ul>
-      <a class="btn btn-secondaire" href="devis-site-web.html">Demander un devis</a>
-    </div>
-  </div>
-  <script>
-  (function () {
-    var checks = document.querySelectorAll('.brique-check');
-    var totalEl = document.getElementById('total-socle-brique');
-    var lien = document.getElementById('lien-choisir-socle');
-    var PRIX_SOCLE = 89;
-    function maj() {
-      var total = PRIX_SOCLE;
-      var codes = [];
-      checks.forEach(function (c) {
-        if (c.checked) { total += Number(c.dataset.prix); codes.push(c.dataset.code); }
-      });
-      totalEl.textContent = total;
-      var href = 'inscription.html?type=B2B&plan=SECRETARIAT_SOCLE';
-      if (codes.length) href += '&briques=' + encodeURIComponent(codes.join(','));
-      lien.setAttribute('href', href);
-    }
-    checks.forEach(function (c) { c.addEventListener('change', maj); });
-  })();
-  </script>
-  </div>
-</section>
-
-<section id="site-web" class="section">
-  <div class="container">
-  <div class="section-tete">
-    <span class="kicker">Sites web</span>
-    <h2>Un site web clé en main, sans code</h2>
-    <p class="lead">Forfait de création réglé une fois, puis un abonnement Hébergement (SSL + maintenance) facturé chaque mois. Prix total annoncé dès maintenant, sans surprise.</p>
-  </div>
-  <div class="grille-plans">
-    <div class="carte-plan au-scroll" data-chatbot-detail="Idéal pour une simple vitrine en ligne — une présence professionnelle rapide, sans complexité, si vous n'avez besoin que d'une page.">
-      <h3>Site Essentiel</h3>
-      <div class="prix">490€</div>
-      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.9rem;">+ 15€/mois d'hébergement</p>
-      <ul><li>1 page, no-code</li><li>Formulaire de contact</li><li>Mise en ligne incluse</li></ul>
-      <p style="margin:8px 0 12px; color:var(--gris-texte); font-size:.85rem;">Non inclus : multi-pages, prise de RDV en ligne, vente en ligne.</p>
-      <a class="btn btn-secondaire" href="checkout-siteweb.html?pack=SITE_ESSENTIEL" style="display:block; text-align:center; margin-top:12px;">Commander</a>
-    </div>
-    <div class="carte-plan recommande au-scroll au-scroll-delai-1" data-chatbot-detail="Le plus choisi par les indépendants et petites entreprises — la prise de RDV intégrée en plus des pages multiples fait souvent la différence.">
-      <h3>Site Pro</h3>
-      <div class="prix"><span class="prix-ancien">1290€</span>890€ <span class="badge-lancement">Offre de lancement</span></div>
-      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.9rem;">Tarif de lancement valable 90 jours (puis 1290€) + 25€/mois d'hébergement</p>
-      <ul><li>Tout Essentiel, plus :</li><li>Multi-pages</li><li>Prise de RDV intégrée</li><li>Référencement de base</li></ul>
-      <a class="btn btn-primaire" href="checkout-siteweb.html?pack=SITE_PRO" style="display:block; text-align:center; margin-top:12px;">Commander</a>
-    </div>
-    <div class="carte-plan au-scroll au-scroll-delai-2" data-chatbot-detail="Pour vendre en ligne directement, jusqu'à 30 produits, avec un paiement sécurisé déjà intégré — pas besoin d'ajouter un autre outil.">
-      <h3>E-commerce Starter</h3>
-      <div class="prix"><span class="prix-ancien">2190€</span>1490€ <span class="badge-lancement">Offre de lancement</span></div>
-      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.9rem;">Tarif de lancement valable 90 jours (puis 2190€) + 45€/mois d'hébergement</p>
-      <ul><li>Tout Pro, plus :</li><li>Jusqu'à 30 produits</li><li>Paiement en ligne Stripe</li><li>Gestion des commandes</li></ul>
-      <a class="btn btn-secondaire" href="checkout-siteweb.html?pack=SITE_ECOMMERCE" style="display:block; text-align:center; margin-top:12px;">Commander</a>
-    </div>
-    <div class="carte-plan au-scroll au-scroll-delai-2" data-chatbot-detail="Pour les besoins qui dépassent l'E-commerce Starter : plus de 30 produits, réservation avancée, multi-langue, intégrations tierces spécifiques ou design plus poussé — on étudie votre projet sur devis.">
-      <h3>Site Sur-Mesure</h3>
-      <p style="margin:-8px 0 12px; color:var(--gris-texte); font-size:.9rem;">On s'implique directement dans votre projet, du premier échange à la mise en ligne.</p>
-      <div class="prix">Sur devis <span>pour les projets spécifiques</span></div>
-      <ul><li>Au-delà de 30 produits</li><li>Réservation avancée, multi-langue</li><li>Intégrations tierces spécifiques</li></ul>
-      <a class="btn btn-secondaire" href="devis-site-web.html" style="display:block; text-align:center; margin-top:12px;">Demander un devis</a>
-    </div>
-  </div>
-  <p style="text-align:center;">
-    Pas encore sûr de votre choix ? <a href="devis-site-web.html">Demandez un devis gratuit</a> pour en discuter d'abord.
-  </p>
-
-  <div class="bloc-reassurance" style="text-align:left; margin-top:32px;">
-    <strong>Vous avez déjà un site, mais il est à l'abandon ?</strong> Design dépassé, plus mis à jour depuis des années, ou juste plus adapté à votre activité aujourd'hui : on repart de votre site actuel comme source d'inspiration et on vous crée une version modernisée, avec la même formule (Essentiel, Pro ou Sur-mesure) que pour une création classique. <a href="devis-site-web.html">Demandez un devis</a> en indiquant l'adresse de votre site actuel.
-  </div>
-  </div>
-</section>
-
-<section id="realisations" class="section-teintee section">
-  <div class="container">
-  <div class="section-tete">
-    <span class="kicker">Exemples</span>
-    <h2>Ce qu'on fabrique</h2>
-    <p class="lead">Des sites de démonstration produits par le même outil que ceux de nos clients. Contenu fictif — le rendu, la structure et les fonctionnalités sont ceux que vous obtiendrez.</p>
-  </div>
-  <div class="realisations-grille">
-    <div class="realisation">
-      <div class="chrome"><i></i><i></i><i></i></div>
-      <div class="apercu"><iframe src="exemples/resto-vitrine/index.html" loading="lazy" title="Exemple restaurant vitrine"></iframe><a href="exemples/resto-vitrine/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple restaurant vitrine"></a></div>
-      <div class="infos"><b>Restaurant — vitrine</b><span>Formule Essentiel · une page : carte, horaires, avis, contact.</span><a class="ouvrir" href="exemples/resto-vitrine/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
-    </div>
-    <div class="realisation">
-      <div class="chrome"><i></i><i></i><i></i></div>
-      <div class="apercu"><iframe src="exemples/resto-ecommerce/index.html" loading="lazy" title="Exemple restaurant e-commerce"></iframe><a href="exemples/resto-ecommerce/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple restaurant e-commerce"></a></div>
-      <div class="infos"><b>Restaurant — click &amp; collect</b><span>Formule E-commerce · commande en ligne, panier, paiement.</span><a class="ouvrir" href="exemples/resto-ecommerce/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
-    </div>
-    <div class="realisation">
-      <div class="chrome"><i></i><i></i><i></i></div>
-      <div class="apercu"><iframe src="exemples/artisan-vitrine/index.html" loading="lazy" title="Exemple artisan vitrine"></iframe><a href="exemples/artisan-vitrine/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple artisan vitrine"></a></div>
-      <div class="infos"><b>Artisan — vitrine</b><span>Formule Essentiel · services, zone d'intervention, demande de devis.</span><a class="ouvrir" href="exemples/artisan-vitrine/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
-    </div>
-    <div class="realisation">
-      <div class="chrome"><i></i><i></i><i></i></div>
-      <div class="apercu"><iframe src="exemples/artisan-pro/index.html" loading="lazy" title="Exemple artisan pro"></iframe><a href="exemples/artisan-pro/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple artisan pro"></a></div>
-      <div class="infos"><b>Artisan — 4 pages</b><span>Formule Pro · accueil, services détaillés, à propos, contact.</span><a class="ouvrir" href="exemples/artisan-pro/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
-    </div>
-    <div class="realisation">
-      <div class="chrome"><i></i><i></i><i></i></div>
-      <div class="apercu"><iframe src="exemples/liberal-pro/index.html" loading="lazy" title="Exemple profession libérale pro"></iframe><a href="exemples/liberal-pro/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple profession libérale pro"></a></div>
-      <div class="infos"><b>Profession libérale — 4 pages</b><span>Formule Pro · domaines d'intervention, prise de rendez-vous.</span><a class="ouvrir" href="exemples/liberal-pro/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
-    </div>
-    <div class="realisation">
-      <div class="chrome"><i></i><i></i><i></i></div>
-      <div class="apercu"><iframe src="exemples/commerce-pro/index.html" loading="lazy" title="Exemple commerce pro"></iframe><a href="exemples/commerce-pro/index.html" target="_blank" rel="noopener" aria-label="Ouvrir l'exemple commerce"></a></div>
-      <div class="infos"><b>Commerce — 4 pages</b><span>Formule Pro · rayons, sélection, histoire de la boutique.</span><a class="ouvrir" href="exemples/commerce-pro/index.html" target="_blank" rel="noopener">Ouvrir en plein écran →</a></div>
-    </div>
-  </div>
-  <p style="text-align:center; margin-top:24px;">
-    <a href="exemples/index.html" target="_blank" rel="noopener">Voir tous les exemples (8 sites) →</a>
-  </p>
-  </div>
-</section>
-
-<section id="automatisation" class="section">
-  <div class="container">
-  <div class="section-tete">
-    <span class="kicker">Automatisation</span>
-    <h2>Une tâche répétitive vous fait perdre du temps ?</h2>
-    <p class="lead">On automatise une tâche de bureautique précise, propre à votre métier ou à vos outils internes — celles que ni nos blocs ni un site ne couvrent. Par exemple : marquer chaque jour les devis expirés comme « perdus » dans votre logiciel de gestion, même sur un poste ancien.</p>
-  </div>
-  <div class="grille-plans" style="max-width:520px; margin-left:auto; margin-right:auto;">
-    <div class="carte-plan" data-chatbot-detail="Automatisation sur mesure : pour une tâche de bureautique précise, propre au métier ou aux outils internes du client, qui ne rentre dans aucune offre standard. Toujours sur devis, après un appel pour comprendre le besoin réel et les contraintes techniques.">
-      <h3>Automatisation Sur-Mesure</h3>
-      <div class="prix">Sur devis <span>selon la tâche à automatiser</span></div>
-      <ul>
-        <li>Étude de votre processus actuel et de vos contraintes (logiciel, poste, réseau)</li>
-        <li>Développement d'un script ou petit outil dédié à cette tâche précise</li>
-        <li>Installation et tests sur votre poste réel</li>
-        <li>Une fois en place, ça tourne tout seul — rien à apprendre</li>
-      </ul>
-      <a class="btn btn-secondaire" href="#reserver" style="display:block; text-align:center; margin-top:12px;">Décrire mon besoin</a>
-    </div>
-  </div>
-  </div>
-</section>
-
-<section id="autres-services" class="section">
-  <div class="container">
-  <div class="section-tete">
-    <span class="kicker">Autres services</span>
-    <h2>On peut aussi vous aider sur…</h2>
-    <p class="lead">Référencement, conseiller virtuel sur votre site, réseaux sociaux, configurateur de devis à votre marque. Sur devis pour l'instant — décrivez votre besoin en réservant un appel.</p>
-  </div>
-  <div class="grille-plans">
-    <div class="carte-plan" data-chatbot-detail="Mise en avant Google (SEO) : audit technique one-shot pour un site déjà existant (le vôtre ou fait par nous), avec un suivi mensuel optionnel ensuite. Prix nettement sous le marché agence, réalisable en grande partie par IA.">
-      <h3>Mise en avant Google <span class="badge-bientot">Sur devis</span></h3>
-      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">Votre site existe déjà mais ressort mal sur Google ? Un audit technique complet, puis un suivi mensuel optionnel.</p>
-      <div class="prix">390€ <span>audit one-shot</span></div>
-      <ul>
-        <li>Audit technique (balises, structure, vitesse) et optimisation on-page</li>
-        <li>Sitemap et bonnes pratiques de référencement</li>
-        <li>Suivi mensuel optionnel : rapport + suggestions IA <small style="color:var(--gris-texte); font-weight:400;">(49€/mois)</small></li>
-      </ul>
-      <a class="btn btn-secondaire" href="#reserver" style="display:block; text-align:center; margin-top:12px;">Demander un audit</a>
-    </div>
-
-    <div class="carte-plan" data-chatbot-detail="Chatbot pour votre site : réutilise le même moteur IA que celui du Binôme Numérique, configuré à votre image (3 niveaux cumulatifs, du simple FAQ jusqu'au calcul de devis + alerte urgence).">
-      <h3>Chatbot pour votre site <span class="badge-bientot">Sur devis</span></h3>
-      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">Un conseiller virtuel installé sur votre site (le vôtre déjà en ligne, ou en option lors d'une création chez nous).</p>
-      <div class="prix">Dès 290€ <span>+ 29€/mois</span></div>
-      <ul>
-        <li><strong>Niveau 1 :</strong> questions basiques, infos pratiques</li>
-        <li><strong>Niveau 2 :</strong> + prise de rendez-vous</li>
-        <li><strong>Niveau 3 :</strong> + calcul de devis et alerte urgence</li>
-      </ul>
-      <a class="btn btn-secondaire" href="#reserver" style="display:block; text-align:center; margin-top:12px;">En discuter</a>
-    </div>
-
-    <div class="carte-plan" data-chatbot-detail="Réseaux sociaux : Claude génère votre calendrier de posts (texte + visuels), vous pouvez uploader vos propres photos privilégiées à une image générique, vous validez chaque post avant de le publier vous-même.">
-      <h3>Réseaux sociaux <span class="badge-bientot">Sur devis</span></h3>
-      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">Un calendrier de posts généré par IA pour vos réseaux — vous gardez la main sur ce qui est publié.</p>
-      <div class="prix">Dès 190€ <span>+ 59€/mois</span></div>
-      <ul>
-        <li>Textes et suggestions visuelles générés par IA, adaptés à votre secteur</li>
-        <li>Vos propres photos privilégiées à une image générique</li>
-        <li>Vous validez chaque post avant publication manuelle</li>
-      </ul>
-      <a class="btn btn-secondaire" href="#reserver" style="display:block; text-align:center; margin-top:12px;">En discuter</a>
-    </div>
-
-    <div class="carte-plan" data-chatbot-detail="Devis en marque blanche : votre propre configurateur de devis en ligne, à votre marque, pour votre catalogue à vous. Mode Site (votre client remplit en autonomie) ou Terrain (vous remplissez vous-même en intervention, prix ajustable).">
-      <h3>Devis en marque blanche <span class="badge-bientot">Sur devis</span></h3>
-      <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">Votre propre configurateur de devis en ligne, à votre marque — pour vos clients à vous, pas les nôtres.</p>
-      <div class="prix">Dès 290€ <span>+ 29€/mois</span></div>
-      <ul>
-        <li>Barème entièrement personnalisé à votre activité</li>
-        <li>Mode Site (votre client remplit seul) ou Terrain (vous remplissez sur place, prix ajustable)</li>
-        <li>Estimation instantanée, PDF téléchargeable en formule Pro</li>
-      </ul>
-      <a class="btn btn-secondaire" href="#reserver" style="display:block; text-align:center; margin-top:12px;">En discuter</a>
+      <p>Dès le paiement, votre service se configure automatiquement. Pour les offres sur devis, on revient vers vous sous 24h.</p>
     </div>
   </div>
   </div>
@@ -410,11 +209,8 @@
     input.focus();
   });
   btnVerifier.addEventListener('click', function () {
-    // Pas encore de commercial avec couverture géographique en physique (réseau en cours de
-    // recrutement) — toujours "aucun créneau en physique" pour l'instant. À remplacer par un
-    // vrai lookup (table de couverture géographique par commercial) une fois le réseau en place.
     if (!input.value.trim()) { input.focus(); return; }
-    resultat.textContent = "Pas de commercial disponible en physique dans votre secteur pour le moment (notre réseau est en cours de déploiement). Réservez un appel téléphonique ou en visio ci-dessous à la place — c'est tout aussi efficace pour démarrer.";
+    resultat.textContent = "Pas de rendez-vous en personne dans votre secteur pour le moment. Réservez un appel téléphonique ou en visio ci-dessous — tout aussi efficace pour démarrer.";
     resultat.classList.remove('hidden');
     document.getElementById('cal-embed').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
@@ -428,24 +224,16 @@
     <h2>Questions fréquentes</h2>
   </div>
   <div class="faq-item">
-    <h4>Comment être sûr que mes emails seront bien traités ?</h4>
-    <p>Chaque email est analysé par une IA entraînée sur votre métier, avec nos experts qui peuvent intervenir à tout moment. Ce n'est pas un simple filtre : c'est un vrai assistant qui comprend le contexte de votre activité.</p>
-  </div>
-  <div class="faq-item">
-    <h4>Le contenu généré (site, réponses email) est-il vraiment adapté à mon métier, ou c'est un modèle générique ?</h4>
-    <p>Le texte, le vocabulaire et les actions proposées (ex. "réserver une table" pour un restaurant, "demander un devis" pour un artisan) sont générés spécifiquement pour votre secteur, puis relus par nos experts avant tout envoi — jamais un simple copier-coller de modèle.</p>
-  </div>
-  <div class="faq-item">
     <h4>Je n'ai pas besoin de tout, je peux commencer petit ?</h4>
-    <p>Oui : Gestion Email et Gestion Appels sont deux blocs indépendants, avec des options à la carte. Vous démarrez avec ce dont vous avez besoin aujourd'hui, et vous ajoutez le reste plus tard sans tout reconfigurer.</p>
+    <p>Oui. Chaque offre est un bloc indépendant. Vous démarrez avec ce dont vous avez besoin aujourd'hui et vous ajoutez le reste plus tard sans tout reconfigurer.</p>
   </div>
   <div class="faq-item">
-    <h4>Je ne peux pas rencontrer quelqu'un avant de payer ?</h4>
-    <p>Vous pouvez réserver un appel gratuit de 15 minutes avant même de vous inscrire, sans aucun engagement — voir la section ci-dessus.</p>
+    <h4>Le contenu généré est-il vraiment adapté à mon métier ?</h4>
+    <p>Le texte, le vocabulaire et les actions proposées (« réserver une table » pour un restaurant, « demander un devis » pour un artisan) sont générés spécifiquement pour votre secteur, puis relus par un humain avant tout envoi — jamais un modèle recopié.</p>
   </div>
   <div class="faq-item">
     <h4>Et si ça ne me convient pas ?</h4>
-    <p>Aucun engagement : résiliation en 2 clics depuis votre espace client, sans justification à donner, la facturation s'arrête à la fin de la période en cours.</p>
+    <p>Aucun engagement : résiliation en 2 clics depuis votre espace client, sans justification, la facturation s'arrête à la fin de la période en cours.</p>
   </div>
   <div class="faq-item">
     <h4>Mes données sont-elles en sécurité ?</h4>
@@ -453,7 +241,7 @@
   </div>
   <div class="faq-item">
     <h4>Combien de temps avant d'être opérationnel ?</h4>
-    <p>Pour Gestion Email : moins de 24h entre votre inscription et le premier email trié automatiquement. Pour un site web ou une offre Sur-Mesure, le délai dépend du projet — il vous est communiqué dès notre premier échange.</p>
+    <p>Pour Gestion Email : moins de 24h entre l'inscription et le premier email trié. Pour un site ou une offre sur devis, le délai dépend du projet et vous est communiqué au premier échange.</p>
   </div>
   </div>
 </section>
@@ -464,6 +252,7 @@
 <script src="js/config.js"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/cookie-consent.js"></script>
+<script src="js/site-nav.js"></script>
 <script src="js/cal-embed-gated.js"></script>
 <script src="js/chatbot-widget.js"></script>
 <script src="js/animations.js"></script>
