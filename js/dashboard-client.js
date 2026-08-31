@@ -110,6 +110,53 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
+  // ---------- Visibilité renforcée (SEO + GEO) : ajout self-service ----------
+  const blocVisibilite = document.getElementById("bloc-visibilite");
+  const blocVisibiliteActif = document.getElementById("bloc-visibilite-actif");
+  const btnVisibilite = document.getElementById("btn-visibilite");
+  const messageVisibilite = document.getElementById("message-visibilite");
+
+  if (blocVisibilite && btnVisibilite) {
+    // options_actives : RLS restreint déjà au compte de l'utilisateur
+    const { data: optionsVisibilite } = await sb
+      .from("options_actives")
+      .select("statut, options_produit!inner(produit_parent)")
+      .eq("compte_client_id", utilisateur.compte_client_id)
+      .eq("statut", "active")
+      .eq("options_produit.produit_parent", "visibilite");
+
+    if ((optionsVisibilite || []).length > 0) {
+      blocVisibilite.style.display = "none";
+      if (blocVisibiliteActif) blocVisibiliteActif.style.display = "block";
+    } else if (!peutSouscrire) {
+      btnVisibilite.disabled = true;
+      messageVisibilite.innerHTML = `<span class="sous-titre-section">Seul le propriétaire ou un administrateur peut souscrire.</span>`;
+    } else {
+      btnVisibilite.addEventListener("click", async () => {
+        messageVisibilite.innerHTML = "";
+        btnVisibilite.disabled = true;
+        btnVisibilite.textContent = "Redirection vers le paiement...";
+        try {
+          const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/visibilite-ajouter`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              access_token: session.access_token,
+              formule: document.getElementById("visibilite-formule").value
+            })
+          });
+          const result = await resp.json();
+          if (!resp.ok) throw new Error(result.erreur || "Échec de la souscription.");
+          window.location.href = result.checkout_url;
+        } catch (err) {
+          messageVisibilite.innerHTML = `<p class="message-erreur">${err.message}</p>`;
+          btnVisibilite.disabled = false;
+          btnVisibilite.textContent = "Souscrire";
+        }
+      });
+    }
+  }
+
   const debutMois = new Date();
   debutMois.setDate(1);
   debutMois.setHours(0, 0, 0, 0);
