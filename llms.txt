@@ -1,0 +1,32 @@
+# Le Binôme Numérique
+
+> Le numérique de votre entreprise, géré pour vous.
+
+Le Binôme Numérique prend en charge la partie administrative et digitale de l'activité des indépendants, artisans, restaurants, professions libérales et commerces en France : tri des emails, accueil téléphonique par IA, création de site web, devis, relances. Le travail répétitif est automatisé, et ce qui compte est relu par une personne avant d'être envoyé.
+
+Sans engagement, résiliation en 2 clics. Hébergement en Europe (Paris + UE), conforme au RGPD.
+
+## Offres
+
+- **Gestion Email — 89 €/mois** : tri automatique des emails (RDV, devis, urgence, SAV), devis pré-remplis prêts à envoyer, relance automatique, bilan quotidien. Options à la carte (utilisateur supplémentaire, export Airtable, support prioritaire).
+- **Gestion Appels — dès 49 €/mois** : un standard vocal qui décroche à votre place. Répond aux questions, prend les messages, et selon le métier prend les rendez-vous, les réservations de table ou les commandes à emporter. 3 niveaux : Standard (49 €), Avancé (95 €, + transfert d'appel + alerte SMS), Sur-mesure (dès 149 €, + prise de commande + intégrations). Le client garde son numéro (renvoi d'appel).
+- **Sites web — dès 490 €** + hébergement : site clé en main, sans code, généré pour le métier. Formules Essentiel (vitrine), Pro (multi-pages + prise de RDV), E-commerce (boutique en ligne). Prix total annoncé dès le départ. Chaque site est optimisé pour Google et pour les assistants IA.
+- **Pack Complet — 138 €/mois** : Gestion Email + Gestion Appels, une seule inscription.
+- **Chatbot pour votre site — dès 290 € + 29 €/mois** : conseiller virtuel installé sur le site du client. 3 niveaux (infos, prise de RDV, calcul de devis).
+- **Visibilité renforcée (SEO + GEO)** : audit et optimisation pour Google et pour les IA génératives, puis suivi mensuel.
+- **Automatisation sur mesure** : automatiser une tâche répétitive propre au métier ou aux outils internes du client.
+
+## Comment ça marche
+
+Choix de la formule en ligne, paiement sécurisé par Stripe, mise en route automatique. Pour les offres sur devis, un échange sous 24h.
+
+## Pages
+
+- [Accueil](https://lbbnntest-lab.github.io/lebinomenumerique-site/)
+- [Gestion Email](https://lbbnntest-lab.github.io/lebinomenumerique-site/gestion-email.html)
+- [Gestion Appels](https://lbbnntest-lab.github.io/lebinomenumerique-site/gestion-appels.html)
+- [Sites web](https://lbbnntest-lab.github.io/lebinomenumerique-site/sites-web.html)
+- [Autres services](https://lbbnntest-lab.github.io/lebinomenumerique-site/services.html)
+- [À propos](https://lbbnntest-lab.github.io/lebinomenumerique-site/a-propos.html)
+- [CGV](https://lbbnntest-lab.github.io/lebinomenumerique-site/cgv.html)
+- [Mentions légales](https://lbbnntest-lab.github.io/lebinomenumerique-site/mentions-legales.html)
