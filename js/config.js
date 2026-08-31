@@ -39,7 +39,16 @@ window.APP_CONFIG = {
     // Doivent rester alignés avec plans_tarifaires.stripe_price_id_mensuel (migration 62).
     TEL_ESSENTIEL: { mensuel: "price_1U9i8vPYLCUOQdeIyV5FYX5x" },
     TEL_PRO: { mensuel: "price_1U9i9IPYLCUOQdeImM1OW6rS" },
-    TEL_SURMESURE: { mensuel: "price_1U9i9XPYLCUOQdeIZNkm5Pne" }
+    TEL_SURMESURE: { mensuel: "price_1U9i9XPYLCUOQdeIZNkm5Pne" },
+
+    // Service « Visibilité renforcée » SEO + GEO (31/08/2026, voir docs/strategie/seo_geo.md
+    // + migration 65). Setup et Audit = paiement unique ; les 3 suivis = mensuel.
+    // Utilisés par wf14 (option_seo au checkout site) et dashboard-client.js (ajout d'offre).
+    VISIBILITE_SETUP: { one_shot: "price_1UAR3MPYLCUOQdeIB20D97GS" },
+    VISIBILITE_SUIVI_SEO: { mensuel: "price_1UAR3iPYLCUOQdeIzJC1R0hN" },
+    VISIBILITE_SUIVI_GEO: { mensuel: "price_1UAR3wPYLCUOQdeIUDOix6pa" },
+    VISIBILITE_SUIVI_COMBINE: { mensuel: "price_1UAR4IPYLCUOQdeI9IE818d2" },
+    VISIBILITE_AUDIT_EXTERNE: { one_shot: "price_1UAR4ZPYLCUOQdeInMfb7ZWQ" }
   },
 
   // Lien de votre type d'événement Cal.com ("Appel découverte 15 min")
