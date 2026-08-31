@@ -133,12 +133,18 @@ const CATALOGUE_DEVIS = [
     ]
   },
   {
-    categorie: "Mise en avant Google",
+    categorie: "Visibilité — SEO + GEO",
     items: [
-      { code: "seo_audit", nom: "Audit de visibilité Google", prix: 390, recurrent: false,
-        description: "Audit technique (balises, structure, vitesse), optimisation on-page, sitemap — pour mieux ressortir dans les résultats Google." },
-      { code: "seo_suivi", nom: "Suivi mensuel de visibilité", prix: 49, recurrent: true,
-        description: "Rapport mensuel de positionnement + suggestions de contenu par IA (pas de rédaction ni de netlinking — à ne pas vendre comme un suivi SEO complet)." }
+      { code: "visibilite_setup", nom: "Setup Visibilité (SEO + GEO)", prix: 390, recurrent: false,
+        description: "Audit, corrections appliquées sur le site, fiche Google Business, fondations pour Google et pour les assistants IA. Pour les sites qu'on héberge." },
+      { code: "visibilite_audit_externe", nom: "Audit visibilité — site externe", prix: 190, recurrent: false,
+        description: "Audit + recommandations écrites uniquement, pour un site que nous n'hébergeons pas. Pas de suivi." },
+      { code: "visibilite_suivi_seo", nom: "Suivi mensuel SEO", prix: 69, recurrent: true,
+        description: "Rapport mensuel de positions Google + ajustements appliqués sur le site." },
+      { code: "visibilite_suivi_geo", nom: "Suivi mensuel GEO (assistants IA)", prix: 69, recurrent: true,
+        description: "Rapport mensuel de citations dans ChatGPT / Gemini / Perplexity + ajustements." },
+      { code: "visibilite_suivi_combine", nom: "Suivi mensuel combiné SEO + GEO", prix: 119, recurrent: true,
+        description: "Les deux suivis réunis." }
     ]
   },
   {
