@@ -168,7 +168,10 @@ document.addEventListener("DOMContentLoaded", () => {
       avis_clients: collecterAvis(),
       produits: collecterProduits(),
       option_chatbot_niveau: niveauChatbot,
-      chatbot_cal_com_link: niveauChatbot >= 2 ? lienCalComChatbot : null
+      chatbot_cal_com_link: niveauChatbot >= 2 ? lienCalComChatbot : null,
+      // Option SEO ("" | "audit" | "audit_suivi"). Facturation à câbler dans
+      // wf14 (prix Stripe "Mise en avant Google" à créer).
+      option_seo: document.getElementById("option_seo").value || null
     };
 
     try {
