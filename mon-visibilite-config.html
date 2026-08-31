@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Ma visibilité (SEO + GEO) — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .zone-config { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
+  .carte-config { background: var(--blanc); border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .carte-config h3 { margin: 0 0 4px; font-size: 1.02rem; }
+  .carte-config .aide { color: #666; font-size: 0.82rem; margin: 0 0 16px; }
+  .champ { margin-bottom: 16px; }
+  .champ label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
+  .champ input, .champ textarea { width: 100%; padding: 9px 11px; border: 1px solid #d7d7db; border-radius: 8px; font-size: 0.92rem; font-family: inherit; }
+  .champ textarea { resize: vertical; min-height: 110px; }
+  .champ small { font-weight: 400; color: #666; }
+  .case { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 10px; font-size: 0.9rem; }
+  .case input { width: auto; margin-top: 2px; flex: none; }
+  .case .case-texte b { display: block; font-weight: 600; }
+  .case .case-texte span { color: #666; font-size: 0.82rem; }
+  #message { padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; display: none; }
+  #message.err { display: block; background: #fdecea; color: #B23A2E; }
+  #message.ok { display: block; background: #eaf5ec; color: #2E7D32; }
+  #etat-chargement, #etat-vide, #etat-erreur { text-align: center; color: #666; padding: 40px 0; }
+  #zone-formulaire { display: none; }
+  .formules { display: flex; flex-wrap: wrap; gap: 8px; }
+  .formule-tag { display: inline-block; padding: 4px 11px; border-radius: 99px; font-size: 0.78rem; font-weight: 600; background: #eef2ff; color: #3538cd; border: 1px solid #d7deff; }
+  .encadre-google { background: #f6f8fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 14px; font-size: 0.82rem; color: #555; margin-bottom: 14px; }
+  .encadre-google code { background: #fff; padding: 2px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
+    <nav>
+      <a href="dashboard-client.html">Mon espace</a>
+      <a href="#" onclick="logout()">Se déconnecter</a>
+    </nav>
+  </div>
+</header>
+
+<div class="zone-config">
+  <h2>Ma visibilité <span class="formule-tag" id="badge-formule" style="display:none;"></span></h2>
+  <p class="sous-titre-section">Ce qu'on suit et optimise pour vous : votre position sur Google et vos citations dans les assistants IA (ChatGPT, Gemini, Perplexity).</p>
+
+  <div id="etat-chargement">Chargement…</div>
+  <div id="etat-vide" style="display:none;">Vous n'avez pas encore le service Visibilité — ajoutez-le depuis votre espace, ou parlez-en à votre conseiller.</div>
+  <div id="etat-erreur" style="display:none;">Une erreur est survenue — réessayez plus tard.</div>
+
+  <div id="zone-formulaire">
+    <div id="message"></div>
+
+    <div class="carte-config">
+      <h3>Vos formules actives</h3>
+      <p class="aide">Ce que vous avez souscrit. Pour changer de formule, contactez votre conseiller.</p>
+      <div class="formules" id="liste-formules"></div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Vos requêtes cibles</h3>
+      <p class="aide">Les recherches sur lesquelles vous voulez être trouvé — une par ligne. Pensez comme vos clients : métier + ville, problème + zone. On suit votre position dessus chaque mois.</p>
+      <div class="champ">
+        <textarea id="f-requetes" placeholder="plombier dieppe&#10;dépannage chauffe-eau 76&#10;fuite d'eau urgence dieppe"></textarea>
+        <small>20 requêtes maximum.</small>
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Votre zone géographique</h3>
+      <div class="champ">
+        <input type="text" id="f-zone" placeholder="Ex : Dieppe et 20 km autour">
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Votre fiche Google Business</h3>
+      <p class="aide">Elle pèse lourd dans le référencement local. On l'optimise pour vous — il nous faut juste l'accès.</p>
+      <div class="encadre-google">
+        Dans votre fiche → <b>Utilisateurs</b> → ajoutez <code>contact@lebinomenumerique.fr</code> en <b>Gestionnaire</b>.
+        Vous gardez la propriété et pouvez retirer l'accès quand vous voulez.
+      </div>
+      <div class="case">
+        <input type="checkbox" id="f-google-acces">
+        <span class="case-texte"><b>J'ai donné l'accès gestionnaire</b><span>Cochez une fois l'invitation envoyée.</span></span>
+      </div>
+      <div class="champ">
+        <label for="f-google-url">Lien de votre fiche <small>(optionnel)</small></label>
+        <input type="url" id="f-google-url" placeholder="https://maps.google.com/... ou https://g.page/...">
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Concurrents à surveiller <small style="font-weight:400;color:#666;">(optionnel)</small></h3>
+      <p class="aide">Un site par ligne. On regardera aussi où ils se placent, pour vous situer.</p>
+      <div class="champ">
+        <textarea id="f-concurrents" placeholder="plomberie-durand-dieppe.fr&#10;sos-plombier-76.com"></textarea>
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Notes pour notre équipe <small style="font-weight:400;color:#666;">(optionnel)</small></h3>
+      <div class="champ">
+        <textarea id="f-notes" placeholder="Ex : je vise surtout la clientèle pro, j'ouvre une 2e agence à Rouen en janvier..."></textarea>
+      </div>
+    </div>
+
+    <button class="btn-principal" id="btn-enregistrer">Enregistrer</button>
+  </div>
+</div>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+(function () {
+  var FORMULE_LABEL = {
+    setup: 'Setup Visibilité',
+    setup_seo: 'Setup + suivi SEO',
+    setup_geo: 'Setup + suivi GEO',
+    setup_combine: 'Setup + suivi combiné SEO & GEO'
+  };
+  var OPTION_LABEL = {
+    VISIBILITE_SETUP: 'Setup Visibilité',
+    VISIBILITE_SUIVI_SEO: 'Suivi SEO',
+    VISIBILITE_SUIVI_GEO: 'Suivi GEO',
+    VISIBILITE_SUIVI_COMBINE: 'Suivi combiné SEO + GEO',
+    VISIBILITE_AUDIT_EXTERNE: 'Audit site externe'
+  };
+  var session = null;
+
+  function $(id) { return document.getElementById(id); }
+
+  function afficherMessage(texte, ok) {
+    var el = $('message');
+    el.textContent = texte;
+    el.className = ok ? 'ok' : 'err';
+    el.style.display = 'block';
+  }
+
+  function lignesVersListe(valeur) {
+    return (valeur || '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+  }
+
+  document.addEventListener('DOMContentLoaded', async function () {
+    session = await requireAuth('connexion.html');
+    if (!session) return;
+
+    try {
+      var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/visibilite-client-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: session.access_token })
+      });
+      $('etat-chargement').style.display = 'none';
+
+      if (resp.status === 403 || resp.status === 404) { $('etat-vide').style.display = 'block'; return; }
+      if (!resp.ok) throw new Error('reseau');
+
+      var config = await resp.json();
+
+      var formules = Array.isArray(config.formules_actives) ? config.formules_actives : [];
+      var conteneur = $('liste-formules');
+      conteneur.innerHTML = '';
+      formules.forEach(function (code) {
+        var tag = document.createElement('span');
+        tag.className = 'formule-tag';
+        tag.textContent = OPTION_LABEL[code] || code;
+        conteneur.appendChild(tag);
+      });
+
+      var badge = $('badge-formule');
+      if (config.formule && FORMULE_LABEL[config.formule]) {
+        badge.textContent = FORMULE_LABEL[config.formule];
+        badge.style.display = 'inline-block';
+      }
+
+      $('f-requetes').value = (config.requetes_cibles || []).join('\n');
+      $('f-zone').value = config.zone_geographique || '';
+      $('f-google-acces').checked = config.google_business_acces === true;
+      $('f-google-url').value = config.google_business_url || '';
+      $('f-concurrents').value = (config.concurrents || []).join('\n');
+      $('f-notes').value = config.notes_client || '';
+
+      $('zone-formulaire').style.display = 'block';
+    } catch (err) {
+      $('etat-chargement').style.display = 'none';
+      $('etat-erreur').style.display = 'block';
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    $('btn-enregistrer').addEventListener('click', async function () {
+      var btn = this;
+      $('message').style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'Enregistrement...';
+
+      var payload = {
+        access_token: session.access_token,
+        requetes_cibles: lignesVersListe($('f-requetes').value),
+        zone_geographique: $('f-zone').value.trim() || null,
+        concurrents: lignesVersListe($('f-concurrents').value),
+        google_business_acces: $('f-google-acces').checked,
+        google_business_url: $('f-google-url').value.trim() || null,
+        notes_client: $('f-notes').value.trim() || null
+      };
+
+      try {
+        var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/visibilite-client-modifier', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!resp.ok) throw new Error('Échec de l\'enregistrement.');
+        afficherMessage('Modifications enregistrées.', true);
+      } catch (err) {
+        afficherMessage(err.message || 'Une erreur est survenue.', false);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Enregistrer';
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
