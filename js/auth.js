@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // mensuel pour l'instant (voir config.js) — masquer le choix de cycle pour
   // éviter d'envoyer un stripe_price_id undefined si l'utilisateur choisit
   // trimestriel/annuel.
-  if (planInput.value === "SECRETARIAT_SOCLE" || planInput.value.startsWith("TEL_")) {
+  if (planInput.value === "SECRETARIAT_SOCLE" || planInput.value === "PACK_COMPLET" || planInput.value.startsWith("TEL_")) {
     const cycle = document.getElementById("cycle_facturation");
     cycle.value = "mensuel";
     cycle.closest(".champ").classList.add("hidden");
@@ -82,7 +82,14 @@ document.addEventListener("DOMContentLoaded", () => {
         code_affiliation: document.getElementById("code_affiliation").value || null,
         cycle_facturation: document.getElementById("cycle_facturation").value,
         plan_code: planInput.value,
-        stripe_price_id: window.APP_CONFIG.STRIPE_PRICES[planInput.value]?.[document.getElementById("cycle_facturation").value],
+        // Pack Complet = une session Stripe à 2 lignes : socle (Gestion Email) +
+        // TEL_ESSENTIEL (Gestion Appels). wf01 ajoute pack_tel_price_id en 2e ligne,
+        // wf08 provisionne les deux (abonnement PACK_COMPLET + config téléphonique).
+        stripe_price_id: planInput.value === "PACK_COMPLET"
+          ? window.APP_CONFIG.STRIPE_PRICES.SECRETARIAT_SOCLE?.mensuel
+          : window.APP_CONFIG.STRIPE_PRICES[planInput.value]?.[document.getElementById("cycle_facturation").value],
+        pack_tel_price_id: planInput.value === "PACK_COMPLET"
+          ? window.APP_CONFIG.STRIPE_PRICES.TEL_ESSENTIEL?.mensuel : null,
         // Briques à la carte (catalogue B2B "socle + briques") : chaque code est
         // résolu vers son Price ID mensuel — pas de cycle trimestriel/annuel pour
         // l'instant sur les briques, voir config.js.
