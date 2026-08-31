@@ -1,0 +1,36 @@
+# Élec Ménard
+
+> Une installation aux normes, un devis qui ne bouge pas.
+
+Électricien — Bordeaux et la métropole (rive droite et rive gauche)
+
+Dépannage, mise aux normes, rénovation électrique complète et bornes de recharge, sur Bordeaux et sa métropole depuis 2007.
+
+## Informations pratiques
+- Téléphone : 06 44 55 66 77
+- Email : contact@elec-menard.fr
+- Horaires : Lun–Ven 8h–17h30, urgences le samedi matin
+- Zone : Bordeaux et la métropole (rive droite et rive gauche)
+- Responsable : Sébastien Ménard
+- Depuis : 2007
+
+## Services
+- **Mise aux normes du tableau** : Remplacement du tableau, ajout des protections différentielles manquantes, repérage des circuits, attestation Consuel.
+- **Rénovation électrique** : Reprise complète d'une installation ancienne : câblage, prises, éclairage, chauffage. Coordonné avec vos autres corps de métier.
+- **Borne de recharge véhicule** : Étude de la puissance disponible, pose d'une borne 7 à 22 kW, déclaration à l'installateur du compteur. Éligible aux aides.
+
+## Pages du site
+- [Accueil](index.html)
+- [Services](services.html)
+- [Apropos](apropos.html)
+- [Contact](contact.html)
+
+## Questions fréquentes
+### Fournissez-vous l'attestation Consuel ?
+Oui, systématiquement pour toute installation neuve ou rénovée. Elle est incluse dans le devis.
+
+### Intervenez-vous en urgence ?
+Pour une panne totale ou un risque électrique, oui, y compris le samedi matin. Une majoration s'applique et vous est annoncée avant le déplacement.
+
+### Faites-vous les bornes de recharge ?
+Oui, de 7 à 22 kW, avec étude préalable de la puissance de votre compteur et montage du dossier d'aide.

@@ -1,0 +1,30 @@
+# La Marée
+
+> Le poisson du jour, débarqué à la criée.
+
+Restaurant de fruits de mer — Sur le port de Dieppe, quai Henri IV
+
+Plateaux de fruits de mer, marée fraîche et cuisine de port, à deux pas du quai Henri IV depuis 1987.
+
+## Informations pratiques
+- Téléphone : 02 35 00 00 00
+- Email : bonjour@lamaree-dieppe.fr
+- Horaires : Mar–Dim 12h–14h et 19h–22h. Fermé le lundi.
+- Zone : Sur le port de Dieppe, quai Henri IV
+- Responsable : Claire
+- Depuis : 1987
+
+## Services
+- **Six huîtres de Saint-Vaast** : Servies au citron et vinaigre d'échalote.
+- **Marmite dieppoise** : Poissons du jour, crème, cidre et légumes de saison.
+- **Plateau La Marée (2 pers.)** : Homard, tourteau, langoustines, huîtres, bulots, crevettes.
+
+## Pages du site
+- [Accueil](index.html)
+
+## Questions fréquentes
+### Faut-il réserver ?
+Conseillé le week-end et pour les plateaux (48h à l'avance).
+
+### Avez-vous un menu enfant ?
+Oui, poisson du jour ou moules, avec dessert.

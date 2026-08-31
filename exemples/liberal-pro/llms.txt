@@ -1,0 +1,36 @@
+# Cabinet Mobilité
+
+> Retrouver le mouvement, sans y passer vos journées.
+
+Masseur-kinésithérapeute — Quai des Bateliers, Strasbourg — accès tram ligne C
+
+Cabinet de trois kinésithérapeutes à Strasbourg. Rééducation, kiné du sport, suivi post-opératoire. Prise de rendez-vous en ligne, séances de 30 minutes.
+
+## Informations pratiques
+- Téléphone : 03 88 00 00 00
+- Email : secretariat@cabinet-mobilite.fr
+- Horaires : Lun–Ven 7h30–19h30, Sam 8h–12h sur rendez-vous
+- Zone : Quai des Bateliers, Strasbourg — accès tram ligne C
+- Responsable : Claire Wagner
+- Depuis : 2014
+
+## Services
+- **Rééducation orthopédique** : Suites d'entorse, de fracture, de chirurgie du genou, de l'épaule ou du dos. Programme progressif, exercices à refaire chez vous expliqués et filmés.
+- **Kinésithérapie du sport** : Prévention et reprise après blessure pour les sportifs amateurs et confirmés. Travail de renforcement, de proprioception et de réathlétisation.
+- **Rééducation respiratoire et périnéale** : Bronchiolite du nourrisson, BPCO, post-partum. Prises en charge sur prescription, dans un espace dédié et calme.
+
+## Pages du site
+- [Accueil](index.html)
+- [Services](services.html)
+- [Apropos](apropos.html)
+- [Contact](contact.html)
+
+## Questions fréquentes
+### Faut-il une ordonnance ?
+Oui pour une prise en charge remboursée. Vous pouvez prendre rendez-vous avant d'avoir la prescription, il suffit de l'apporter à la première séance.
+
+### Êtes-vous conventionnés ?
+Oui, secteur 1. La part Sécurité sociale est en tiers payant ; la complémentaire selon votre contrat.
+
+### Combien de temps dure une séance ?
+30 minutes en général, parfois 45 pour un premier bilan.

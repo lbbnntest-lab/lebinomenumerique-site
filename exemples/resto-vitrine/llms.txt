@@ -1,0 +1,33 @@
+# Bella Nonna
+
+> La pâte lève 48 heures. On ne triche pas là-dessus.
+
+Pizzeria — Rue du Panier, Marseille 2e
+
+Pizzeria de quartier au feu de bois, dans le Panier à Marseille. Pâte maturée deux jours, mozzarella de bufflonne, légumes du marché.
+
+## Informations pratiques
+- Téléphone : 04 91 00 00 00
+- Email : bonjour@bellanonna.fr
+- Horaires : Mar–Sam 18h30–22h30. Fermé dimanche et lundi.
+- Zone : Rue du Panier, Marseille 2e
+- Responsable : Giulia
+- Depuis : 2019
+
+## Services
+- **Margherita** : Tomate San Marzano, mozzarella di bufala, basilic frais, huile d'olive.
+- **Reine du Panier** : Jambon blanc à l'os, champignons de Paris frais, mozzarella fior di latte.
+- **Végétarienne du marché** : Ce que le maraîcher a de mieux cette semaine : courgettes, aubergines, poivrons grillés.
+
+## Pages du site
+- [Accueil](index.html)
+
+## Questions fréquentes
+### Peut-on réserver une table ?
+La salle est petite, on ne prend pas de réservation le soir sauf pour les groupes de 6 et plus.
+
+### Faites-vous la livraison ?
+Pas nous-mêmes, mais le click & collect est prêt en 10 minutes.
+
+### Avez-vous des pizzas sans gluten ?
+Pas pour l'instant : une seule pâte, une seule fournée.

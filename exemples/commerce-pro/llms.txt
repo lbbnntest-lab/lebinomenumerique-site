@@ -1,0 +1,36 @@
+# La Réserve Bacchus
+
+> Des vignerons choisis, pas des étiquettes.
+
+Caviste — Rue Verrerie, quartier des Antiquaires, Dijon
+
+Une cave de quartier ouverte en 2011, où l'on parle vin sans chichis. On ne référence que des domaines qu'on a visités et goûtés.
+
+## Informations pratiques
+- Téléphone : 03 80 00 00 00
+- Email : bonjour@lareserve-bacchus.fr
+- Horaires : Mar–Sam 10h–13h et 15h–19h30. Dimanche 10h–13h.
+- Zone : Rue Verrerie, quartier des Antiquaires, Dijon
+- Responsable : Julien Ferry
+- Depuis : 2011
+
+## Services
+- **Vins de Bourgogne** : Le cœur de la cave : villages et premiers crus de la Côte de Nuits et de Beaune, plus quelques Hautes-Côtes à prix doux.
+- **Vins nature & découvertes** : Une sélection qui tourne au fil des arrivages : Jura, Loire, Roussillon, et des étrangers curieux.
+- **Spiritueux & épicerie** : Whiskies de petites distilleries, vermouths maison, et de quoi accompagner l'apéro (terrines, moutardes, sablés).
+
+## Pages du site
+- [Accueil](index.html)
+- [Services](services.html)
+- [Apropos](apropos.html)
+- [Contact](contact.html)
+
+## Questions fréquentes
+### Faites-vous des dégustations ?
+Oui, un samedi sur deux avec un vigneron présent. Les dates sont affichées en boutique et sur notre page.
+
+### Peut-on commander pour un événement ?
+Bien sûr — mariages, anniversaires, repas d'entreprise. Prévenez-nous une semaine avant pour les grandes quantités.
+
+### Reprenez-vous les bouteilles non ouvertes ?
+Oui, dans les 30 jours avec le ticket, pour tout achat lié à un événement.

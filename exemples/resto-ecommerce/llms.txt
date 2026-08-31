@@ -1,0 +1,33 @@
+# Table & Panier
+
+> Vos repas de fête, préparés le matin, prêts à emporter.
+
+Traiteur — Rue Saint-Malo, Rennes — livraison sur Rennes Métropole
+
+Traiteur de proximité à Rennes : plats à emporter, plateaux repas pour vos réunions, buffets pour vos événements. Tout est cuisiné le jour même.
+
+## Informations pratiques
+- Téléphone : 02 99 00 00 00
+- Email : commandes@table-et-panier.fr
+- Horaires : Retrait Lun–Ven 11h30–13h30. Commandes 7j/7 en ligne.
+- Zone : Rue Saint-Malo, Rennes — livraison sur Rennes Métropole
+- Responsable : Antoine Renard
+- Depuis : 2016
+
+## Services
+- **Plats du jour à emporter** : Deux entrées, deux plats, deux desserts chaque jour, à récupérer entre 11h30 et 13h30. La carte est publiée la veille au soir.
+- **Plateaux repas** : Pour vos réunions et séminaires : entrée, plat, fromage, dessert, pain, dans un coffret individuel. À partir de 6 personnes, livrés ou à retirer.
+- **Buffets & réceptions** : Cocktails dînatoires, buffets froids ou chauds, pièces sucrées. On cale le menu avec vous et on s'occupe de tout le jour J.
+
+## Pages du site
+- [Accueil](index.html)
+
+## Questions fréquentes
+### Jusqu'à quand puis-je commander ?
+Avant 18h pour le lendemain pour les plats du jour et plateaux. Pour un buffet, comptez une semaine à l'avance.
+
+### Livrez-vous ?
+Oui sur Rennes Métropole, à partir de 6 plateaux ou pour tout buffet. Sinon, retrait à la boutique.
+
+### Gérez-vous les régimes particuliers ?
+Végétarien, sans porc, sans gluten : indiquez-le à la commande, on adapte.
