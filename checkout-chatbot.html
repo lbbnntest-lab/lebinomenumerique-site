@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commander mon chatbot — Le Binôme Numérique</title>
+<meta name="description" content="Installez sur votre site le même assistant IA que celui du Binôme Numérique, configuré à votre activité. Trois niveaux : questions, prise de rendez-vous, calcul de devis.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><a href="index.html" style="color:inherit;"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</a></div>
+  </div>
+</header>
+
+<div class="carte">
+  <h2>Commander votre chatbot</h2>
+  <p style="color:var(--gris-texte); font-size:.9rem;">
+    Le même moteur que le chatbot de ce site, installé sur le vôtre (déjà en ligne, quelle que soit la plateforme) et configuré à votre image.
+    Un forfait d'installation réglé une fois, puis un abonnement mensuel. Après le paiement, vous recevez une ligne de code à coller sur votre site et un accès pour régler le comportement de l'assistant.
+  </p>
+
+  <form id="form-checkout-chatbot">
+    <div class="champ">
+      <label>Niveau</label>
+      <select id="niveau" required>
+        <option value="1">Niveau 1 — questions courantes + capture du contact — 290€ puis 29€/mois</option>
+        <option value="2">Niveau 2 — + prise de rendez-vous — 490€ puis 49€/mois</option>
+        <option value="3">Niveau 3 — + calcul de devis + alerte urgence — 890€ puis 89€/mois</option>
+      </select>
+    </div>
+
+    <div class="champ">
+      <label>Nom affiché par l'assistant</label>
+      <input type="text" id="nom_entreprise" maxlength="120" required placeholder="Ex : Plomberie Dubois">
+    </div>
+    <div class="champ">
+      <label>Secteur d'activité <small>(optionnel)</small></label>
+      <input type="text" id="secteur_activite" maxlength="120" placeholder="Plomberie, conseil, restauration...">
+    </div>
+    <div class="champ">
+      <label>Ton de l'assistant <small>(optionnel — ex : chaleureux et familier, professionnel et direct)</small></label>
+      <input type="text" id="ton" maxlength="200">
+    </div>
+    <div class="champ">
+      <label>Message d'accueil <small>(optionnel)</small></label>
+      <input type="text" id="message_accueil" maxlength="200" placeholder="Bonjour ! Comment puis-je vous aider ?">
+    </div>
+    <div class="champ">
+      <label>Couleur du widget</label>
+      <select id="couleur_widget">
+        <option value="bleu">Bleu</option>
+        <option value="vert">Vert</option>
+        <option value="rouge">Rouge</option>
+        <option value="orange">Orange</option>
+        <option value="violet">Violet</option>
+        <option value="noir">Noir</option>
+      </select>
+    </div>
+
+    <div class="champ hidden" id="champ-calcom">
+      <label>Lien Cal.com pour la prise de RDV <small>(requis pour les Niveaux 2 et 3)</small></label>
+      <input type="url" id="cal_com_link" placeholder="https://cal.com/...">
+      <p style="font-size:.82rem; color:var(--gris-texte); margin-top:6px;">Créez un compte Cal.com gratuit et un type d'événement, puis collez le lien ici. Modifiable ensuite depuis votre espace.</p>
+    </div>
+    <div class="champ hidden" id="champ-urgence">
+      <label>Email d'alerte en cas d'urgence détectée <small>(Niveau 3)</small></label>
+      <input type="email" id="contact_urgence_email" placeholder="Par défaut : votre email ci-dessous">
+    </div>
+    <p id="note-n3" class="hidden" style="font-size:.85rem; color:var(--gris-texte); margin-top:-8px;">
+      Le barème de calcul du devis se configure depuis votre espace client après l'achat.
+    </p>
+
+    <hr style="margin:24px 0; border:none; border-top:1px solid #e5e7eb;">
+    <p style="font-weight:600; margin-bottom:12px;">Vos coordonnées</p>
+    <div class="champ">
+      <label>Raison sociale <small>(optionnel)</small></label>
+      <input type="text" id="raison_sociale" maxlength="160">
+    </div>
+    <div class="champ">
+      <label>SIRET <small>(optionnel, 14 chiffres)</small></label>
+      <input type="text" id="siret" pattern="[0-9]{14}" maxlength="14">
+    </div>
+    <div class="champ">
+      <label>Prénom</label>
+      <input type="text" id="prenom" required>
+    </div>
+    <div class="champ">
+      <label>Nom</label>
+      <input type="text" id="nom" required>
+    </div>
+    <div class="champ">
+      <label>Email</label>
+      <input type="email" id="email" required>
+    </div>
+    <div class="champ">
+      <label>Téléphone <small>(optionnel)</small></label>
+      <input type="tel" id="telephone">
+    </div>
+    <div class="champ">
+      <label>Code d'affiliation commercial <small>(optionnel)</small></label>
+      <input type="text" id="code_affiliation">
+    </div>
+
+    <button type="submit" class="btn btn-primaire" style="width:100%;" id="btn-submit">Continuer vers le paiement</button>
+    <p style="text-align:center; margin-top:12px; font-size:.85rem; color:var(--gris-texte);">
+      Paiement sécurisé par Stripe. L'abonnement est résiliable depuis votre espace client, sans engagement.
+    </p>
+    <div id="zone-message"></div>
+  </form>
+</div>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/checkout-chatbot.js"></script>
+<script src="js/chatbot-widget.js"></script>
+</body>
+</html>

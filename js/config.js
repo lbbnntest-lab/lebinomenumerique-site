@@ -48,7 +48,20 @@ window.APP_CONFIG = {
     VISIBILITE_SUIVI_SEO: { mensuel: "price_1UAR3iPYLCUOQdeIzJC1R0hN" },
     VISIBILITE_SUIVI_GEO: { mensuel: "price_1UAR3wPYLCUOQdeIUDOix6pa" },
     VISIBILITE_SUIVI_COMBINE: { mensuel: "price_1UAR4IPYLCUOQdeI9IE818d2" },
-    VISIBILITE_AUDIT_EXTERNE: { one_shot: "price_1UAR4ZPYLCUOQdeInMfb7ZWQ" }
+    VISIBILITE_AUDIT_EXTERNE: { one_shot: "price_1UAR4ZPYLCUOQdeInMfb7ZWQ" },
+
+    // Chatbot marque blanche vendu seul, à installer sur le site existant du
+    // client (31/08/2026, migration 69 + fiches_produits_services.md §J).
+    // Setup one-shot commissionné + suivi mensuel non commissionné (Price IDs
+    // du suivi réutilisés de l'option de site, migration 56, montants identiques).
+    // INFORMATIF : wf52 lit options_produit côté serveur (comme Visibilité) —
+    // checkout-chatbot.html et dashboard-client.js n'envoient que le niveau.
+    CHATBOT_MB_SETUP_N1: { one_shot: "price_1UAX7EPYLCUOQdeIh1k4fvww" },
+    CHATBOT_MB_SETUP_N2: { one_shot: "price_1UAX7UPYLCUOQdeIok5bRy0m" },
+    CHATBOT_MB_SETUP_N3: { one_shot: "price_1UAX7jPYLCUOQdeIGszByXF1" },
+    CHATBOT_MB_SUIVI_N1: { mensuel: "price_1U8MqEPYLCUOQdeIY2yeF9mF" },
+    CHATBOT_MB_SUIVI_N2: { mensuel: "price_1U8MqzPYLCUOQdeIc0kklhTp" },
+    CHATBOT_MB_SUIVI_N3: { mensuel: "price_1U8MrcPYLCUOQdeIIIqUumbd" }
   },
 
   // Lien de votre type d'événement Cal.com ("Appel découverte 15 min")
