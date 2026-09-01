@@ -132,6 +132,44 @@
       <p id="bloc-visibilite-actif" class="sous-titre-section" style="display:none; margin-top:10px;">
         Vous avez déjà le service Visibilité — <a href="mon-visibilite-config.html">configurez vos requêtes cibles</a>.
       </p>
+
+      <h4 style="margin-top:28px;">Chatbot pour votre site</h4>
+      <p class="sous-titre-section">Le même assistant que sur notre site, installé sur le vôtre (déjà en ligne ailleurs) et configuré à votre activité. Après paiement, vous recevez une ligne de code à coller sur votre site. <a href="services.html#chatbot">En savoir plus</a>.</p>
+      <div id="bloc-chatbot" class="carte-offre-dashboard" style="max-width:460px;">
+        <div class="desc-offre">Installation réglée une fois, puis un abonnement mensuel (résiliable en 2 clics).</div>
+        <div class="champ" style="margin:12px 0;">
+          <label for="chatbot-niveau">Niveau</label>
+          <select id="chatbot-niveau" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
+            <option value="1">Niveau 1 — questions + capture du contact (290 € puis 29 €/mois)</option>
+            <option value="2">Niveau 2 — + prise de rendez-vous (490 € puis 49 €/mois)</option>
+            <option value="3">Niveau 3 — + calcul de devis + alerte urgence (890 € puis 89 €/mois)</option>
+          </select>
+        </div>
+        <div class="champ" style="margin:12px 0;">
+          <label for="chatbot-nom">Nom affiché par l'assistant</label>
+          <input type="text" id="chatbot-nom" maxlength="120" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
+        </div>
+        <div class="champ" style="margin:12px 0;">
+          <label for="chatbot-couleur">Couleur du widget</label>
+          <select id="chatbot-couleur" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
+            <option value="bleu">Bleu</option><option value="vert">Vert</option><option value="rouge">Rouge</option>
+            <option value="orange">Orange</option><option value="violet">Violet</option><option value="noir">Noir</option>
+          </select>
+        </div>
+        <div class="champ hidden" id="chatbot-champ-calcom" style="margin:12px 0;">
+          <label for="chatbot-calcom">Lien Cal.com pour la prise de RDV</label>
+          <input type="url" id="chatbot-calcom" placeholder="https://cal.com/..." style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
+        </div>
+        <div class="champ hidden" id="chatbot-champ-urgence" style="margin:12px 0;">
+          <label for="chatbot-urgence">Email d'alerte urgence <small>(par défaut : l'email du compte)</small></label>
+          <input type="email" id="chatbot-urgence" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
+        </div>
+        <button class="btn btn-primaire" id="btn-chatbot">Souscrire</button>
+        <p id="message-chatbot" style="margin:10px 0 0;"></p>
+      </div>
+      <p id="bloc-chatbot-actif" class="sous-titre-section" style="display:none; margin-top:10px;">
+        Vous avez déjà un chatbot — <a href="mon-chatbot-config.html">réglez son comportement et récupérez le code d'intégration</a>.
+      </p>
     </section>
 
     <section id="devis" style="margin-top:32px;">

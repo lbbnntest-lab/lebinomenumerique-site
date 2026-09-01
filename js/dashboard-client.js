@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const { data: compte } = await sb
     .from("comptes_clients")
-    .select("statut")
+    .select("statut, raison_sociale")
     .eq("id", utilisateur.compte_client_id)
     .single();
 
@@ -152,6 +152,75 @@ document.addEventListener("DOMContentLoaded", async () => {
           messageVisibilite.innerHTML = `<p class="message-erreur">${err.message}</p>`;
           btnVisibilite.disabled = false;
           btnVisibilite.textContent = "Souscrire";
+        }
+      });
+    }
+  }
+
+  // ---------- Chatbot pour votre site : ajout self-service ----------
+  const blocChatbot = document.getElementById("bloc-chatbot");
+  const blocChatbotActif = document.getElementById("bloc-chatbot-actif");
+  const btnChatbot = document.getElementById("btn-chatbot");
+  const messageChatbot = document.getElementById("message-chatbot");
+  const chatbotNiveau = document.getElementById("chatbot-niveau");
+  const chatbotChampCalcom = document.getElementById("chatbot-champ-calcom");
+  const chatbotChampUrgence = document.getElementById("chatbot-champ-urgence");
+  const chatbotCalcom = document.getElementById("chatbot-calcom");
+
+  if (blocChatbot && btnChatbot) {
+    document.getElementById("chatbot-nom").value = compte?.raison_sociale || "";
+
+    const majNiveauChatbot = () => {
+      const n = parseInt(chatbotNiveau.value, 10);
+      chatbotChampCalcom.classList.toggle("hidden", n < 2);
+      chatbotChampUrgence.classList.toggle("hidden", n < 3);
+    };
+    majNiveauChatbot();
+    chatbotNiveau.addEventListener("change", majNiveauChatbot);
+
+    const { data: optionsChatbot } = await sb
+      .from("options_actives")
+      .select("statut, options_produit!inner(produit_parent)")
+      .eq("compte_client_id", utilisateur.compte_client_id)
+      .eq("statut", "active")
+      .eq("options_produit.produit_parent", "chatbot");
+
+    if ((optionsChatbot || []).length > 0) {
+      blocChatbot.style.display = "none";
+      if (blocChatbotActif) blocChatbotActif.style.display = "block";
+    } else if (!peutSouscrire) {
+      btnChatbot.disabled = true;
+      messageChatbot.innerHTML = `<span class="sous-titre-section">Seul le propriétaire ou un administrateur peut souscrire.</span>`;
+    } else {
+      btnChatbot.addEventListener("click", async () => {
+        const n = parseInt(chatbotNiveau.value, 10);
+        if (n >= 2 && !chatbotCalcom.value.trim()) {
+          messageChatbot.innerHTML = `<p class="message-erreur">Le Niveau ${n} nécessite un lien Cal.com.</p>`;
+          return;
+        }
+        messageChatbot.innerHTML = "";
+        btnChatbot.disabled = true;
+        btnChatbot.textContent = "Redirection vers le paiement...";
+        try {
+          const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/chatbot-mb-ajouter`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              access_token: session.access_token,
+              niveau: n,
+              nom_entreprise: document.getElementById("chatbot-nom").value.trim() || null,
+              couleur_widget: document.getElementById("chatbot-couleur").value,
+              cal_com_link: n >= 2 ? chatbotCalcom.value.trim() : null,
+              contact_urgence_email: n >= 3 ? (document.getElementById("chatbot-urgence").value.trim() || null) : null
+            })
+          });
+          const result = await resp.json();
+          if (!resp.ok) throw new Error(result.erreur || "Échec de la souscription.");
+          window.location.href = result.checkout_url;
+        } catch (err) {
+          messageChatbot.innerHTML = `<p class="message-erreur">${err.message}</p>`;
+          btnChatbot.disabled = false;
+          btnChatbot.textContent = "Souscrire";
         }
       });
     }
