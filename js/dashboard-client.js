@@ -181,6 +181,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // ---------- Portail de facturation Stripe (gérer / résilier) ----------
+  const btnPortail = document.getElementById("btn-portail");
+  const messagePortail = document.getElementById("message-portail");
+  if (btnPortail) {
+    btnPortail.addEventListener("click", async () => {
+      messagePortail.textContent = "";
+      btnPortail.disabled = true;
+      btnPortail.textContent = "Ouverture…";
+      try {
+        const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/portail-facturation`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ access_token: session.access_token })
+        });
+        const result = await resp.json();
+        if (!resp.ok || !result.url) throw new Error(result.erreur || "Impossible d'ouvrir le portail.");
+        window.location.href = result.url;
+      } catch (err) {
+        messagePortail.innerHTML = `<span class="message-erreur">${err.message}</span>`;
+        btnPortail.disabled = false;
+        btnPortail.textContent = "Gérer mon abonnement / résilier";
+      }
+    });
+  }
+
   // ---------- Chatbot pour votre site : ajout self-service ----------
   const blocChatbot = document.getElementById("bloc-chatbot");
   const blocChatbotActif = document.getElementById("bloc-chatbot-actif");
