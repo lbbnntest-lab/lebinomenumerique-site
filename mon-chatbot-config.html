@@ -44,10 +44,18 @@
   <p class="sous-titre-section">Ajustez le comportement du chatbot installé sur votre site.</p>
 
   <div id="etat-chargement">Chargement…</div>
-  <div id="etat-vide" style="display:none;">Vous n'avez pas encore ce produit — ajoutez l'option « Assistant IA du site » depuis votre espace, ou contactez votre conseiller.</div>
+  <div id="etat-vide" style="display:none;">Vous n'avez pas encore de chatbot — ajoutez-le depuis <a href="dashboard-client.html#ajouter-offre">votre espace</a> (rubrique « Ajouter une offre »).</div>
   <div id="etat-erreur" style="display:none;">Une erreur est survenue — réessayez plus tard.</div>
 
   <div id="zone-formulaire">
+    <div class="carte-config" id="carte-integration" style="display:none;">
+      <h3 style="margin-top:0;">Code d'intégration</h3>
+      <p class="sous-titre-section">Collez cette ligne juste avant <code>&lt;/body&gt;</code> sur votre site (ou transmettez-la à votre webmaster). Elle fonctionne sur n'importe quelle plateforme (WordPress, Wix, Shopify…).</p>
+      <pre id="snippet-code" style="background:#1a1a1a; color:#eee; padding:14px; border-radius:8px; overflow-x:auto; font-size:.8rem; white-space:pre-wrap; word-break:break-all;"></pre>
+      <button type="button" class="btn btn-secondaire" id="btn-copier-snippet">Copier</button>
+      <span id="snippet-copie" style="margin-left:10px; color:#2E7D32; font-size:.85rem; display:none;">Copié ✓</span>
+    </div>
+
     <div class="carte-config">
       <div id="message"></div>
 
@@ -258,6 +266,19 @@
 
       var config = await resp.json();
       niveauActuel = config.niveau || 1;
+
+      if (config.token_widget) {
+        var snippet = '<script src="https://lbbnntest-lab.github.io/lebinomenumerique-site/js/chatbot-widget-client.js" data-token="' + config.token_widget + '"><' + '/script>';
+        document.getElementById('snippet-code').textContent = snippet;
+        document.getElementById('carte-integration').style.display = 'block';
+        document.getElementById('btn-copier-snippet').addEventListener('click', function () {
+          navigator.clipboard.writeText(snippet).then(function () {
+            var c = document.getElementById('snippet-copie');
+            c.style.display = 'inline';
+            setTimeout(function () { c.style.display = 'none'; }, 2000);
+          });
+        });
+      }
 
       var badge = document.getElementById('badge-niveau');
       badge.textContent = 'Niveau ' + niveauActuel;
