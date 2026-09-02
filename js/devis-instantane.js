@@ -142,7 +142,7 @@ const CATALOGUE_DEVIS = [
       { code: "visibilite_suivi_seo", nom: "Suivi mensuel SEO", prix: 69, recurrent: true,
         description: "Rapport mensuel de positions Google + ajustements appliqués sur le site." },
       { code: "visibilite_suivi_geo", nom: "Suivi mensuel GEO (assistants IA)", prix: 69, recurrent: true,
-        description: "Rapport mensuel de citations dans ChatGPT / Gemini / Perplexity + ajustements." },
+        description: "Rapport mensuel de citations dans ChatGPT / Claude / Gemini + ajustements." },
       { code: "visibilite_suivi_combine", nom: "Suivi mensuel combiné SEO + GEO", prix: 119, recurrent: true,
         description: "Les deux suivis réunis." }
     ]
