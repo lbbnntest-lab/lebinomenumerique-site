@@ -47,19 +47,43 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const listeAbonnements = abonnementsActifs || [];
 
+  // Les services récurrents achetés en option (Visibilité suivi, Chatbot, options
+  // téléphonie…) ne sont pas dans `abonnements` mais dans `options_actives`
+  // (abonnement_id null) — ils sont pourtant facturés chaque mois par Stripe.
+  // On les affiche dans le même tableau pour que le client voie ce qu'il paie.
+  const { data: optionsRecurrentes } = await sb
+    .from("options_actives")
+    .select("statut, quantite, options_produit!inner(nom, code, type_facturation)")
+    .eq("compte_client_id", utilisateur.compte_client_id)
+    .eq("statut", "active")
+    .eq("options_produit.type_facturation", "recurrent");
+
+  const listeOptionsRecurrentes = optionsRecurrentes || [];
+
+  const nomsActifs = [
+    ...listeAbonnements.map(a => a.plans_tarifaires?.nom).filter(Boolean),
+    ...listeOptionsRecurrentes.map(o => o.options_produit?.nom).filter(Boolean)
+  ];
+
   document.getElementById("stat-statut").textContent = compte?.statut || "—";
-  document.getElementById("stat-plan").textContent = listeAbonnements.length
-    ? listeAbonnements.map(a => a.plans_tarifaires?.nom).filter(Boolean).join(" + ")
-    : "Aucun";
+  document.getElementById("stat-plan").textContent = nomsActifs.length ? nomsActifs.join(" + ") : "Aucun";
 
   const tbodyAbonnements = document.getElementById("tbody-abonnements");
-  tbodyAbonnements.innerHTML = listeAbonnements.length
-    ? listeAbonnements.map(a => `
+  const lignesAbo = listeAbonnements.map(a => `
         <tr>
           <td>${a.plans_tarifaires?.nom || "—"}</td>
           <td>${a.cycle_facturation === "annuel" ? "Annuel" : "Mensuel"}</td>
           <td><span class="badge badge-actif">${a.statut}</span></td>
-        </tr>`).join("")
+        </tr>`);
+  const lignesOptions = listeOptionsRecurrentes.map(o => `
+        <tr>
+          <td>${o.options_produit?.nom || "—"}${o.quantite > 1 ? ` ×${o.quantite}` : ""}</td>
+          <td>Mensuel</td>
+          <td><span class="badge badge-actif">${o.statut}</span></td>
+        </tr>`);
+  const toutesLignes = [...lignesAbo, ...lignesOptions];
+  tbodyAbonnements.innerHTML = toutesLignes.length
+    ? toutesLignes.join("")
     : `<tr><td colspan="3">Aucun abonnement actif pour le moment.</td></tr>`;
 
   // ---------- Ajouter une offre (achat direct de formules simples) ----------
