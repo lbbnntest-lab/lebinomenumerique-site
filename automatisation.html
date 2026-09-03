@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automatisation sur mesure — décrire mon besoin — Le Binôme Numérique</title>
+<meta name="description" content="Relances, tri de documents, synchronisation entre vos outils, récap business : décrivez la tâche répétitive de votre métier, on vous dit sous 48h si c'est faisable et ce que ça coûte.">
+<link rel="canonical" href="https://lbbnntest-lab.github.io/lebinomenumerique-site/automatisation.html">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Le Binôme Numérique">
+<meta property="og:title" content="Automatisation sur mesure — décrire mon besoin">
+<meta property="og:description" content="Décrivez la tâche répétitive de votre métier. On vous répond sous 48h : faisable, pas faisable, ou faisable mais pas rentable — et le tarif indicatif.">
+<meta property="og:url" content="https://lbbnntest-lab.github.io/lebinomenumerique-site/automatisation.html">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <a class="logo" href="index.html"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</a>
+    <button class="nav-toggle" aria-label="Menu" aria-expanded="false">☰</button>
+    <nav>
+      <a href="gestion-email.html">Gestion Email</a>
+      <a href="gestion-appels.html">Gestion Appels</a>
+      <a href="sites-web.html">Sites web</a>
+      <a href="services.html">Autres services</a>
+      <a href="a-propos.html">À propos</a>
+      <a href="connexion.html">Se connecter</a>
+      <a href="index.html#reserver" class="cta">Réserver un appel</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" style="padding-bottom:40px;">
+  <div class="container">
+    <h1>Automatisation sur mesure</h1>
+    <p>Relancer, ranger, recopier, récapituler — décrivez la tâche répétitive de votre métier. On vous répond <strong>sous 48 h</strong> : faisable, pas faisable, ou faisable mais pas rentable pour vous — et le tarif indicatif.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:860px;">
+  <div class="section-tete"><span class="kicker">Ce qu'on sait faire</span><h2>Quatre familles, et du sur-mesure au-delà</h2></div>
+  <div class="grille-plans">
+    <div class="carte-plan"><h3>Relances</h3><p style="font-size:.9rem; color:var(--gris-texte); margin:0;">Devis sans réponse, factures impayées, avis clients à demander — au bon moment, sans y penser.</p></div>
+    <div class="carte-plan"><h3>Tri et saisie des documents</h3><p style="font-size:.9rem; color:var(--gris-texte); margin:0;">Une facture fournisseur arrive → lue, ajoutée à votre compta, rangée dans le bon dossier.</p></div>
+    <div class="carte-plan"><h3>Synchronisation entre vos outils</h3><p style="font-size:.9rem; color:var(--gris-texte); margin:0;">Un rendez-vous pris en ligne → fiche client créée → SMS de rappel la veille.</p></div>
+    <div class="carte-plan"><h3>Récap business</h3><p style="font-size:.9rem; color:var(--gris-texte); margin:0;">Chaque lundi 7 h : encaissé de la semaine, rendez-vous à venir, devis en attente, impayés.</p></div>
+  </div>
+  <p style="font-size:.9rem; color:var(--gris-texte); margin-top:16px;">
+    <strong>Comment ça se passe :</strong> une étude de cadrage à <strong>150 €</strong> (déduite si le projet se fait) fixe la complexité et le prix.
+    Mise en place <strong>de 490 € à 3 500 €</strong> selon le cas, puis un suivi mensuel <strong>de 45 à 119 €</strong> (hébergement + supervision).
+    En option, on peut aussi livrer l'outil pour que vous le fassiez tourner chez vous, sans abonnement.
+    <a href="services.html#automatisation">Voir le détail</a>.
+  </p>
+  </div>
+</section>
+
+<section class="section-teintee section">
+  <div class="container" style="max-width:680px;">
+  <div class="section-tete"><span class="kicker">Décrire mon besoin</span><h2>Sept questions, et on vous répond sous 48 h</h2></div>
+
+  <form id="form-auto" style="display:grid; gap:16px;">
+    <div>
+      <label style="font-weight:600; display:block; margin-bottom:4px;">La tâche, en clair</label>
+      <p style="font-size:.82rem; color:var(--gris-texte); margin:0 0 6px;">Décrivez-la comme si vous l'expliquiez à un nouveau salarié le premier jour.</p>
+      <textarea id="q_tache" rows="3" required style="width:100%;"></textarea>
+    </div>
+    <div>
+      <label style="font-weight:600; display:block; margin-bottom:4px;">À quelle fréquence, et combien de temps à chaque fois ?</label>
+      <input type="text" id="q_frequence" required placeholder="Ex. 2 fois par semaine, environ 20 minutes" style="width:100%;">
+    </div>
+    <div>
+      <label style="font-weight:600; display:block; margin-bottom:4px;">Quels outils sont concernés ?</label>
+      <p style="font-size:.82rem; color:var(--gris-texte); margin:0 0 6px;">Logiciels, sites, tableurs, boîtes mail. Précisez lesquels ont un accès en ligne (application web, pas seulement un logiciel installé).</p>
+      <textarea id="q_outils" rows="2" required style="width:100%;"></textarea>
+    </div>
+    <div>
+      <label style="font-weight:600; display:block; margin-bottom:4px;">Le trajet de l'information</label>
+      <p style="font-size:.82rem; color:var(--gris-texte); margin:0 0 6px;">D'où part-elle (un email ? un formulaire ? un fichier ? une saisie ?) et où doit-elle arriver (un tableur ? un logiciel ? un message ?) ?</p>
+      <textarea id="q_trajet" rows="2" required style="width:100%;"></textarea>
+    </div>
+    <div>
+      <label style="font-weight:600; display:block; margin-bottom:4px;">Le timing</label>
+      <select id="q_timing" required style="width:100%;">
+        <option value="">—</option>
+        <option>Ça doit se déclencher tout de suite (temps réel)</option>
+        <option>Un passage une fois par jour suffit</option>
+        <option>Peu importe / à voir ensemble</option>
+      </select>
+    </div>
+    <div>
+      <label style="font-weight:600; display:block; margin-bottom:4px;">Les alertes</label>
+      <input type="text" id="q_alertes" placeholder="Qui doit être prévenu si quelque chose bloque, et comment ?" style="width:100%;">
+    </div>
+    <div>
+      <label style="font-weight:600; display:block; margin-bottom:4px;">Données sensibles dans le circuit ?</label>
+      <select id="q_sensible" required style="width:100%;">
+        <option value="">—</option>
+        <option>Non</option>
+        <option>Oui — données de santé</option>
+        <option>Oui — données RH / paie</option>
+        <option>Oui — données bancaires</option>
+        <option>Oui — autre (préciser dans la tâche)</option>
+      </select>
+    </div>
+
+    <hr style="border:none; border-top:1px solid #e2e2e2; margin:4px 0;">
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div><label style="font-weight:600; display:block; margin-bottom:4px;">Prénom</label><input type="text" id="prenom" required style="width:100%;"></div>
+      <div><label style="font-weight:600; display:block; margin-bottom:4px;">Nom</label><input type="text" id="nom" required style="width:100%;"></div>
+    </div>
+    <div><label style="font-weight:600; display:block; margin-bottom:4px;">Entreprise</label><input type="text" id="raison_sociale" style="width:100%;"></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div><label style="font-weight:600; display:block; margin-bottom:4px;">Email</label><input type="email" id="email" required style="width:100%;"></div>
+      <div><label style="font-weight:600; display:block; margin-bottom:4px;">Téléphone</label><input type="tel" id="telephone" required style="width:100%;"></div>
+    </div>
+    <div>
+      <label style="font-weight:600; display:block; margin-bottom:4px;">Budget indicatif <small style="font-weight:400; color:var(--gris-texte);">(sans engagement)</small></label>
+      <select id="budget_indicatif" style="width:100%;">
+        <option value="je ne sais pas encore">Je ne sais pas encore</option>
+        <option value="< 500€">Moins de 500 €</option>
+        <option value="500-1000€">500 € à 1 000 €</option>
+        <option value="1000-2000€">1 000 € à 2 000 €</option>
+        <option value="2000-3500€">2 000 € à 3 500 €</option>
+        <option value="> 3500€">Plus de 3 500 €</option>
+      </select>
+    </div>
+    <input type="hidden" id="code_affiliation">
+
+    <button type="submit" class="btn btn-primaire" id="btn-submit" style="width:100%;">Envoyer ma demande</button>
+    <div id="zone-message"></div>
+  </form>
+  </div>
+</section>
+
+<footer class="site">© 2026 Le Binôme Numérique — Tous droits réservés · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/site-nav.js"></script>
+<script src="js/chatbot-widget.js"></script>
+<script src="js/animations.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var code = params.get('code_affiliation') || params.get('code');
+  if (code) document.getElementById('code_affiliation').value = code;
+
+  var val = function (id) { return (document.getElementById(id).value || '').trim(); };
+
+  document.getElementById('form-auto').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var zone = document.getElementById('zone-message');
+    var btn = document.getElementById('btn-submit');
+    zone.innerHTML = '';
+    btn.disabled = true;
+    btn.textContent = 'Envoi…';
+
+    var message = [
+      'DEMANDE — Automatisation sur mesure',
+      '',
+      'Entreprise : ' + (val('raison_sociale') || '(non précisé)'),
+      '',
+      '1. La tâche : ' + val('q_tache'),
+      '2. Fréquence & temps : ' + val('q_frequence'),
+      '3. Outils concernés : ' + val('q_outils'),
+      '4. Trajet de l\'information : ' + val('q_trajet'),
+      '5. Timing : ' + val('q_timing'),
+      '6. Alertes : ' + (val('q_alertes') || '(non précisé)'),
+      '7. Données sensibles : ' + val('q_sensible'),
+    ].join('\n');
+
+    var payload = {
+      interet: 'automatisation',
+      prenom: val('prenom'),
+      nom: val('nom'),
+      email: val('email'),
+      telephone: val('telephone'),
+      type_compte: 'B2B',
+      budget_indicatif: val('budget_indicatif'),
+      message: message,
+      code_affiliation: val('code_affiliation') || null,
+      source: 'site_web',
+      lignes_devis: [],
+    };
+
+    try {
+      var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/demande-devis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!resp.ok) throw new Error('Envoi impossible pour le moment. Réessayez ou écrivez à contact@lebinomenumerique.fr.');
+      zone.innerHTML = '<p class="message-succes">Merci ! Votre demande est bien reçue. On revient vers vous sous 48 h avec un premier avis et le tarif indicatif. Un email de confirmation vient de vous être envoyé.</p>';
+      document.getElementById('form-auto').reset();
+    } catch (err) {
+      zone.innerHTML = '<p class="message-erreur">' + (err.message || 'Une erreur est survenue.') + '</p>';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Envoyer ma demande';
+    }
+  });
+})();
+</script>
+</body>
+</html>
