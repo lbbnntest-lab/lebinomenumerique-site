@@ -175,6 +175,36 @@
       <p id="bloc-chatbot-actif" class="sous-titre-section" style="display:none; margin-top:10px;">
         Vous avez déjà un chatbot — <a href="mon-chatbot-config.html">réglez son comportement et récupérez le code d'intégration</a>.
       </p>
+
+      <h4 style="margin-top:28px;">Configurateur de devis en marque blanche</h4>
+      <p class="sous-titre-section">Une page de devis en ligne à votre marque, avec votre barème, que vos clients remplissent seuls (ou vous sur place). Après paiement, vous recevez le lien à partager et un accès pour construire votre barème. <a href="services.html#devis-marque-blanche">En savoir plus</a>.</p>
+      <div id="bloc-devis-mb" class="carte-offre-dashboard" style="max-width:460px;">
+        <div class="desc-offre">Installation réglée une fois, puis un abonnement mensuel (résiliable en 2 clics).</div>
+        <div class="champ" style="margin:12px 0;">
+          <label for="devismb-formule">Formule</label>
+          <select id="devismb-formule" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
+            <option value="starter">Starter — estimation en ligne (290 € puis 29 €/mois)</option>
+            <option value="pro">Pro — + PDF téléchargeable à votre marque (490 € puis 59 €/mois)</option>
+          </select>
+        </div>
+        <div class="champ" style="margin:12px 0;">
+          <label for="devismb-nom">Nom de votre entreprise <small>(affiché sur le devis)</small></label>
+          <input type="text" id="devismb-nom" maxlength="120" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
+        </div>
+        <div class="champ" style="margin:12px 0;">
+          <label for="devismb-couleur">Couleur principale</label>
+          <input type="color" id="devismb-couleur" value="#1F6F78" style="width:64px; height:38px; padding:2px; border:1px solid #d7d7db; border-radius:8px;">
+        </div>
+        <div class="champ" style="margin:12px 0;">
+          <label for="devismb-email-leads">Email de réception des demandes <small>(par défaut : l'email du compte)</small></label>
+          <input type="email" id="devismb-email-leads" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
+        </div>
+        <button class="btn btn-primaire" id="btn-devismb">Souscrire</button>
+        <p id="message-devismb" style="margin:10px 0 0;"></p>
+      </div>
+      <p id="bloc-devis-mb-actif" class="sous-titre-section" style="display:none; margin-top:10px;">
+        Vous avez déjà un configurateur de devis — <a href="mon-devis-config.html">construisez votre barème et récupérez votre lien</a>.
+      </p>
     </section>
 
     <section id="devis" style="margin-top:32px;">

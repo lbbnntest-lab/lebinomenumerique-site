@@ -275,6 +275,58 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // ---------- Configurateur de devis marque blanche : ajout self-service ----------
+  const blocDevisMb = document.getElementById("bloc-devis-mb");
+  const blocDevisMbActif = document.getElementById("bloc-devis-mb-actif");
+  const btnDevisMb = document.getElementById("btn-devismb");
+  const messageDevisMb = document.getElementById("message-devismb");
+
+  if (blocDevisMb && btnDevisMb) {
+    document.getElementById("devismb-nom").value = compte?.raison_sociale || "";
+    document.getElementById("devismb-email-leads").value = utilisateur?.email || compte?.email || "";
+
+    const { data: optionsDevisMb } = await sb
+      .from("options_actives")
+      .select("statut, options_produit!inner(produit_parent)")
+      .eq("compte_client_id", utilisateur.compte_client_id)
+      .eq("statut", "active")
+      .eq("options_produit.produit_parent", "devis_mb");
+
+    if ((optionsDevisMb || []).length > 0) {
+      blocDevisMb.style.display = "none";
+      if (blocDevisMbActif) blocDevisMbActif.style.display = "block";
+    } else if (!peutSouscrire) {
+      btnDevisMb.disabled = true;
+      messageDevisMb.innerHTML = `<span class="sous-titre-section">Seul le propriétaire ou un administrateur peut souscrire.</span>`;
+    } else {
+      btnDevisMb.addEventListener("click", async () => {
+        messageDevisMb.innerHTML = "";
+        btnDevisMb.disabled = true;
+        btnDevisMb.textContent = "Redirection vers le paiement...";
+        try {
+          const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/devis-mb-ajouter`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              access_token: session.access_token,
+              formule: document.getElementById("devismb-formule").value,
+              nom_entreprise: document.getElementById("devismb-nom").value.trim() || null,
+              couleur_principale: document.getElementById("devismb-couleur").value,
+              email_notification_leads: document.getElementById("devismb-email-leads").value.trim() || null
+            })
+          });
+          const result = await resp.json();
+          if (!resp.ok) throw new Error(result.erreur || "Échec de la souscription.");
+          window.location.href = result.checkout_url;
+        } catch (err) {
+          messageDevisMb.innerHTML = `<p class="message-erreur">${err.message}</p>`;
+          btnDevisMb.disabled = false;
+          btnDevisMb.textContent = "Souscrire";
+        }
+      });
+    }
+  }
+
   const debutMois = new Date();
   debutMois.setDate(1);
   debutMois.setHours(0, 0, 0, 0);

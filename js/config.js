@@ -61,7 +61,14 @@ window.APP_CONFIG = {
     CHATBOT_MB_SETUP_N3: { one_shot: "price_1UAX7jPYLCUOQdeIGszByXF1" },
     CHATBOT_MB_SUIVI_N1: { mensuel: "price_1U8MqEPYLCUOQdeIY2yeF9mF" },
     CHATBOT_MB_SUIVI_N2: { mensuel: "price_1U8MqzPYLCUOQdeIc0kklhTp" },
-    CHATBOT_MB_SUIVI_N3: { mensuel: "price_1U8MrcPYLCUOQdeIIIqUumbd" }
+    CHATBOT_MB_SUIVI_N3: { mensuel: "price_1U8MrcPYLCUOQdeIIIqUumbd" },
+
+    // Devis marque blanche self-service (migration 78, modèle chatbot).
+    // INFORMATIF : wf59 lit options_produit côté serveur ; le front n'envoie que la formule.
+    DEVIS_MB_SETUP_STARTER: { one_shot: "price_1UBcdsPYLCUOQdeIpTXXuzjo" },
+    DEVIS_MB_SETUP_PRO:     { one_shot: "price_1UBce3PYLCUOQdeIG9qJGCRJ" },
+    DEVIS_MB_SUIVI_STARTER: { mensuel: "price_1UBcevPYLCUOQdeIQCVWkpSw" },
+    DEVIS_MB_SUIVI_PRO:     { mensuel: "price_1UBcf9PYLCUOQdeIhdZRtDx8" }
   },
 
   // Lien de votre type d'événement Cal.com ("Appel découverte 15 min")

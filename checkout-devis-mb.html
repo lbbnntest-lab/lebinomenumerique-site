@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commander mon configurateur de devis — Le Binôme Numérique</title>
+<meta name="description" content="Un configurateur de devis en ligne à votre marque, avec votre barème. Formule Starter (estimation) ou Pro (PDF téléchargeable). Forfait d'installation puis abonnement mensuel.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><a href="index.html" style="color:inherit;"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</a></div>
+  </div>
+</header>
+
+<div class="carte">
+  <h2>Commander votre configurateur de devis</h2>
+  <p style="color:var(--gris-texte); font-size:.9rem;">
+    Une page de devis en ligne <strong>à votre marque</strong>, avec votre barème, que vos clients remplissent seuls (ou que vous remplissez sur place). Un forfait d'installation réglé une fois, puis un abonnement mensuel.
+    Après le paiement, vous recevez le lien de votre page de devis à partager et un accès pour construire votre barème.
+  </p>
+
+  <form id="form-checkout-devis-mb">
+    <div class="champ">
+      <label>Formule</label>
+      <select id="formule" required>
+        <option value="starter">Starter — estimation en ligne, mode Site ou Terrain — 290€ puis 29€/mois</option>
+        <option value="pro">Pro — + PDF téléchargeable à votre marque, mentions légales — 490€ puis 59€/mois</option>
+      </select>
+    </div>
+
+    <div class="champ">
+      <label>Nom de votre entreprise <small>(affiché sur le devis)</small></label>
+      <input type="text" id="nom_entreprise" maxlength="120" required placeholder="Ex : Plomberie Dubois">
+    </div>
+    <div class="champ">
+      <label>Couleur principale <small>(vos devis à votre couleur)</small></label>
+      <input type="color" id="couleur_principale" value="#1F6F78" style="width:64px; height:38px; padding:2px; vertical-align:middle;">
+    </div>
+    <div class="champ">
+      <label>Email de réception des demandes de devis <small>(les demandes de vos clients arrivent ici)</small></label>
+      <input type="email" id="email_notification_leads" required placeholder="votre-adresse@exemple.fr">
+    </div>
+    <p style="font-size:.85rem; color:var(--gris-texte); margin-top:-4px;">
+      Votre barème (postes, prix, options) se construit depuis votre espace client après l'achat — un exemple est déjà en place pour démarrer.
+    </p>
+
+    <hr style="margin:24px 0; border:none; border-top:1px solid #e5e7eb;">
+    <p style="font-weight:600; margin-bottom:12px;">Vos coordonnées</p>
+    <div class="champ">
+      <label>Raison sociale <small>(optionnel)</small></label>
+      <input type="text" id="raison_sociale" maxlength="160">
+    </div>
+    <div class="champ">
+      <label>SIRET <small>(optionnel, 14 chiffres)</small></label>
+      <input type="text" id="siret" pattern="[0-9]{14}" maxlength="14">
+    </div>
+    <div class="champ">
+      <label>Prénom</label>
+      <input type="text" id="prenom" required>
+    </div>
+    <div class="champ">
+      <label>Nom</label>
+      <input type="text" id="nom" required>
+    </div>
+    <div class="champ">
+      <label>Email</label>
+      <input type="email" id="email" required>
+    </div>
+    <div class="champ">
+      <label>Téléphone <small>(optionnel)</small></label>
+      <input type="tel" id="telephone">
+    </div>
+    <div class="champ">
+      <label>Code d'affiliation commercial <small>(optionnel)</small></label>
+      <input type="text" id="code_affiliation">
+    </div>
+
+    <button type="submit" class="btn btn-primaire" style="width:100%;" id="btn-submit">Continuer vers le paiement</button>
+    <p style="text-align:center; margin-top:12px; font-size:.85rem; color:var(--gris-texte);">
+      Paiement sécurisé par Stripe. L'abonnement est résiliable depuis votre espace client, sans engagement.
+    </p>
+    <div id="zone-message"></div>
+  </form>
+</div>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/checkout-devis-mb.js"></script>
+<script src="js/chatbot-widget.js"></script>
+</body>
+</html>
