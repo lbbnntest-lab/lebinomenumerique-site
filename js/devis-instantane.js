@@ -114,20 +114,27 @@ const CATALOGUE_DEVIS = [
   {
     categorie: "Automatisation",
     items: [
-      { code: "automatisation_sur_mesure", nom: "Automatisation Sur-Mesure", prixLibre: true, prixDefaut: 1200, recurrent: false,
-        description: "Automatisation d'une tâche métier précise, sur devis.",
+      { code: "automatisation_sur_mesure", nom: "Automatisation Sur-Mesure", prixLibre: true, prixDefaut: 1190, recurrent: false,
+        hebergement: 45, hebergementLabel: "suivi mensuel (dès)",
+        description: "Relances, tri de documents, synchro entre outils, récap business — une tâche répétitive de votre métier, automatisée. Setup selon complexité + suivi mensuel (hébergé chez nous). Prix fixé après une étude de cadrage à 150 €, déduite si le projet se fait.",
         bareme: {
-          base: 300,
+          base: 490,
           champs: [
-            { type: "nombre", id: "heures_dev", label: "Heures de développement estimées", unite: 75, defaut: 12 },
-            { type: "nombre", id: "outils_tiers", label: "Outils tiers à intégrer (au-delà d'1 inclus)", unite: 300, defaut: 0 },
-            { type: "checkbox", id: "temps_reel", label: "Déclenchement temps réel (webhook) plutôt qu'en différé", valeur: 200 },
-            { type: "checkbox", id: "dashboard", label: "Tableau de bord de suivi dédié", valeur: 400 }
+            { type: "radio", id: "palier", label: "Complexité (fixée après l'étude de cadrage)", options: [
+                { label: "Simple — 1 déclencheur, 1 action, 1 outil", valeur: 0 },
+                { label: "Standard — 2 à 3 outils, lecture de documents par IA", valeur: 700 },
+                { label: "Avancé — multi-outils, temps réel, tableau de bord", valeur: 1900 },
+                { label: "Pont vers un logiciel installé (RPA)", valeur: 3200 }
+              ] },
+            { type: "nombre", id: "outils_supp", label: "Outils tiers à connecter (au-delà des inclus)", unite: 250, defaut: 0 },
+            { type: "checkbox", id: "temps_reel", label: "Déclenchement temps réel (webhook) plutôt qu'en différé", valeur: 250 },
+            { type: "checkbox", id: "dashboard", label: "Tableau de bord de suivi dédié", valeur: 450 },
+            { type: "nombre", id: "heures_dev", label: "Heures de développement additionnelles estimées", unite: 75, defaut: 0 }
           ],
           exemples: [
-            { label: "Tâche simple, 1 seul outil", valeurs: { heures_dev: 6, outils_tiers: 0, temps_reel: false, dashboard: false } },
-            { label: "Plusieurs outils connectés, temps réel", valeurs: { heures_dev: 15, outils_tiers: 2, temps_reel: true, dashboard: false } },
-            { label: "Projet complexe avec suivi dédié", valeurs: { heures_dev: 25, outils_tiers: 3, temps_reel: true, dashboard: true } }
+            { label: "Relance de devis, 1 outil, en différé", valeurs: { palier: "Simple — 1 déclencheur, 1 action, 1 outil", outils_supp: 0, temps_reel: false, dashboard: false, heures_dev: 0 } },
+            { label: "Tri des factures fournisseurs vers la compta", valeurs: { palier: "Standard — 2 à 3 outils, lecture de documents par IA", outils_supp: 1, temps_reel: false, dashboard: false, heures_dev: 0 } },
+            { label: "Synchro agenda + CRM + SMS, temps réel, avec suivi", valeurs: { palier: "Avancé — multi-outils, temps réel, tableau de bord", outils_supp: 2, temps_reel: true, dashboard: true, heures_dev: 0 } }
           ]
         } }
     ]
