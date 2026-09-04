@@ -5,11 +5,25 @@
 // alignée avec le reste du site, la résolution du vrai Price ID Stripe se fait
 // côté serveur (workflow 36) à partir du plan_code, jamais du prix envoyé ici.
 const OFFRES_SIMPLES_DASHBOARD = [
+  { plan_code: "PACK_COMPLET", nom: "Pack Complet — Email + Appels", prix: 138, description: "Gestion Email + Gestion Appels Standard, une seule facture. Proposé seulement si vous n'avez encore ni l'un ni l'autre.", bientot: false },
   { plan_code: "SECRETARIAT_SOCLE", nom: "Gestion Email", prix: 89, description: "Tri automatique de vos emails, relance si téléphone manquant, bilan quotidien.", bientot: false },
   { plan_code: "TEL_ESSENTIEL", nom: "Gestion Appels — Standard", prix: 49, description: "Accueil vocal : répond aux questions, prend les messages ; RDV et réservations enregistrés, vous confirmez.", bientot: false },
   { plan_code: "TEL_PRO", nom: "Gestion Appels — Avancé", prix: 95, description: "Tout Standard, plus transfert d'appel en cas d'urgence et alerte SMS après chaque appel.", bientot: false },
   { plan_code: "TEL_SURMESURE", nom: "Gestion Appels — Sur-mesure", prix: 149, description: "Tout Avancé, plus prise de commande à emporter, rappels sortants, qualification poussée.", bientot: false }
 ];
+
+// Le Pack Complet n'a de sens que pour un client qui n'a NI Gestion Email NI Gestion Appels.
+// Et s'il a déjà le Pack, Email + Appels sont couverts -> on les masque.
+function filtrerOffresPack(offres, codesDejaSouscrits) {
+  const aEmail = codesDejaSouscrits.has("SECRETARIAT_SOCLE") || codesDejaSouscrits.has("PACK_COMPLET");
+  const aAppels = [...codesDejaSouscrits].some(c => c.startsWith("TEL_")) || codesDejaSouscrits.has("PACK_COMPLET");
+  return offres.filter(o => {
+    if (o.plan_code === "PACK_COMPLET") return !aEmail && !aAppels;
+    if (o.plan_code === "SECRETARIAT_SOCLE") return !codesDejaSouscrits.has("PACK_COMPLET");
+    if (o.plan_code.startsWith("TEL_")) return !codesDejaSouscrits.has("PACK_COMPLET");
+    return true;
+  });
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
   const session = await requireAuth("connexion.html");
@@ -92,7 +106,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const messageAjoutOffre = document.getElementById("message-ajout-offre");
   const peutSouscrire = utilisateur.role === "owner" || utilisateur.role === "admin";
 
-  const offresAAfficher = OFFRES_SIMPLES_DASHBOARD.filter(o => !codesDejaSouscrits.has(o.plan_code));
+  const offresAAfficher = filtrerOffresPack(
+    OFFRES_SIMPLES_DASHBOARD.filter(o => !codesDejaSouscrits.has(o.plan_code)),
+    codesDejaSouscrits
+  );
 
   conteneurOffres.innerHTML = offresAAfficher.length
     ? offresAAfficher.map(o => `
