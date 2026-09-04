@@ -64,8 +64,14 @@
         <input type="color" id="f-couleur" style="height:42px; padding:4px;">
       </div>
       <div class="champ">
-        <label for="f-logo-url">URL du logo (affiché sur le devis imprimé/PDF)</label>
-        <input type="text" id="f-logo-url" placeholder="https://.../logo.png">
+        <label>Logo (affiché sur le devis imprimé / PDF)</label>
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <img id="f-logo-preview" alt="" style="max-height:56px; max-width:180px; display:none; border:1px solid #e2e2e2; border-radius:6px; background:#fff; padding:4px;">
+          <input type="file" id="f-logo-file" accept="image/png,image/jpeg,image/webp">
+          <span id="f-logo-message" style="font-size:.85rem; color:var(--gris-texte);"></span>
+        </div>
+        <p style="font-size:.8rem; color:var(--gris-texte); margin:6px 0 0;">PNG, JPG ou WebP, 2 Mo max. Téléversé et enregistré immédiatement.</p>
+        <input type="hidden" id="f-logo-url">
       </div>
       <div class="champ">
         <label for="f-adresse">Adresse de l'entreprise</label>
@@ -258,6 +264,35 @@
     rendreChampsBareme();
   });
 
+  // Upload du logo : envoi immédiat à wf60, qui stocke le fichier et enregistre logo_url.
+  document.getElementById('f-logo-file').addEventListener('change', function () {
+    var file = this.files && this.files[0];
+    var msg = document.getElementById('f-logo-message');
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) { msg.textContent = 'Fichier trop lourd (2 Mo max).'; this.value = ''; return; }
+    msg.textContent = 'Téléversement…';
+    var reader = new FileReader();
+    reader.onload = async function () {
+      try {
+        var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/devis-mb-logo-upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access_token: session.access_token, nom_fichier: file.name, image_base64: reader.result })
+        });
+        var data = await resp.json().catch(function () { return {}; });
+        if (!resp.ok || !data.logo_url) throw new Error(data.erreur || 'Échec du téléversement.');
+        document.getElementById('f-logo-url').value = data.logo_url;
+        var prev = document.getElementById('f-logo-preview');
+        prev.src = data.logo_url + '?t=' + Date.now();
+        prev.style.display = 'inline-block';
+        msg.textContent = 'Logo enregistré.';
+      } catch (err) {
+        msg.textContent = err.message || 'Une erreur est survenue.';
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
   document.addEventListener('DOMContentLoaded', async function () {
     session = await requireAuth('connexion.html');
     if (!session) return;
@@ -282,6 +317,11 @@
       document.getElementById('f-nom-entreprise').value = config.nom_entreprise || '';
       document.getElementById('f-couleur').value = config.couleur_principale || '#1F6F78';
       document.getElementById('f-logo-url').value = config.logo_url || '';
+      if (config.logo_url) {
+        var prev = document.getElementById('f-logo-preview');
+        prev.src = config.logo_url;
+        prev.style.display = 'inline-block';
+      }
       document.getElementById('f-adresse').value = config.adresse || '';
       document.getElementById('f-siret').value = config.siret || '';
       document.getElementById('f-numero-tva').value = config.numero_tva || '';
