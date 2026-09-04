@@ -51,8 +51,8 @@ const CATALOGUE_DEVIS = [
         description: "Tout Standard, plus transfert d'appel en cas d'urgence et alerte SMS après chaque appel." },
       { code: "gestion_appels_surmesure", nom: "Gestion Appels — Sur-mesure", prix: 149, recurrent: true, planCode: "TEL_SURMESURE",
         description: "Tout Avancé, plus prise de commande à emporter, rappels sortants, qualification poussée. Intégrations tierces sur devis." },
-      { code: "pack_complet", nom: "Pack Complet (Email + Appels Standard)", prix: 134.90, recurrent: true, bientot: true,
-        description: "Gestion Email + Gestion Appels Standard, facture unique à prix réduit — bientôt (pour l'instant : commander les deux blocs séparément)." },
+      { code: "pack_complet", nom: "Pack Complet (Email + Appels Standard)", prix: 138, recurrent: true, planCode: "PACK_COMPLET",
+        description: "Gestion Email + Gestion Appels Standard, une seule inscription et une seule facture (tarif réduit à 134,90 € à venir)." },
       { code: "secretariat_sur_mesure", nom: "Secrétariat Sur-Mesure", prixLibre: true, prixDefaut: 450, recurrent: true,
         description: "Besoin spécifique, à partir de 450 €/mois indicatif.",
         bareme: {
