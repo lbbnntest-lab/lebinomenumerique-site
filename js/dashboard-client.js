@@ -61,9 +61,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const { data: compte } = await sb
     .from("comptes_clients")
-    .select("statut, raison_sociale")
+    .select("statut, raison_sociale, siret, secteur_activite, telephone")
     .eq("id", utilisateur.compte_client_id)
     .single();
+
+  // Bouton « Créer mon site » (panneau Ajouter un service) : renvoie vers le
+  // checkout site web avec les infos du compte pré-remplies. Le rattachement à
+  // l'espace se fait par l'email (upsert on_conflict email dans wf14).
+  const lienCreerSite = document.getElementById("lien-creer-site");
+  if (lienCreerSite) {
+    const p = new URLSearchParams({
+      email: session.user.email || "",
+      raison_sociale: compte?.raison_sociale || "",
+      siret: compte?.siret || "",
+      secteur_activite: compte?.secteur_activite || "",
+      telephone: compte?.telephone || "",
+      prenom: utilisateur.prenom || ""
+    });
+    lienCreerSite.href = "checkout-siteweb.html?" + p.toString();
+  }
 
   // Un client peut avoir PLUSIEURS abonnements actifs en même temps (le plan
   // SaaS et l'hébergement d'un site web sont deux abonnements distincts

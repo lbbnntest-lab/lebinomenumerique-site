@@ -21,6 +21,23 @@ document.addEventListener("DOMContentLoaded", () => {
   if (codeReferenceParam) selectPack.value = codeReferenceParam;
   if (codeAffiliationParam) document.getElementById("code_affiliation").value = codeAffiliationParam;
 
+  // Pré-remplissage depuis le dashboard client (bouton « Créer mon site ») :
+  // le site sera rattaché au compte existant via l'email (upsert wf14).
+  ["email", "raison_sociale", "siret", "secteur_activite", "telephone", "prenom"].forEach(champ => {
+    const val = params.get(champ);
+    const el = document.getElementById(champ);
+    if (val && el && !el.value) el.value = val;
+  });
+  if (params.get("email")) {
+    const emailEl = document.getElementById("email");
+    if (emailEl) { emailEl.readOnly = true; emailEl.style.background = "#f1f5f9"; }
+    const banniere = document.createElement("p");
+    banniere.className = "message-succes";
+    banniere.style.cssText = "margin:0 0 16px;";
+    banniere.textContent = "Ce site sera rattaché à votre espace client (" + params.get("email") + ").";
+    document.getElementById("form-checkout-siteweb")?.prepend(banniere);
+  }
+
   function ajouterLigneProduit() {
     if (listeProduits.children.length >= MAX_PRODUITS) return;
     const ligne = document.createElement("div");
