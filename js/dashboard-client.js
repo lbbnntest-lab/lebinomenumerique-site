@@ -20,6 +20,27 @@ function filtrerOffresPack(offres, codesDejaSouscrits) {
   return offres.filter(o => o.plan_code !== "SECRETARIAT_SOCLE" && !o.plan_code.startsWith("TEL_"));
 }
 
+// ---------- Navigation par panneaux (une section visible à la fois) ----------
+(function () {
+  function activerPanneau(nom) {
+    const panneaux = [...document.querySelectorAll(".dash-panel")];
+    if (!panneaux.some(p => p.dataset.panel === nom)) nom = "apercu";
+    panneaux.forEach(p => { p.hidden = p.dataset.panel !== nom; });
+    document.querySelectorAll(".dash-sidebar button[data-panel]").forEach(b =>
+      b.classList.toggle("actif", b.dataset.panel === nom));
+    if (location.hash.slice(1) !== nom) history.replaceState(null, "", "#" + nom);
+    window.scrollTo(0, 0);
+  }
+  document.addEventListener("click", (e) => {
+    const cible = e.target.closest("button[data-panel]");
+    if (!cible) return;
+    e.preventDefault();
+    activerPanneau(cible.dataset.panel);
+  });
+  window.addEventListener("hashchange", () => activerPanneau(location.hash.slice(1) || "apercu"));
+  document.addEventListener("DOMContentLoaded", () => activerPanneau(location.hash.slice(1) || "apercu"));
+})();
+
 document.addEventListener("DOMContentLoaded", async () => {
   const session = await requireAuth("connexion.html");
   if (!session) return;
@@ -77,7 +98,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("stat-statut").textContent = compte?.statut || "—";
   document.getElementById("stat-plan").textContent = nomsActifs.length ? nomsActifs.join(" + ") : "Aucun";
 
-  const tbodyAbonnements = document.getElementById("tbody-abonnements");
   const lignesAbo = listeAbonnements.map(a => `
         <tr>
           <td>${a.plans_tarifaires?.nom || "—"}</td>
@@ -91,9 +111,14 @@ document.addEventListener("DOMContentLoaded", async () => {
           <td><span class="badge badge-actif">${o.statut}</span></td>
         </tr>`);
   const toutesLignes = [...lignesAbo, ...lignesOptions];
-  tbodyAbonnements.innerHTML = toutesLignes.length
+  const htmlAbos = toutesLignes.length
     ? toutesLignes.join("")
     : `<tr><td colspan="3">Aucun abonnement actif pour le moment.</td></tr>`;
+  // La table des abonnements est affichée à deux endroits (Vue d'ensemble + Abonnement & factures).
+  ["tbody-abonnements", "tbody-abonnements-2"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = htmlAbos;
+  });
 
   // ---------- Ajouter une offre (achat direct de formules simples) ----------
   const codesDejaSouscrits = new Set(listeAbonnements.map(a => a.plans_tarifaires?.code).filter(Boolean));

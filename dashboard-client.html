@@ -7,13 +7,45 @@
 <title>Mon espace — Le Binôme Numérique</title>
 <link rel="stylesheet" href="css/style.css">
 <style>
-  .grille-offres-dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 12px; }
-  .carte-offre-dashboard { border: 1px solid #d7deff; border-radius: 12px; padding: 18px; background: var(--blanc); display: flex; flex-direction: column; gap: 8px; }
-  .carte-offre-dashboard h4 { margin: 0; font-size: 1rem; }
-  .carte-offre-dashboard .prix-offre { font-weight: 700; color: var(--bleu-primaire); }
-  .carte-offre-dashboard .desc-offre { color: var(--gris-texte); font-size: .88rem; flex-grow: 1; }
+  [hidden] { display: none !important; }
 
-  .carte-devis { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; background: var(--blanc); }
+  .dash-topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px; background: var(--blanc); border-bottom: 1px solid #e8ecf2; }
+  .dash-topbar .logo { font-family: var(--font-titres); font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--bleu-nuit); }
+  .dash-topbar .liens { display: flex; align-items: center; gap: 18px; font-size: .9rem; }
+
+  .dash-layout { min-height: calc(100vh - 130px); }
+  .dash-sidebar { display: flex; flex-direction: column; gap: 2px; }
+  .dash-sidebar button {
+    all: unset; cursor: pointer; display: block; padding: 11px 16px; border-radius: 8px;
+    color: #b8c4d4; font-size: .92rem; border-left: 3px solid transparent; transition: background .15s, color .15s;
+  }
+  .dash-sidebar button:hover { background: rgba(255,255,255,.06); color: #e2eaf2; }
+  .dash-sidebar button.actif { background: rgba(34,184,201,.14); color: var(--blanc); border-left-color: var(--bleu-primaire-vif); font-weight: 600; }
+  .dash-sidebar .sep { height: 1px; background: rgba(255,255,255,.08); margin: 10px 12px; }
+  .dash-sidebar .lien-externe { color: #8b9bb0; font-size: .84rem; padding: 8px 16px; }
+  .dash-sidebar .lien-externe:hover { color: #e2eaf2; }
+  .dash-sidebar .bloc-offre { margin-top: auto; }
+
+  .dash-panel { max-width: 900px; }
+  .dash-panel > h2 { margin: 0 0 4px; font-size: 1.5rem; }
+  .dash-panel > .intro { color: var(--gris-texte); font-size: .92rem; margin: 0 0 24px; }
+  .dash-bloc { margin-bottom: 34px; }
+  .dash-bloc h3 { font-size: 1.05rem; margin: 0 0 12px; }
+  .dash-bloc .aide { color: var(--gris-texte); font-size: .86rem; margin: -6px 0 14px; }
+
+  .carte-service { border: 1px solid #e5e9ef; border-radius: 12px; padding: 18px 20px; background: var(--blanc); }
+  .carte-service h4 { margin: 0 0 4px; font-size: 1rem; }
+  .carte-service p { margin: 0 0 12px; color: var(--gris-texte); font-size: .86rem; }
+  .grille-services { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+
+  .carte-offre { border: 1px solid #e5e9ef; border-radius: 12px; padding: 18px 20px; background: var(--blanc); max-width: 480px; margin-bottom: 16px; }
+  .grille-offres-dashboard { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+  .carte-offre-dashboard { border: 1px solid #e5e9ef; border-radius: 12px; padding: 16px 18px; background: var(--blanc); display: flex; flex-direction: column; gap: 6px; }
+  .carte-offre-dashboard h4 { margin: 0; font-size: .95rem; }
+  .carte-offre-dashboard .prix-offre { font-weight: 700; color: var(--bleu-primaire); }
+  .carte-offre-dashboard .desc-offre { color: var(--gris-texte); font-size: .84rem; flex-grow: 1; }
+
+  .carte-devis { border: 1px solid #e5e9ef; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; background: var(--blanc); }
   .carte-devis-entete { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .carte-devis-titre { font-weight: 700; font-family: var(--font-titres); }
   .carte-devis-meta { color: var(--gris-texte); font-size: .85rem; margin-top: 2px; }
@@ -31,11 +63,9 @@
 
   .zone-upload-photos { border: 1px dashed #c7ccdb; border-radius: 12px; padding: 16px 18px; margin-bottom: 20px; background: var(--blanc); }
   .zone-upload-photos .champ { margin-bottom: 10px; }
-  .zone-upload-photos .champ label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 4px; }
   .grille-photos-uploadees { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
   .grille-photos-uploadees img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb; }
-
-  .carte-post-social { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; background: var(--blanc); display: flex; gap: 14px; flex-wrap: wrap; }
+  .carte-post-social { border: 1px solid #e5e9ef; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; background: var(--blanc); display: flex; gap: 14px; flex-wrap: wrap; }
   .carte-post-social img { width: 110px; height: 110px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
   .carte-post-social .contenu-post { flex: 1; min-width: 200px; }
   .carte-post-social .texte-post { white-space: pre-wrap; font-size: .92rem; }
@@ -43,7 +73,6 @@
   .badge-statut-post.attente { background: #fff3cd; color: #8a6d1a; }
   .badge-statut-post.a-publier { background: #d7f0ff; color: #0a5c85; }
   .badge-statut-post.publie { background: #d9f2df; color: #1e6b34; }
-
   .zone-edition-post { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #e5e7eb; }
   .zone-edition-post .edition-texte { width: 100%; padding: 8px 10px; border: 1px solid #d7deff; border-radius: 8px; font-family: inherit; font-size: .9rem; resize: vertical; }
   .grille-photos-edition { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
@@ -51,268 +80,298 @@
   .grille-photos-edition img.photo-selectionnable.selectionnee { border-color: var(--bleu-primaire); opacity: 1; }
   .photo-option-aucune { display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 6px; border: 2px dashed #c7ccdb; font-size: .68rem; text-align: center; color: var(--gris-texte); cursor: pointer; padding: 2px; }
   .photo-option-aucune.selectionnee { border-color: var(--bleu-primaire); border-style: solid; color: var(--bleu-primaire); font-weight: 600; }
+
+  @media (max-width: 860px) {
+    .dash-layout { grid-template-columns: 1fr; }
+    .dash-sidebar { flex-direction: row; overflow-x: auto; gap: 4px; padding: 10px; }
+    .dash-sidebar button { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; }
+    .dash-sidebar button.actif { border-left: none; border-bottom-color: var(--bleu-primaire-vif); }
+    .dash-sidebar .sep, .dash-sidebar .lien-externe, .dash-sidebar .bloc-offre { display: none; }
+  }
 </style>
 </head>
 <body>
 
-<header class="site">
-  <div class="container">
-    <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
-    <nav>
-      <a href="#" onclick="logout()">Se déconnecter</a>
-    </nav>
+<div class="dash-topbar">
+  <a class="logo" href="index.html"><img src="img/logo-icon.png" alt="" width="60" height="32">Le Binôme Numérique</a>
+  <div class="liens">
+    <a href="index.html">Retour au site</a>
+    <a href="#" onclick="logout(); return false;">Se déconnecter</a>
   </div>
-</header>
+</div>
 
 <div class="dash-layout">
   <aside class="dash-sidebar">
-    <a href="dashboard-client.html" class="actif">Vue d'ensemble</a>
-    <a href="reporting.html">Tableau de bord</a>
-    <a href="#devis">Mes devis</a>
-    <a href="#contenus">Mes contenus</a>
-    <a href="mon-devis-config.html">Mon devis en ligne</a>
-    <a href="mon-chatbot-config.html">Mon assistant IA</a>
-    <a href="mon-accueil-telephonique.html">Mon accueil téléphonique</a>
-    <a href="mon-visibilite-config.html">Ma visibilité</a>
-    <a href="#demandes">Mes demandes</a>
-    <a href="#factures">Factures</a>
-    <a href="#abonnement">Abonnement</a>
-    <a href="#ajouter-offre">Ajouter une offre</a>
-    <a href="#equipe">Mon équipe</a>
+    <button data-panel="apercu" class="actif">Vue d'ensemble</button>
+    <button data-panel="demandes">Mes demandes</button>
+    <button data-panel="devis">Mes devis</button>
+    <button data-panel="services">Mes services</button>
+    <button data-panel="facturation">Abonnement &amp; factures</button>
+    <button data-panel="equipe">Mon équipe</button>
+    <div class="sep"></div>
+    <a class="lien-externe" href="reporting.html">Tableau de bord détaillé →</a>
+    <div class="bloc-offre">
+      <div class="sep"></div>
+      <button data-panel="offres">Ajouter un service</button>
+    </div>
   </aside>
 
   <main class="dash-main">
-    <h2 id="titre-bienvenue">Bienvenue</h2>
 
-    <div class="grille-stats">
-      <div class="stat-tuile">
-        <div class="valeur" id="stat-statut">—</div>
-        <div class="label">Statut du compte</div>
-      </div>
-      <div class="stat-tuile">
-        <div class="valeur" id="stat-demandes-mois">—</div>
-        <div class="label">Demandes ce mois-ci</div>
-      </div>
-      <div class="stat-tuile">
-        <div class="valeur" id="stat-urgentes">—</div>
-        <div class="label">Urgentes en attente</div>
-      </div>
-      <div class="stat-tuile">
-        <div class="valeur" id="stat-plan">—</div>
-        <div class="label">Plan actuel</div>
-      </div>
-    </div>
+    <!-- ============ VUE D'ENSEMBLE ============ -->
+    <section class="dash-panel" data-panel="apercu">
+      <h2 id="titre-bienvenue">Bienvenue</h2>
+      <p class="intro">Un coup d'œil sur votre activité et vos services.</p>
 
-    <section id="abonnement">
-      <h3>Mes abonnements</h3>
+      <div class="grille-stats">
+        <div class="stat-tuile"><div class="valeur" id="stat-statut">—</div><div class="label">Statut du compte</div></div>
+        <div class="stat-tuile"><div class="valeur" id="stat-demandes-mois">—</div><div class="label">Demandes ce mois-ci</div></div>
+        <div class="stat-tuile"><div class="valeur" id="stat-urgentes">—</div><div class="label">Urgentes en attente</div></div>
+        <div class="stat-tuile"><div class="valeur" id="stat-plan">—</div><div class="label">Plan actuel</div></div>
+      </div>
+
+      <div class="dash-bloc">
+        <h3>Mes abonnements</h3>
+        <table class="donnees">
+          <thead><tr><th>Plan</th><th>Cycle de facturation</th><th>Statut</th></tr></thead>
+          <tbody id="tbody-abonnements"><tr><td colspan="3">Chargement…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ MES DEMANDES ============ -->
+    <section class="dash-panel" data-panel="demandes" hidden>
+      <h2>Mes demandes</h2>
+      <p class="intro">Les demandes clients captées par votre secrétariat (email, appels, chatbot).</p>
       <table class="donnees">
-        <thead>
-          <tr><th>Plan</th><th>Cycle de facturation</th><th>Statut</th></tr>
-        </thead>
-        <tbody id="tbody-abonnements">
-          <tr><td colspan="3">Chargement...</td></tr>
-        </tbody>
-      </table>
-      <p style="margin-top:14px;">
-        <button class="btn btn-secondaire" id="btn-portail">Gérer mon abonnement / résilier</button>
-        <span id="message-portail" style="margin-left:10px; font-size:.88rem;"></span>
-      </p>
-      <p class="sous-titre-section" style="margin-top:6px;">Page sécurisée Stripe : changer de carte, télécharger vos factures, résilier (effet à la fin de la période en cours, sans frais).</p>
-    </section>
-
-    <section id="ajouter-offre" style="margin-top:32px;">
-      <h3>Ajouter une offre</h3>
-      <p class="sous-titre-section">Souscrivez directement à une formule supplémentaire — paiement Stripe sécurisé, sans repasser par un commercial.</p>
-      <div id="liste-offres-disponibles" class="grille-offres-dashboard">Chargement...</div>
-      <p id="message-ajout-offre" style="margin-top:10px;"></p>
-
-      <h4 style="margin-top:28px;">Visibilité renforcée — SEO + GEO</h4>
-      <p class="sous-titre-section">Référencement Google et présence dans les réponses des assistants IA (ChatGPT, Claude, Gemini) : audit, corrections sur votre site, fiche Google Business, puis un rapport chaque mois. <a href="visibilite.html">En savoir plus</a>.</p>
-      <div id="bloc-visibilite" class="carte-offre-dashboard" style="max-width:460px;">
-        <div class="desc-offre">Setup <strong>390 € une fois</strong>, puis le suivi mensuel de votre choix (résiliable en 2 clics).</div>
-        <div class="champ" style="margin:12px 0;">
-          <label for="visibilite-formule">Formule</label>
-          <select id="visibilite-formule" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
-            <option value="setup_combine">Setup + suivi combiné SEO &amp; GEO (390 € puis 119 €/mois)</option>
-            <option value="setup_seo">Setup + suivi SEO (390 € puis 69 €/mois)</option>
-            <option value="setup_geo">Setup + suivi GEO (390 € puis 69 €/mois)</option>
-            <option value="setup">Setup seul (390 €, sans suivi)</option>
-          </select>
-        </div>
-        <button class="btn btn-primaire" id="btn-visibilite">Souscrire</button>
-        <p id="message-visibilite" style="margin:10px 0 0;"></p>
-      </div>
-      <p id="bloc-visibilite-actif" class="sous-titre-section" style="display:none; margin-top:10px;">
-        Vous avez déjà le service Visibilité — <a href="mon-visibilite-config.html">configurez vos requêtes cibles</a>.
-      </p>
-
-      <h4 style="margin-top:28px;">Chatbot pour votre site</h4>
-      <p class="sous-titre-section">Le même assistant que sur notre site, installé sur le vôtre (déjà en ligne ailleurs) et configuré à votre activité. Après paiement, vous recevez une ligne de code à coller sur votre site. <a href="chatbot.html">En savoir plus</a>.</p>
-      <div id="bloc-chatbot" class="carte-offre-dashboard" style="max-width:460px;">
-        <div class="desc-offre">Installation réglée une fois, puis un abonnement mensuel (résiliable en 2 clics).</div>
-        <div class="champ" style="margin:12px 0;">
-          <label for="chatbot-niveau">Niveau</label>
-          <select id="chatbot-niveau" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
-            <option value="1">Niveau 1 — questions + capture du contact (390 € puis 29 €/mois)</option>
-            <option value="2">Niveau 2 — + prise de rendez-vous (590 € puis 49 €/mois)</option>
-            <option value="3">Niveau 3 — + calcul de devis + alerte urgence (1190 € puis 89 €/mois)</option>
-          </select>
-        </div>
-        <div class="champ" style="margin:12px 0;">
-          <label for="chatbot-nom">Nom affiché par l'assistant</label>
-          <input type="text" id="chatbot-nom" maxlength="120" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
-        </div>
-        <div class="champ" style="margin:12px 0;">
-          <label for="chatbot-couleur">Couleur du widget</label>
-          <select id="chatbot-couleur" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
-            <option value="bleu">Bleu</option><option value="vert">Vert</option><option value="rouge">Rouge</option>
-            <option value="orange">Orange</option><option value="violet">Violet</option><option value="noir">Noir</option>
-          </select>
-        </div>
-        <div class="champ hidden" id="chatbot-champ-calcom" style="margin:12px 0;">
-          <label for="chatbot-calcom">Lien Cal.com pour la prise de RDV</label>
-          <input type="url" id="chatbot-calcom" placeholder="https://cal.com/..." style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
-        </div>
-        <div class="champ hidden" id="chatbot-champ-urgence" style="margin:12px 0;">
-          <label for="chatbot-urgence">Email d'alerte urgence <small>(par défaut : l'email du compte)</small></label>
-          <input type="email" id="chatbot-urgence" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
-        </div>
-        <button class="btn btn-primaire" id="btn-chatbot">Souscrire</button>
-        <p id="message-chatbot" style="margin:10px 0 0;"></p>
-      </div>
-      <p id="bloc-chatbot-actif" class="sous-titre-section" style="display:none; margin-top:10px;">
-        Vous avez déjà un chatbot — <a href="mon-chatbot-config.html">réglez son comportement et récupérez le code d'intégration</a>.
-      </p>
-
-      <h4 style="margin-top:28px;">Configurateur de devis en marque blanche</h4>
-      <p class="sous-titre-section">Une page de devis en ligne à votre marque, avec votre barème, que vos clients remplissent seuls (ou vous sur place). Après paiement, vous recevez le lien à partager et un accès pour construire votre barème. <a href="configurateur-devis.html">En savoir plus</a>.</p>
-      <div id="bloc-devis-mb" class="carte-offre-dashboard" style="max-width:460px;">
-        <div class="desc-offre">Installation réglée une fois, puis un abonnement mensuel (résiliable en 2 clics).</div>
-        <div class="champ" style="margin:12px 0;">
-          <label for="devismb-formule">Formule</label>
-          <select id="devismb-formule" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
-            <option value="starter">Starter — estimation en ligne (290 € puis 29 €/mois)</option>
-            <option value="pro">Pro — + PDF téléchargeable à votre marque (490 € puis 59 €/mois)</option>
-          </select>
-        </div>
-        <div class="champ" style="margin:12px 0;">
-          <label for="devismb-nom">Nom de votre entreprise <small>(affiché sur le devis)</small></label>
-          <input type="text" id="devismb-nom" maxlength="120" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
-        </div>
-        <div class="champ" style="margin:12px 0;">
-          <label for="devismb-couleur">Couleur principale</label>
-          <input type="color" id="devismb-couleur" value="#1F6F78" style="width:64px; height:38px; padding:2px; border:1px solid #d7d7db; border-radius:8px;">
-        </div>
-        <div class="champ" style="margin:12px 0;">
-          <label for="devismb-email-leads">Email de réception des demandes <small>(par défaut : l'email du compte)</small></label>
-          <input type="email" id="devismb-email-leads" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px;">
-        </div>
-        <button class="btn btn-primaire" id="btn-devismb">Souscrire</button>
-        <p id="message-devismb" style="margin:10px 0 0;"></p>
-      </div>
-      <p id="bloc-devis-mb-actif" class="sous-titre-section" style="display:none; margin-top:10px;">
-        Vous avez déjà un configurateur de devis — <a href="mon-devis-config.html">construisez votre barème et récupérez votre lien</a>.
-      </p>
-    </section>
-
-    <section id="devis" style="margin-top:32px;">
-      <h3>Mes devis</h3>
-      <p class="sous-titre-section">Vos demandes de devis, y compris celles faites en discutant avec notre conseiller virtuel.</p>
-      <div id="liste-mes-devis">Chargement...</div>
-    </section>
-
-    <section id="devis-brouillons" class="hidden" style="margin-top:32px;">
-      <h3>Devis pré-remplis</h3>
-      <p class="sous-titre-section">Quand un email de demande de devis contient toutes les informations de votre barème, nous préparons le devis chiffré à votre marque. Relisez le PDF, puis envoyez-le au prospect (email à votre nom, devis en pièce jointe) ou rejetez-le. Rien n'est envoyé sans votre accord.</p>
-      <div id="liste-devis-brouillons"></div>
-      <details id="historique-devis-brouillons-bloc" class="hidden" style="margin-top:14px;">
-        <summary style="cursor:pointer; font-weight:600; font-size:.9rem; color:var(--bleu-primaire);">Historique — tous les devis pré-remplis</summary>
-        <div id="historique-devis-brouillons" style="margin-top:10px;"></div>
-      </details>
-    </section>
-
-    <section id="contenus" class="hidden" style="margin-top:32px;">
-      <h3>Mes contenus</h3>
-      <p class="sous-titre-section">Votre calendrier de posts réseaux sociaux généré par IA. Uploadez vos propres photos (chantier, réalisations) pour qu'elles soient utilisées en priorité, puis validez chaque post avant de le publier vous-même sur vos pages.</p>
-
-      <div class="zone-upload-photos">
-        <p class="sous-section-titre" style="margin-top:0;">Ajouter une photo</p>
-        <div class="champ">
-          <label for="upload-photo-fichier">Photo (chantier, réalisation...)</label>
-          <input type="file" id="upload-photo-fichier" accept="image/*">
-        </div>
-        <div class="champ">
-          <label for="upload-photo-description">Description courte <small>(optionnel, aide l'IA à bien l'utiliser)</small></label>
-          <input type="text" id="upload-photo-description" placeholder="Ex: pose d'une chaudière chez un client à Nantes">
-        </div>
-        <button class="btn btn-secondaire" id="btn-uploader-photo" type="button">Envoyer la photo</button>
-        <p id="message-upload-photo" style="margin-top:8px;"></p>
-        <div id="grille-photos-uploadees" class="grille-photos-uploadees"></div>
-      </div>
-
-      <div id="liste-mes-posts-sociaux">Chargement...</div>
-    </section>
-
-    <section id="demandes" style="margin-top:32px;">
-      <h3>Dernières demandes</h3>
-      <table class="donnees">
-        <thead>
-          <tr><th>Date</th><th>Catégorie</th><th>Résumé</th><th>Contact</th><th>Statut</th></tr>
-        </thead>
-        <tbody id="tbody-demandes">
-          <tr><td colspan="5">Chargement...</td></tr>
-        </tbody>
+        <thead><tr><th>Date</th><th>Catégorie</th><th>Résumé</th><th>Contact</th><th>Statut</th></tr></thead>
+        <tbody id="tbody-demandes"><tr><td colspan="5">Chargement…</td></tr></tbody>
       </table>
     </section>
 
-    <section id="factures" style="margin-top:32px;">
-      <h3>Factures</h3>
-      <table class="donnees">
-        <thead>
-          <tr><th>Date</th><th>Montant TTC</th><th>Statut</th><th>PDF</th></tr>
-        </thead>
-        <tbody id="tbody-factures">
-          <tr><td colspan="4">Chargement...</td></tr>
-        </tbody>
-      </table>
+    <!-- ============ MES DEVIS ============ -->
+    <section class="dash-panel" data-panel="devis" hidden>
+      <h2>Mes devis</h2>
+      <p class="intro">Vos demandes de devis et les devis pré-remplis à valider.</p>
+
+      <div class="dash-bloc">
+        <h3>Demandes de devis</h3>
+        <p class="aide">Y compris celles faites en discutant avec le conseiller virtuel.</p>
+        <div id="liste-mes-devis">Chargement…</div>
+      </div>
+
+      <div class="dash-bloc hidden" id="devis-brouillons">
+        <h3>Devis pré-remplis</h3>
+        <p class="aide">Quand un email de demande de devis contient toutes les informations de votre barème, nous préparons le devis chiffré à votre marque. Relisez le PDF, puis envoyez-le au prospect ou rejetez-le — rien n'est envoyé sans votre accord.</p>
+        <div id="liste-devis-brouillons"></div>
+        <details id="historique-devis-brouillons-bloc" class="hidden" style="margin-top:14px;">
+          <summary style="cursor:pointer; font-weight:600; font-size:.9rem; color:var(--bleu-primaire);">Historique — tous les devis pré-remplis</summary>
+          <div id="historique-devis-brouillons" style="margin-top:10px;"></div>
+        </details>
+      </div>
     </section>
 
-    <section id="equipe" style="margin-top:32px;">
-      <h3>Mon équipe</h3>
-      <p class="sous-titre-section" id="texte-sieges">Chargement...</p>
+    <!-- ============ MES SERVICES ============ -->
+    <section class="dash-panel" data-panel="services" hidden>
+      <h2>Mes services</h2>
+      <p class="intro">Configurez chacun de vos services depuis son espace dédié.</p>
+
+      <div class="dash-bloc">
+        <div class="grille-services">
+          <div class="carte-service">
+            <h4>Devis en ligne</h4>
+            <p>Barème, logo, mentions légales et lien à partager.</p>
+            <a class="btn btn-secondaire" href="mon-devis-config.html">Configurer</a>
+          </div>
+          <div class="carte-service">
+            <h4>Assistant IA du site</h4>
+            <p>Comportement du chatbot et code d'intégration.</p>
+            <a class="btn btn-secondaire" href="mon-chatbot-config.html">Configurer</a>
+          </div>
+          <div class="carte-service">
+            <h4>Accueil téléphonique</h4>
+            <p>Horaires, message, prise de RDV, numéro.</p>
+            <a class="btn btn-secondaire" href="mon-accueil-telephonique.html">Configurer</a>
+          </div>
+          <div class="carte-service">
+            <h4>Visibilité (SEO + GEO)</h4>
+            <p>Vos requêtes cibles et vos rapports mensuels.</p>
+            <a class="btn btn-secondaire" href="mon-visibilite-config.html">Configurer</a>
+          </div>
+        </div>
+        <p class="aide" style="margin-top:14px;">Un service que vous n'avez pas encore ? Voir <button class="btn-lien" data-panel="offres" style="all:unset; cursor:pointer; color:var(--bleu-primaire); text-decoration:underline;">Ajouter un service</button>.</p>
+      </div>
+
+      <div class="dash-bloc hidden" id="contenus">
+        <h3>Mes contenus — réseaux sociaux</h3>
+        <p class="aide">Votre calendrier de posts généré par IA. Ajoutez vos photos (elles seront privilégiées), validez chaque post, puis publiez-le vous-même sur vos pages.</p>
+        <div class="zone-upload-photos">
+          <p class="sous-section-titre" style="margin-top:0;">Ajouter une photo</p>
+          <div class="champ">
+            <label for="upload-photo-fichier">Photo (chantier, réalisation…)</label>
+            <input type="file" id="upload-photo-fichier" accept="image/*">
+          </div>
+          <div class="champ">
+            <label for="upload-photo-description">Description courte <small>(optionnel, aide l'IA)</small></label>
+            <input type="text" id="upload-photo-description" placeholder="Ex : pose d'une chaudière chez un client à Nantes">
+          </div>
+          <button class="btn btn-secondaire" id="btn-uploader-photo" type="button">Envoyer la photo</button>
+          <p id="message-upload-photo" style="margin-top:8px;"></p>
+          <div id="grille-photos-uploadees" class="grille-photos-uploadees"></div>
+        </div>
+        <div id="liste-mes-posts-sociaux">Chargement…</div>
+      </div>
+    </section>
+
+    <!-- ============ ABONNEMENT & FACTURES ============ -->
+    <section class="dash-panel" data-panel="facturation" hidden>
+      <h2>Abonnement &amp; factures</h2>
+      <p class="intro">Gérez votre abonnement et retrouvez vos factures.</p>
+
+      <div class="dash-bloc">
+        <h3>Mes abonnements</h3>
+        <table class="donnees">
+          <thead><tr><th>Plan</th><th>Cycle de facturation</th><th>Statut</th></tr></thead>
+          <tbody id="tbody-abonnements-2"><tr><td colspan="3">Chargement…</td></tr></tbody>
+        </table>
+        <p style="margin-top:16px;">
+          <button class="btn btn-secondaire" id="btn-portail">Gérer mon abonnement / résilier</button>
+          <span id="message-portail" style="margin-left:10px; font-size:.88rem;"></span>
+        </p>
+        <p class="aide">Page sécurisée Stripe : changer de carte, télécharger vos factures, résilier (effet à la fin de la période en cours, sans frais).</p>
+      </div>
+
+      <div class="dash-bloc">
+        <h3>Factures</h3>
+        <table class="donnees">
+          <thead><tr><th>Date</th><th>Montant TTC</th><th>Statut</th><th>PDF</th></tr></thead>
+          <tbody id="tbody-factures"><tr><td colspan="4">Chargement…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ MON ÉQUIPE ============ -->
+    <section class="dash-panel" data-panel="equipe" hidden>
+      <h2>Mon équipe</h2>
+      <p class="intro" id="texte-sieges">Chargement…</p>
       <table class="donnees">
-        <thead>
-          <tr><th>Nom</th><th>Fonction</th><th>Email</th><th>Rôle</th></tr>
-        </thead>
-        <tbody id="tbody-equipe">
-          <tr><td colspan="4">Chargement...</td></tr>
-        </tbody>
+        <thead><tr><th>Nom</th><th>Fonction</th><th>Email</th><th>Rôle</th></tr></thead>
+        <tbody id="tbody-equipe"><tr><td colspan="4">Chargement…</td></tr></tbody>
       </table>
 
-      <div id="bloc-inviter" class="hidden" style="max-width:420px; margin-top:20px;">
-        <p class="sous-section-titre">Inviter un utilisateur</p>
+      <div id="bloc-inviter" class="hidden" style="max-width:420px; margin-top:24px;">
+        <h3>Inviter un utilisateur</h3>
         <form id="form-inviter-utilisateur">
-          <div class="champ">
-            <label>Prénom</label>
-            <input type="text" id="invite-prenom" required>
-          </div>
-          <div class="champ">
-            <label>Nom</label>
-            <input type="text" id="invite-nom" required>
-          </div>
-          <div class="champ">
-            <label>Fonction <small>(optionnel)</small></label>
-            <input type="text" id="invite-fonction" placeholder="Gérant, Responsable RH...">
-          </div>
-          <div class="champ">
-            <label>Email</label>
-            <input type="email" id="invite-email" required>
-          </div>
+          <div class="champ"><label>Prénom</label><input type="text" id="invite-prenom" required></div>
+          <div class="champ"><label>Nom</label><input type="text" id="invite-nom" required></div>
+          <div class="champ"><label>Fonction <small>(optionnel)</small></label><input type="text" id="invite-fonction" placeholder="Gérant, Responsable RH…"></div>
+          <div class="champ"><label>Email</label><input type="email" id="invite-email" required></div>
           <button type="submit" class="btn btn-primaire" id="btn-inviter">Envoyer l'invitation</button>
           <div id="message-invitation"></div>
         </form>
       </div>
     </section>
+
+    <!-- ============ AJOUTER UN SERVICE ============ -->
+    <section class="dash-panel" data-panel="offres" hidden>
+      <h2>Ajouter un service</h2>
+      <p class="intro">Souscrivez directement à un service supplémentaire — paiement Stripe sécurisé, sans repasser par un commercial. Rien n'est prélevé sans votre accord.</p>
+
+      <div class="dash-bloc">
+        <h3>Secrétariat</h3>
+        <div id="liste-offres-disponibles" class="grille-offres-dashboard">Chargement…</div>
+        <p id="message-ajout-offre" style="margin-top:10px;"></p>
+      </div>
+
+      <div class="dash-bloc">
+        <h3>Visibilité renforcée — SEO + GEO</h3>
+        <p class="aide">Référencement Google et présence dans les réponses des assistants IA (ChatGPT, Claude, Gemini) : audit, corrections sur votre site, fiche Google Business, puis un rapport chaque mois. <a href="visibilite.html">En savoir plus</a>.</p>
+        <div id="bloc-visibilite" class="carte-offre">
+          <div class="desc-offre" style="color:var(--gris-texte); font-size:.86rem;">Setup <strong>390 € une fois</strong>, puis le suivi mensuel de votre choix (résiliable en 2 clics).</div>
+          <div class="champ" style="margin:12px 0;">
+            <label for="visibilite-formule">Formule</label>
+            <select id="visibilite-formule">
+              <option value="setup_combine">Setup + suivi combiné SEO &amp; GEO (390 € puis 119 €/mois)</option>
+              <option value="setup_seo">Setup + suivi SEO (390 € puis 69 €/mois)</option>
+              <option value="setup_geo">Setup + suivi GEO (390 € puis 69 €/mois)</option>
+              <option value="setup">Setup seul (390 €, sans suivi)</option>
+            </select>
+          </div>
+          <button class="btn btn-primaire" id="btn-visibilite">Souscrire</button>
+          <p id="message-visibilite" style="margin:10px 0 0;"></p>
+        </div>
+        <p id="bloc-visibilite-actif" class="aide" style="display:none;">Vous avez déjà le service Visibilité — <a href="mon-visibilite-config.html">configurez vos requêtes cibles</a>.</p>
+      </div>
+
+      <div class="dash-bloc">
+        <h3>Chatbot pour votre site</h3>
+        <p class="aide">Le même assistant que sur notre site, installé sur le vôtre et configuré à votre activité. Après paiement, vous recevez une ligne de code à coller. <a href="chatbot.html">En savoir plus</a>.</p>
+        <div id="bloc-chatbot" class="carte-offre">
+          <div class="desc-offre" style="color:var(--gris-texte); font-size:.86rem;">Installation réglée une fois, puis un abonnement mensuel (résiliable en 2 clics).</div>
+          <div class="champ" style="margin:12px 0;">
+            <label for="chatbot-niveau">Niveau</label>
+            <select id="chatbot-niveau">
+              <option value="1">Niveau 1 — questions + capture du contact (390 € puis 29 €/mois)</option>
+              <option value="2">Niveau 2 — + prise de rendez-vous (590 € puis 49 €/mois)</option>
+              <option value="3">Niveau 3 — + calcul de devis + alerte urgence (1190 € puis 89 €/mois)</option>
+            </select>
+          </div>
+          <div class="champ" style="margin:12px 0;">
+            <label for="chatbot-nom">Nom affiché par l'assistant</label>
+            <input type="text" id="chatbot-nom" maxlength="120">
+          </div>
+          <div class="champ" style="margin:12px 0;">
+            <label for="chatbot-couleur">Couleur du widget</label>
+            <select id="chatbot-couleur">
+              <option value="bleu">Bleu</option><option value="vert">Vert</option><option value="rouge">Rouge</option>
+              <option value="orange">Orange</option><option value="violet">Violet</option><option value="noir">Noir</option>
+            </select>
+          </div>
+          <div class="champ hidden" id="chatbot-champ-calcom" style="margin:12px 0;">
+            <label for="chatbot-calcom">Lien Cal.com pour la prise de RDV</label>
+            <input type="url" id="chatbot-calcom" placeholder="https://cal.com/…">
+          </div>
+          <div class="champ hidden" id="chatbot-champ-urgence" style="margin:12px 0;">
+            <label for="chatbot-urgence">Email d'alerte urgence <small>(par défaut : l'email du compte)</small></label>
+            <input type="email" id="chatbot-urgence">
+          </div>
+          <button class="btn btn-primaire" id="btn-chatbot">Souscrire</button>
+          <p id="message-chatbot" style="margin:10px 0 0;"></p>
+        </div>
+        <p id="bloc-chatbot-actif" class="aide" style="display:none;">Vous avez déjà un chatbot — <a href="mon-chatbot-config.html">réglez son comportement et récupérez le code d'intégration</a>.</p>
+      </div>
+
+      <div class="dash-bloc">
+        <h3>Configurateur de devis en marque blanche</h3>
+        <p class="aide">Une page de devis en ligne à votre marque, avec votre barème, que vos clients remplissent seuls (ou vous sur place). <a href="configurateur-devis.html">En savoir plus</a>.</p>
+        <div id="bloc-devis-mb" class="carte-offre">
+          <div class="desc-offre" style="color:var(--gris-texte); font-size:.86rem;">Installation réglée une fois, puis un abonnement mensuel (résiliable en 2 clics).</div>
+          <div class="champ" style="margin:12px 0;">
+            <label for="devismb-formule">Formule</label>
+            <select id="devismb-formule">
+              <option value="starter">Starter — estimation en ligne (290 € puis 29 €/mois)</option>
+              <option value="pro">Pro — + PDF téléchargeable à votre marque (490 € puis 59 €/mois)</option>
+            </select>
+          </div>
+          <div class="champ" style="margin:12px 0;">
+            <label for="devismb-nom">Nom de votre entreprise <small>(affiché sur le devis)</small></label>
+            <input type="text" id="devismb-nom" maxlength="120">
+          </div>
+          <div class="champ" style="margin:12px 0;">
+            <label for="devismb-couleur">Couleur principale</label>
+            <input type="color" id="devismb-couleur" value="#1F6F78" style="width:64px; height:38px; padding:2px; border:1px solid #d7d7db; border-radius:8px;">
+          </div>
+          <div class="champ" style="margin:12px 0;">
+            <label for="devismb-email-leads">Email de réception des demandes <small>(par défaut : l'email du compte)</small></label>
+            <input type="email" id="devismb-email-leads">
+          </div>
+          <button class="btn btn-primaire" id="btn-devismb">Souscrire</button>
+          <p id="message-devismb" style="margin:10px 0 0;"></p>
+        </div>
+        <p id="bloc-devis-mb-actif" class="aide" style="display:none;">Vous avez déjà un configurateur de devis — <a href="mon-devis-config.html">construisez votre barème et récupérez votre lien</a>.</p>
+      </div>
+    </section>
+
   </main>
 </div>
 
