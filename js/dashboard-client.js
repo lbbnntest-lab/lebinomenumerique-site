@@ -29,6 +29,8 @@ function filtrerOffresPack(offres, codesDejaSouscrits) {
     document.querySelectorAll(".dash-sidebar button[data-panel]").forEach(b =>
       b.classList.toggle("actif", b.dataset.panel === nom));
     if (location.hash.slice(1) !== nom) history.replaceState(null, "", "#" + nom);
+    // Sur mobile la nav est horizontale : amener l'onglet actif dans la vue.
+    document.querySelector(".dash-sidebar button.actif")?.scrollIntoView({ block: "nearest", inline: "center" });
     window.scrollTo(0, 0);
   }
   document.addEventListener("click", (e) => {
