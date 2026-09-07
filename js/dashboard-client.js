@@ -872,4 +872,127 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.textContent = "Envoyer l'invitation";
     }
   });
+
+  // ---------- Panneau « Mon site » (lien live + demande de modif) ----------
+  // Lecture et écriture via wf63 (webhooks JWT) : sites_generes est une table
+  // 100 % interne, jamais lue en direct depuis le navigateur.
+  const FORMULE_SITE = {
+    SITE_ESSENTIEL: "Site Essentiel", SITE_PRO: "Site Pro", SITE_ECOMMERCE: "Site E-commerce"
+  };
+  const STATUT_DEMANDE = {
+    nouveau: "Reçue", en_cours: "En cours de traitement", traite: "Traitée", rejete: "Refusée"
+  };
+  function escHtmlSite(t) {
+    return String(t == null ? "" : t).replace(/[&<>"']/g, c => (
+      { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  async function chargerMonSite() {
+    const zone = document.getElementById("mon-site-contenu");
+    if (!zone) return;
+    let data;
+    try {
+      const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/mon-site-details`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ access_token: session.access_token })
+      });
+      data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || "Chargement impossible.");
+    } catch (err) {
+      zone.innerHTML = `<p class="message-erreur">${escHtmlSite(err.message)}</p>`;
+      return;
+    }
+
+    const site = data.site;
+    const demandes = Array.isArray(data.demandes) ? data.demandes : [];
+    const demandeOuverte = demandes.some(d => d.statut === "nouveau" || d.statut === "en_cours");
+
+    if (!site) {
+      zone.innerHTML = `<div class="dash-bloc">
+        <p>Vous n'avez pas encore de site web.</p>
+        <p><button class="btn btn-primaire" data-panel="offres">Créer mon site</button></p>
+      </div>`;
+      return;
+    }
+
+    const formule = FORMULE_SITE[site.code_reference] || site.code_reference;
+    let blocEtat;
+    if (site.statut === "livre" && site.url_publique) {
+      blocEtat = `<p><strong>${escHtmlSite(formule)}</strong> — en ligne</p>
+        <p style="margin:12px 0;">
+          <a class="btn btn-primaire" href="${escHtmlSite(site.url_publique)}" target="_blank" rel="noopener">Voir mon site ↗</a>
+        </p>
+        <p class="aide" style="word-break:break-all;">${escHtmlSite(site.url_publique)}</p>`;
+    } else if (site.statut === "genere_attente_validation") {
+      blocEtat = `<p><strong>${escHtmlSite(formule)}</strong></p>
+        <p class="aide">Une modification est en cours de traitement par notre équipe. Votre site reste en ligne pendant ce temps.</p>`;
+    } else {
+      blocEtat = `<p><strong>${escHtmlSite(formule)}</strong> — en préparation.</p>`;
+    }
+
+    const blocFormulaire = demandeOuverte
+      ? `<p class="aide">Une demande de modification est en cours de traitement — nous revenons vers vous rapidement. Vous pourrez en envoyer une nouvelle une fois celle-ci close.</p>`
+      : `<div class="champ">
+           <label for="site-modif-message">Que souhaitez-vous changer ?</label>
+           <textarea id="site-modif-message" rows="4" maxlength="4000" placeholder="Ex : corriger les horaires du samedi, remplacer la photo d'accueil, ajouter le menu enfant…"></textarea>
+         </div>
+         <button class="btn btn-secondaire" id="btn-site-modif" type="button">Envoyer la demande</button>
+         <p id="message-site-modif" style="margin-top:8px;"></p>`;
+
+    const lignesHisto = demandes.length
+      ? demandes.map(d => `<tr>
+          <td>${new Date(d.created_at).toLocaleDateString("fr-FR")}</td>
+          <td>${escHtmlSite(d.message)}</td>
+          <td><span class="badge badge-${d.statut === "traite" ? "actif" : "essai"}">${STATUT_DEMANDE[d.statut] || d.statut}</span></td>
+          <td>${escHtmlSite(d.reponse_interne || "")}</td>
+        </tr>`).join("")
+      : `<tr><td colspan="4">Aucune demande pour le moment.</td></tr>`;
+
+    zone.innerHTML = `
+      <div class="dash-bloc">${blocEtat}</div>
+      <div class="dash-bloc">
+        <h3>Demander une modification</h3>
+        <p class="aide">Décrivez ce que vous voulez changer. Nous appliquons la modification et vous prévenons quand c'est en ligne. Une demande à la fois.</p>
+        ${blocFormulaire}
+      </div>
+      <div class="dash-bloc">
+        <h3>Historique de mes demandes</h3>
+        <table class="donnees">
+          <thead><tr><th>Date</th><th>Demande</th><th>Statut</th><th>Réponse</th></tr></thead>
+          <tbody>${lignesHisto}</tbody>
+        </table>
+      </div>`;
+
+    const btnModif = document.getElementById("btn-site-modif");
+    if (btnModif) {
+      btnModif.addEventListener("click", async () => {
+        const message = document.getElementById("site-modif-message").value.trim();
+        const msgEl = document.getElementById("message-site-modif");
+        if (message.length < 5) {
+          msgEl.innerHTML = `<span class="message-erreur">Merci de décrire la modification souhaitée.</span>`;
+          return;
+        }
+        btnModif.disabled = true;
+        btnModif.textContent = "Envoi…";
+        try {
+          const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/mon-site-demande-modif`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ access_token: session.access_token, message })
+          });
+          const result = await resp.json();
+          if (!resp.ok || !result.ok) throw new Error(result.error || "Envoi impossible.");
+          msgEl.innerHTML = `<span class="message-succes">${escHtmlSite(result.message || "Demande transmise.")}</span>`;
+          await chargerMonSite();
+        } catch (err) {
+          msgEl.innerHTML = `<span class="message-erreur">${escHtmlSite(err.message)}</span>`;
+          btnModif.disabled = false;
+          btnModif.textContent = "Envoyer la demande";
+        }
+      });
+    }
+  }
+
+  await chargerMonSite();
 });
