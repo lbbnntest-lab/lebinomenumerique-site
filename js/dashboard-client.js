@@ -477,43 +477,64 @@ document.addEventListener("DOMContentLoaded", async () => {
   // partir d'un email classé DEVIS (wf61), en attente de validation. RLS
   // autorise la lecture des siens ; les actions (envoyer / rejeter) passent
   // par wf62 (JWT vérifié côté serveur), pas d'update RLS direct.
+  const LIBELLES_STATUT_BROUILLON = { en_attente: "En attente", envoye: "Envoyé", rejete: "Rejeté" };
+
   async function chargerDevisBrouillons() {
     const section = document.getElementById("devis-brouillons");
     const conteneur = document.getElementById("liste-devis-brouillons");
+    const histoBloc = document.getElementById("historique-devis-brouillons-bloc");
+    const histo = document.getElementById("historique-devis-brouillons");
     if (!section || !conteneur) return;
 
     const { data, error } = await sb
       .from("devis_email_brouillons")
-      .select("id, nom_prospect, email_prospect, telephone_prospect, total, detail, pdf_url, created_at")
+      .select("id, nom_prospect, email_prospect, telephone_prospect, total, detail, pdf_url, statut, created_at, updated_at")
       .eq("compte_client_id", utilisateur.compte_client_id)
-      .eq("statut", "en_attente")
       .order("created_at", { ascending: false });
 
     if (error) { console.error(error); return; }
-    const liste = data || [];
-    if (!liste.length) { section.classList.add("hidden"); return; }
+    const tous = data || [];
+    if (!tous.length) { section.classList.add("hidden"); return; }
     section.classList.remove("hidden");
 
-    conteneur.innerHTML = liste.map((b) => {
-      const dateFormatee = new Date(b.created_at).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+    const dateFr = (d) => new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" });
+    const enAttente = tous.filter((b) => b.statut === "en_attente");
+
+    conteneur.innerHTML = enAttente.length ? enAttente.map((b) => {
       const contact = [b.email_prospect, b.telephone_prospect].filter(Boolean).map(echapperHtmlDevis).join(" · ");
       return `
         <div class="carte-devis" data-brouillon-id="${b.id}">
           <div class="carte-devis-entete">
             <span class="carte-devis-titre">${b.nom_prospect ? echapperHtmlDevis(b.nom_prospect) : "Prospect"}</span>
-            <span class="carte-devis-meta">${dateFormatee}</span>
+            <span class="carte-devis-meta">${dateFr(b.created_at)}</span>
           </div>
           ${contact ? `<div class="carte-devis-ligne"><span><small>${contact}</small></span></div>` : ""}
           ${b.detail ? `<div class="carte-devis-ligne"><span>${echapperHtmlDevis(b.detail)}</span></div>` : ""}
           <div class="carte-devis-ligne"><span><strong>Total</strong></span><span><strong>${Number(b.total).toFixed(2).replace(".", ",")} €</strong></span></div>
-          <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
             <a class="btn btn-secondaire" href="${encodeURI(b.pdf_url)}" target="_blank" rel="noopener">Voir le PDF</a>
             <button class="btn btn-primaire btn-brouillon-envoyer" data-id="${b.id}">Envoyer au prospect</button>
-            <button class="btn-lien btn-brouillon-rejeter" data-id="${b.id}">Rejeter</button>
+            <button class="btn btn-ghost-danger btn-brouillon-rejeter" data-id="${b.id}">Rejeter</button>
             <span class="message-brouillon" style="font-size:.85rem;"></span>
           </div>
         </div>`;
-    }).join("");
+    }).join("") : `<p class="etat-vide">Aucun devis en attente de validation.</p>`;
+
+    if (histoBloc && histo) {
+      histoBloc.classList.remove("hidden");
+      histo.innerHTML = `
+        <table>
+          <thead><tr><th>Date</th><th>Prospect</th><th>Total</th><th>Statut</th><th>PDF</th></tr></thead>
+          <tbody>${tous.map((b) => `
+            <tr>
+              <td>${dateFr(b.created_at)}</td>
+              <td>${b.nom_prospect ? echapperHtmlDevis(b.nom_prospect) : "—"}${b.email_prospect ? `<br><small style="color:var(--gris-texte)">${echapperHtmlDevis(b.email_prospect)}</small>` : ""}</td>
+              <td>${Number(b.total).toFixed(2).replace(".", ",")} €</td>
+              <td><span class="badge-devis badge-devis-${b.statut}">${LIBELLES_STATUT_BROUILLON[b.statut] || b.statut}</span></td>
+              <td><a href="${encodeURI(b.pdf_url)}" target="_blank" rel="noopener">Voir</a></td>
+            </tr>`).join("")}</tbody>
+        </table>`;
+    }
   }
 
   async function actionBrouillon(carte, id, action, btn) {

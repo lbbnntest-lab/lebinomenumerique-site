@@ -20,6 +20,14 @@
   .badge-en-attente-validation { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: .72rem; font-weight: 700; background: #fff3cd; color: #8a6d1a; margin-left: 8px; }
   .carte-devis-ligne { display: flex; justify-content: space-between; font-size: .88rem; padding: 4px 0; }
   .carte-devis-ligne small { color: var(--gris-texte); display: block; }
+  .btn-ghost-danger { background: var(--blanc); color: var(--gris-texte); border: 1px solid #e5e7eb; box-shadow: none; }
+  .btn-ghost-danger:hover { border-color: var(--rouge-alerte); color: var(--rouge-alerte); background: #fff5f5; transform: none; box-shadow: none; }
+  .badge-devis { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: .72rem; font-weight: 700; }
+  .badge-devis-en_attente { background: #fff3cd; color: #8a6d1a; }
+  .badge-devis-envoye { background: #d9f2df; color: #1e6b34; }
+  .badge-devis-rejete { background: #f1f5f9; color: var(--gris-texte); }
+  #historique-devis-brouillons table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+  #historique-devis-brouillons th, #historique-devis-brouillons td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eef0f4; }
 
   .zone-upload-photos { border: 1px dashed #c7ccdb; border-radius: 12px; padding: 16px 18px; margin-bottom: 20px; background: var(--blanc); }
   .zone-upload-photos .champ { margin-bottom: 10px; }
@@ -214,9 +222,13 @@
     </section>
 
     <section id="devis-brouillons" class="hidden" style="margin-top:32px;">
-      <h3>Devis pré-remplis à valider</h3>
+      <h3>Devis pré-remplis</h3>
       <p class="sous-titre-section">Quand un email de demande de devis contient toutes les informations de votre barème, nous préparons le devis chiffré à votre marque. Relisez le PDF, puis envoyez-le au prospect (email à votre nom, devis en pièce jointe) ou rejetez-le. Rien n'est envoyé sans votre accord.</p>
-      <div id="liste-devis-brouillons">Chargement...</div>
+      <div id="liste-devis-brouillons"></div>
+      <details id="historique-devis-brouillons-bloc" class="hidden" style="margin-top:14px;">
+        <summary style="cursor:pointer; font-weight:600; font-size:.9rem; color:var(--bleu-primaire);">Historique — tous les devis pré-remplis</summary>
+        <div id="historique-devis-brouillons" style="margin-top:10px;"></div>
+      </details>
     </section>
 
     <section id="contenus" class="hidden" style="margin-top:32px;">
