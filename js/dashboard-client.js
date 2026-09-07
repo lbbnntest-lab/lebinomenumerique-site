@@ -473,6 +473,82 @@ document.addEventListener("DOMContentLoaded", async () => {
     return div.innerHTML;
   }
 
+  // "Devis pré-remplis à valider" : les brouillons chiffrés automatiquement à
+  // partir d'un email classé DEVIS (wf61), en attente de validation. RLS
+  // autorise la lecture des siens ; les actions (envoyer / rejeter) passent
+  // par wf62 (JWT vérifié côté serveur), pas d'update RLS direct.
+  async function chargerDevisBrouillons() {
+    const section = document.getElementById("devis-brouillons");
+    const conteneur = document.getElementById("liste-devis-brouillons");
+    if (!section || !conteneur) return;
+
+    const { data, error } = await sb
+      .from("devis_email_brouillons")
+      .select("id, nom_prospect, email_prospect, telephone_prospect, total, detail, pdf_url, created_at")
+      .eq("compte_client_id", utilisateur.compte_client_id)
+      .eq("statut", "en_attente")
+      .order("created_at", { ascending: false });
+
+    if (error) { console.error(error); return; }
+    const liste = data || [];
+    if (!liste.length) { section.classList.add("hidden"); return; }
+    section.classList.remove("hidden");
+
+    conteneur.innerHTML = liste.map((b) => {
+      const dateFormatee = new Date(b.created_at).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+      const contact = [b.email_prospect, b.telephone_prospect].filter(Boolean).map(echapperHtmlDevis).join(" · ");
+      return `
+        <div class="carte-devis" data-brouillon-id="${b.id}">
+          <div class="carte-devis-entete">
+            <span class="carte-devis-titre">${b.nom_prospect ? echapperHtmlDevis(b.nom_prospect) : "Prospect"}</span>
+            <span class="carte-devis-meta">${dateFormatee}</span>
+          </div>
+          ${contact ? `<div class="carte-devis-ligne"><span><small>${contact}</small></span></div>` : ""}
+          ${b.detail ? `<div class="carte-devis-ligne"><span>${echapperHtmlDevis(b.detail)}</span></div>` : ""}
+          <div class="carte-devis-ligne"><span><strong>Total</strong></span><span><strong>${Number(b.total).toFixed(2).replace(".", ",")} €</strong></span></div>
+          <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <a class="btn btn-secondaire" href="${encodeURI(b.pdf_url)}" target="_blank" rel="noopener">Voir le PDF</a>
+            <button class="btn btn-primaire btn-brouillon-envoyer" data-id="${b.id}">Envoyer au prospect</button>
+            <button class="btn-lien btn-brouillon-rejeter" data-id="${b.id}">Rejeter</button>
+            <span class="message-brouillon" style="font-size:.85rem;"></span>
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  async function actionBrouillon(carte, id, action, btn) {
+    const msg = carte.querySelector(".message-brouillon");
+    const boutons = carte.querySelectorAll("button");
+    if (action === "envoyer" && !window.confirm("Envoyer ce devis au prospect par email, à votre nom ?")) return;
+    if (action === "rejeter" && !window.confirm("Rejeter ce devis pré-rempli ?")) return;
+    boutons.forEach((b) => (b.disabled = true));
+    if (msg) msg.textContent = action === "envoyer" ? "Envoi..." : "Traitement...";
+    try {
+      const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/devis-email-brouillon-action`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ access_token: session.access_token, brouillon_id: id, action }),
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok || !data.ok) throw new Error(data.erreur || "Action impossible.");
+      carte.style.opacity = "0.5";
+      if (msg) msg.textContent = action === "envoyer" ? "Devis envoyé au prospect." : "Devis rejeté.";
+      setTimeout(chargerDevisBrouillons, 1200);
+    } catch (err) {
+      if (msg) msg.textContent = err.message || "Erreur.";
+      boutons.forEach((b) => (b.disabled = false));
+    }
+  }
+
+  document.getElementById("liste-devis-brouillons").addEventListener("click", (e) => {
+    const envoyer = e.target.closest(".btn-brouillon-envoyer");
+    const rejeter = e.target.closest(".btn-brouillon-rejeter");
+    const cible = envoyer || rejeter;
+    if (!cible) return;
+    const carte = cible.closest("[data-brouillon-id]");
+    actionBrouillon(carte, cible.dataset.id, envoyer ? "envoyer" : "rejeter", cible);
+  });
+
   // "Mes contenus" (produit Réseaux sociaux, cadré le 24/08/2026) : n'affiché
   // que si le client a une configuration de calendrier social (pas tous les
   // clients n'ont acheté ce produit). Le client peut uploader ses propres
@@ -695,6 +771,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const nbMembres = await chargerEquipe();
   await chargerMesDevis();
+  await chargerDevisBrouillons();
   await chargerMesContenus();
 
   // Seuls le propriétaire et les administrateurs peuvent inviter

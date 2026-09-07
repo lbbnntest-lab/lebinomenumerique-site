@@ -79,17 +79,47 @@
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
         <div class="champ">
+          <label for="f-forme-juridique">Forme juridique</label>
+          <input type="text" id="f-forme-juridique" placeholder="EI, EURL, SASU, Auto-entrepreneur...">
+        </div>
+        <div class="champ">
+          <label for="f-capital-social">Capital social (sociétés)</label>
+          <input type="text" id="f-capital-social" placeholder="1 000 €">
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div class="champ">
           <label for="f-siret">SIRET</label>
           <input type="text" id="f-siret">
         </div>
         <div class="champ">
+          <label for="f-rcs-rm">RCS ou RM</label>
+          <input type="text" id="f-rcs-rm" placeholder="RCS Bordeaux 900 123 456 / RM 33">
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div class="champ">
           <label for="f-numero-tva">N° TVA</label>
           <input type="text" id="f-numero-tva">
         </div>
+        <div class="champ">
+          <label for="f-tva-taux">Taux de TVA (%)</label>
+          <input type="number" id="f-tva-taux" step="0.1" min="0" max="30" placeholder="20 — laisser vide si franchise (art. 293 B)">
+        </div>
       </div>
       <div class="champ">
-        <label for="f-lien-cgv">Lien vers vos CGV (optionnel)</label>
-        <input type="text" id="f-lien-cgv" placeholder="https://.../cgv">
+        <label for="f-assurance-decennale">Assurance décennale (bâtiment)</label>
+        <input type="text" id="f-assurance-decennale" placeholder="Assureur - n° de contrat - couverture géographique">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div class="champ">
+          <label for="f-lien-cgv">Lien vers vos CGV (optionnel)</label>
+          <input type="text" id="f-lien-cgv" placeholder="https://.../cgv">
+        </div>
+        <div class="champ">
+          <label for="f-numero-devis-prefixe">Préfixe des n° de devis</label>
+          <input type="text" id="f-numero-devis-prefixe" placeholder="DEV-" maxlength="12">
+        </div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 2fr; gap:16px;">
         <div class="champ">
@@ -325,6 +355,12 @@
       document.getElementById('f-adresse').value = config.adresse || '';
       document.getElementById('f-siret').value = config.siret || '';
       document.getElementById('f-numero-tva').value = config.numero_tva || '';
+      document.getElementById('f-forme-juridique').value = config.forme_juridique || '';
+      document.getElementById('f-capital-social').value = config.capital_social || '';
+      document.getElementById('f-rcs-rm').value = config.rcs_rm || '';
+      document.getElementById('f-tva-taux').value = (config.tva_taux != null ? config.tva_taux : '');
+      document.getElementById('f-assurance-decennale').value = config.assurance_decennale || '';
+      document.getElementById('f-numero-devis-prefixe').value = config.numero_devis_prefixe || 'DEV-';
       document.getElementById('f-lien-cgv').value = config.lien_cgv || '';
       document.getElementById('f-validite-jours').value = config.validite_jours || '';
       document.getElementById('f-conditions-paiement').value = config.conditions_paiement || '';
@@ -368,6 +404,12 @@
           adresse: document.getElementById('f-adresse').value.trim() || null,
           siret: document.getElementById('f-siret').value.trim() || null,
           numero_tva: document.getElementById('f-numero-tva').value.trim() || null,
+          forme_juridique: document.getElementById('f-forme-juridique').value.trim() || null,
+          capital_social: document.getElementById('f-capital-social').value.trim() || null,
+          rcs_rm: document.getElementById('f-rcs-rm').value.trim() || null,
+          tva_taux: document.getElementById('f-tva-taux').value.trim() === '' ? null : (parseFloat(document.getElementById('f-tva-taux').value) || null),
+          assurance_decennale: document.getElementById('f-assurance-decennale').value.trim() || null,
+          numero_devis_prefixe: document.getElementById('f-numero-devis-prefixe').value.trim() || 'DEV-',
           lien_cgv: document.getElementById('f-lien-cgv').value.trim() || null,
           validite_jours: parseInt(document.getElementById('f-validite-jours').value, 10) || null,
           conditions_paiement: document.getElementById('f-conditions-paiement').value.trim() || null,
