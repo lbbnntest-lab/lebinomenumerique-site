@@ -917,16 +917,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const formule = FORMULE_SITE[site.code_reference] || site.code_reference;
+    const boutonVoir = site.url_publique
+      ? `<p style="margin:12px 0;">
+           <a class="btn btn-primaire" href="${escHtmlSite(site.url_publique)}" target="_blank" rel="noopener">Voir mon site ↗</a>
+         </p>
+         <p class="aide" style="word-break:break-all;">${escHtmlSite(site.url_publique)}</p>`
+      : "";
     let blocEtat;
-    if (site.statut === "livre" && site.url_publique) {
+    if (site.statut === "genere_attente_validation") {
       blocEtat = `<p><strong>${escHtmlSite(formule)}</strong> — en ligne</p>
-        <p style="margin:12px 0;">
-          <a class="btn btn-primaire" href="${escHtmlSite(site.url_publique)}" target="_blank" rel="noopener">Voir mon site ↗</a>
-        </p>
-        <p class="aide" style="word-break:break-all;">${escHtmlSite(site.url_publique)}</p>`;
-    } else if (site.statut === "genere_attente_validation") {
-      blocEtat = `<p><strong>${escHtmlSite(formule)}</strong></p>
-        <p class="aide">Une modification est en cours de traitement par notre équipe. Votre site reste en ligne pendant ce temps.</p>`;
+        <p class="aide">Une modification est en cours de traitement par notre équipe. Votre site reste accessible pendant ce temps.</p>
+        ${boutonVoir}`;
+    } else if (site.url_publique) {
+      blocEtat = `<p><strong>${escHtmlSite(formule)}</strong> — en ligne</p>${boutonVoir}`;
     } else {
       blocEtat = `<p><strong>${escHtmlSite(formule)}</strong> — en préparation.</p>`;
     }

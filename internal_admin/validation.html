@@ -557,6 +557,15 @@
         if (action === 'valider') {
           afficherMessage('Site validé et envoyé au ' + (estClient ? 'client' : 'prospect') + ' avec succès.', 'ok');
           boutons.forEach(function (b) { b.disabled = true; });
+          // Mode client : cloturer la ou les demandes de modif ouvertes du compte
+          // (wf63 retrouve le compte via le token, encore present sur la ligne).
+          if (estClient) {
+            fetch(BASE_WEBHOOK + '/mon-site-demande-close', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token: token })
+            }).catch(function () { /* sans effet sur la validation deja reussie */ });
+          }
         } else {
           afficherMessage('Modifications enregistrées et redéployées.', 'ok');
           if (data.url_previsualisation) {
