@@ -241,6 +241,11 @@
     <h2>Contenu du site</h2>
 
     <div class="champ">
+      <label for="f-sur-titre">Sur-titre <small style="font-weight:400;">(petit texte au-dessus du titre, ex. « Pizzeria napolitaine », « Artisan plombier »)</small></label>
+      <input type="text" id="f-sur-titre">
+    </div>
+
+    <div class="champ">
       <label for="f-tagline">Accroche (tagline)</label>
       <input type="text" id="f-tagline">
     </div>
@@ -427,6 +432,7 @@
   document.getElementById('btn-ajouter-produit').addEventListener('click', editeurProduits.ajouterLigne);
 
   function remplirFormulaire(contenu) {
+    definir('f-sur-titre', contenu.sur_titre);
     definir('f-tagline', contenu.tagline);
     definir('f-cta', contenu.cta_texte);
     definir('f-couleur', contenu.couleur_preferee);
@@ -468,6 +474,7 @@
 
   function lireFormulaire() {
     var contenu = {
+      sur_titre: valeur('f-sur-titre'),
       tagline: valeur('f-tagline'),
       cta_texte: valeur('f-cta'),
       couleur_preferee: valeur('f-couleur'),
