@@ -70,7 +70,20 @@ document.addEventListener("DOMContentLoaded", () => {
         password: mot_de_passe,
         options: { emailRedirectTo: "https://lbbnntest-lab.github.io/lebinomenumerique-site/confirmation-attente.html" }
       });
-      if (authError) throw authError;
+      let authUserId = authData?.user?.id || null;
+      if (authError) {
+        // « Déjà inscrit » = bloquant (le client doit se connecter, pas repayer).
+        if (/already registered|already exists|user_already_exists/i.test(authError.message || "")) throw authError;
+        // Toute autre erreur de signUp (typiquement l'envoi de l'email de
+        // confirmation qui échoue côté Supabase — limite de débit du SMTP par
+        // défaut, service email indispo) NE DOIT JAMAIS bloquer le paiement :
+        // wf08 crée le compte auth côté serveur de toute façon, et le lien
+        // « définir votre mot de passe » part par Mailjet (wf08), pas par Supabase.
+        // authUserId garde l'id si Supabase a quand même créé le compte (email
+        // seul en échec) — wf08 le liera ; sinon il reste null et wf08 crée le
+        // compte serveur. Les deux cas sont gérés par la branche IF de wf08.
+        console.warn("signUp non bloquant, on poursuit le paiement :", authError.message);
+      }
 
       // 2. Création du compte client + session Stripe via n8n (service_role
       //    côté serveur, jamais exposé au navigateur)
@@ -105,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
         briques: briquesCodes
           .map(code => ({ code, stripe_price_id: window.APP_CONFIG.STRIPE_PRICES[code]?.mensuel }))
           .filter(b => b.stripe_price_id),
-        auth_user_id: authData.user?.id || null
+        auth_user_id: authUserId
       };
 
       const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/inscription`, {
