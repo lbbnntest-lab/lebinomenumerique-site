@@ -127,17 +127,60 @@
   <div class="container" style="max-width:640px;">
   <div class="section-tete"><span class="kicker">Pack Complet</span><h2>Emails et appels couverts d'un seul coup</h2></div>
   <div class="carte-plan">
-    <div class="prix">138€ <span>/ mois</span></div>
-    <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">Gestion Email (89€) + Gestion Appels Standard (49€), une seule inscription. Tarif réduit à 134,90€ à venir.</p>
+    <div class="icone-carte">📦</div>
+    <div class="prix">134,90€ <span>/ mois</span></div>
+    <p style="color:var(--gris-texte); font-size:.9rem; margin:0 0 12px;">Gestion Email + Gestion Appels, une seule inscription et une seule facture — 3,10€/mois de moins que séparément, tant que dure l'abonnement.</p>
     <ul>
       <li>Tout Gestion Email (tri des emails, devis auto, bilan quotidien)</li>
-      <li>Tout Gestion Appels Standard (accueil vocal, messages, RDV / réservations)</li>
+      <li>Gestion Appels, au niveau de votre choix</li>
       <li>Options cumulables des deux services</li>
     </ul>
-    <a class="btn btn-primaire" href="inscription.html?type=B2B&plan=PACK_COMPLET" style="display:block; text-align:center;">Prendre le Pack Complet</a>
+
+    <p style="font-weight:600; margin:16px 0 8px;">Niveau Gestion Appels</p>
+    <select id="pack-tel-niveau" style="width:100%; padding:9px 11px; border:1px solid #d7d7db; border-radius:8px; margin-bottom:14px;">
+      <option value="TEL_ESSENTIEL">Standard — questions, messages, RDV (49€/mois)</option>
+      <option value="TEL_PRO">Avancé — + transfert d'urgence, alerte SMS (95€/mois)</option>
+      <option value="TEL_SURMESURE">Sur-mesure — + commande à emporter, rappels (149€/mois)</option>
+    </select>
+
+    <p style="font-weight:600; margin:16px 0 8px;">Options Gestion Email <small style="color:var(--gris-texte); font-weight:400;">(à la carte)</small></p>
+    <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:10px; font-weight:400;">
+      <input type="checkbox" class="pack-brique-check" data-code="SECRETARIAT_UTILISATEUR_SUPP" data-prix="15" style="margin-top:3px;">
+      <span>Utilisateur supplémentaire <small style="color:var(--gris-texte);">+15€/mois</small><br><small style="color:var(--gris-texte); font-size:.82rem;">Un 2ᵉ accès au compte — pour votre associé, votre conjoint ou un salarié qui doit aussi voir le tri des emails.</small></span>
+    </label>
+    <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:12px; font-weight:400;">
+      <input type="checkbox" class="pack-brique-check" data-code="SECRETARIAT_SUPPORT_PRIORITAIRE" data-prix="12" style="margin-top:3px;">
+      <span>Support prioritaire <small style="color:var(--gris-texte);">+12€/mois</small><br><small style="color:var(--gris-texte); font-size:.82rem;">Réponse sous 24h ouvrées au lieu de 48h sur vos demandes de support.</small></span>
+    </label>
+
+    <p style="margin:4px 0 12px; font-weight:600;">Total : <span id="pack-total">134,90</span>€ <span style="font-weight:400;">/ mois</span></p>
+
+    <a class="btn btn-primaire" id="lien-choisir-pack" href="inscription.html?type=B2B&plan=PACK_COMPLET&tel_niveau=TEL_ESSENTIEL" style="display:block; text-align:center;">Prendre le Pack Complet</a>
     <p style="font-size:.82rem; color:var(--gris-texte); margin:8px 0 0; text-align:center;">Les deux services sont activés en une fois. Vous paramétrez ensuite le tri des emails et l'accueil téléphonique chacun depuis votre espace client.</p>
   </div>
   </div>
+  <script>
+  (function () {
+    var PRIX_EMAIL_BASE = 89, REMISE_PACK = 3.10;
+    var PRIX_TEL = { TEL_ESSENTIEL: 49, TEL_PRO: 95, TEL_SURMESURE: 149 };
+    var selectTel = document.getElementById('pack-tel-niveau');
+    var checks = document.querySelectorAll('.pack-brique-check');
+    var totalEl = document.getElementById('pack-total');
+    var lien = document.getElementById('lien-choisir-pack');
+    function maj() {
+      var telCode = selectTel.value;
+      var total = PRIX_EMAIL_BASE + PRIX_TEL[telCode] - REMISE_PACK;
+      var codes = [];
+      checks.forEach(function (c) { if (c.checked) { total += Number(c.dataset.prix); codes.push(c.dataset.code); } });
+      totalEl.textContent = total.toFixed(2).replace('.', ',');
+      var href = 'inscription.html?type=B2B&plan=PACK_COMPLET&tel_niveau=' + telCode;
+      if (codes.length) href += '&briques=' + encodeURIComponent(codes.join(','));
+      lien.setAttribute('href', href);
+    }
+    selectTel.addEventListener('change', maj);
+    checks.forEach(function (c) { c.addEventListener('change', maj); });
+  })();
+  </script>
 </section>
 
 <section class="section">

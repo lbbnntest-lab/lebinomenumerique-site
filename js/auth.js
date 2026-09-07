@@ -7,14 +7,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const planParam = params.get("plan");
   // Briques à la carte optionnelles (catalogue B2B "socle + briques", 19/08/2026),
-  // ex. ?briques=SECRETARIAT_UTILISATEUR_SUPP,SECRETARIAT_EXPORT_AIRTABLE — voir
+  // ex. ?briques=SECRETARIAT_UTILISATEUR_SUPP,SECRETARIAT_SUPPORT_PRIORITAIRE — voir
   // frontend_saas/index.html section #plans-b2b pour la construction du lien.
+  // SECRETARIAT_EXPORT_AIRTABLE retirée du catalogue vendable (07/09/2026) :
+  // trop niche pour la cible, redirigée vers "Automatisation sur mesure".
   const briquesCodes = (params.get("briques") || "").split(",").map(s => s.trim()).filter(Boolean);
   // Code d'affiliation d'un commercial (lien de parrainage généré par
   // dashboard-commercial.js : inscription.html?code_affiliation=XXX) —
   // pré-rempli ici comme devis.js/checkout-siteweb.js le font déjà pour ce
   // même paramètre, sinon le champ reste vide malgré le lien.
   const codeAffiliationParam = params.get("code_affiliation");
+  // Pack Complet : niveau de Gestion Appels choisi sur gestion-appels.html#pack
+  // (?tel_niveau=TEL_ESSENTIEL|TEL_PRO|TEL_SURMESURE), Standard par défaut si absent.
+  const NIVEAU_TEL = { TEL_ESSENTIEL: 1, TEL_PRO: 2, TEL_SURMESURE: 3 };
+  const telNiveauCode = params.get("tel_niveau") || "TEL_ESSENTIEL";
 
   const planInput = document.getElementById("plan");
 
@@ -26,8 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     recap.style.cssText = "color:var(--gris-texte); font-size:.85rem; margin-top:-8px;";
     recap.textContent = "Options sélectionnées : " + briquesCodes.map(c =>
       ({ SECRETARIAT_UTILISATEUR_SUPP: "Utilisateur supplémentaire (+15€/mois)",
-         SECRETARIAT_EXPORT_AIRTABLE: "Export Airtable (+19€/mois)",
-         SECRETARIAT_SUPPORT_PRIORITAIRE: "Support prioritaire (+12€/mois)" }[c] || c)
+         SECRETARIAT_SUPPORT_PRIORITAIRE: "Support prioritaire, réponse sous 24h (+12€/mois)" }[c] || c)
     ).join(", ");
     planInput.insertAdjacentElement("afterend", recap);
   }
@@ -83,13 +88,17 @@ document.addEventListener("DOMContentLoaded", () => {
         cycle_facturation: document.getElementById("cycle_facturation").value,
         plan_code: planInput.value,
         // Pack Complet = une session Stripe à 2 lignes : socle (Gestion Email) +
-        // TEL_ESSENTIEL (Gestion Appels). wf01 ajoute pack_tel_price_id en 2e ligne,
-        // wf08 provisionne les deux (abonnement PACK_COMPLET + config téléphonique).
+        // le niveau Gestion Appels choisi (Standard par défaut). wf01 ajoute
+        // pack_tel_price_id en 2e ligne + applique la remise Pack (coupon), wf08
+        // provisionne les deux (abonnement PACK_COMPLET + config téléphonique
+        // au niveau indiqué par pack_tel_niveau, plutôt que Standard pour tous).
         stripe_price_id: planInput.value === "PACK_COMPLET"
           ? window.APP_CONFIG.STRIPE_PRICES.SECRETARIAT_SOCLE?.mensuel
           : window.APP_CONFIG.STRIPE_PRICES[planInput.value]?.[document.getElementById("cycle_facturation").value],
         pack_tel_price_id: planInput.value === "PACK_COMPLET"
-          ? window.APP_CONFIG.STRIPE_PRICES.TEL_ESSENTIEL?.mensuel : null,
+          ? window.APP_CONFIG.STRIPE_PRICES[telNiveauCode]?.mensuel : null,
+        pack_tel_niveau: planInput.value === "PACK_COMPLET"
+          ? (NIVEAU_TEL[telNiveauCode] || 1) : null,
         // Briques à la carte (catalogue B2B "socle + briques") : chaque code est
         // résolu vers son Price ID mensuel — pas de cycle trimestriel/annuel pour
         // l'instant sur les briques, voir config.js.
