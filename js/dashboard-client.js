@@ -5,11 +5,11 @@
 // alignée avec le reste du site, la résolution du vrai Price ID Stripe se fait
 // côté serveur (workflow 36) à partir du plan_code, jamais du prix envoyé ici.
 const OFFRES_SIMPLES_DASHBOARD = [
-  { plan_code: "PACK_COMPLET", nom: "Pack Complet — Email + Appels", prix: 138, description: "Gestion Email + Gestion Appels Standard, une seule facture. Proposé seulement si vous n'avez encore ni l'un ni l'autre.", bientot: false },
+  { plan_code: "PACK_COMPLET", nom: "Pack Complet — Email + Appels", prix: 174.90, description: "Gestion Email + Gestion Appels Standard, une seule facture. Proposé seulement si vous n'avez encore ni l'un ni l'autre.", bientot: false },
   { plan_code: "SECRETARIAT_SOCLE", nom: "Gestion Email", prix: 89, description: "Tri automatique de vos emails, relance si téléphone manquant, bilan quotidien.", bientot: false },
-  { plan_code: "TEL_ESSENTIEL", nom: "Gestion Appels — Standard", prix: 49, description: "Accueil vocal : répond aux questions, prend les messages ; RDV et réservations enregistrés, vous confirmez.", bientot: false },
-  { plan_code: "TEL_PRO", nom: "Gestion Appels — Avancé", prix: 95, description: "Tout Standard, plus transfert d'appel en cas d'urgence et alerte SMS après chaque appel.", bientot: false },
-  { plan_code: "TEL_SURMESURE", nom: "Gestion Appels — Sur-mesure", prix: 149, description: "Tout Avancé, plus prise de commande à emporter, rappels sortants, qualification poussée.", bientot: false }
+  { plan_code: "TEL_ESSENTIEL", nom: "Gestion Appels — Standard", prix: 89, description: "Accueil vocal : répond aux questions, prend les messages ; RDV et réservations enregistrés, vous confirmez.", bientot: false },
+  { plan_code: "TEL_PRO", nom: "Gestion Appels — Avancé", prix: 149, description: "Tout Standard, plus transfert d'appel en cas d'urgence et alerte SMS après chaque appel.", bientot: false },
+  { plan_code: "TEL_SURMESURE", nom: "Gestion Appels — Sur-mesure", prix: 199, description: "Tout Avancé, plus prise de commande à emporter, rappels sortants, qualification poussée.", bientot: false }
 ];
 
 // Le Pack Complet n'a de sens que pour un client qui n'a NI Gestion Email NI Gestion Appels.

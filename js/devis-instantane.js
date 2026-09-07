@@ -45,13 +45,13 @@ const CATALOGUE_DEVIS = [
     items: [
       { code: "gestion_email", nom: "Gestion Email", prix: 89, recurrent: true, planCode: "SECRETARIAT_SOCLE",
         description: "Tri automatique de vos emails, relance si téléphone manquant, bilan quotidien." },
-      { code: "gestion_appels_standard", nom: "Gestion Appels — Standard", prix: 49, recurrent: true, planCode: "TEL_ESSENTIEL",
+      { code: "gestion_appels_standard", nom: "Gestion Appels — Standard", prix: 89, recurrent: true, planCode: "TEL_ESSENTIEL",
         description: "Accueil vocal : répond aux questions, prend les messages ; RDV et réservations enregistrés, le pro confirme." },
-      { code: "gestion_appels_avance", nom: "Gestion Appels — Avancé", prix: 95, recurrent: true, planCode: "TEL_PRO",
+      { code: "gestion_appels_avance", nom: "Gestion Appels — Avancé", prix: 149, recurrent: true, planCode: "TEL_PRO",
         description: "Tout Standard, plus transfert d'appel en cas d'urgence et alerte SMS après chaque appel." },
-      { code: "gestion_appels_surmesure", nom: "Gestion Appels — Sur-mesure", prix: 149, recurrent: true, planCode: "TEL_SURMESURE",
+      { code: "gestion_appels_surmesure", nom: "Gestion Appels — Sur-mesure", prix: 199, recurrent: true, planCode: "TEL_SURMESURE",
         description: "Tout Avancé, plus prise de commande à emporter, rappels sortants, qualification poussée. Intégrations tierces sur devis." },
-      { code: "pack_complet", nom: "Pack Complet (Email + Appels Standard)", prix: 134.90, recurrent: true, planCode: "PACK_COMPLET",
+      { code: "pack_complet", nom: "Pack Complet (Email + Appels Standard)", prix: 174.90, recurrent: true, planCode: "PACK_COMPLET",
         description: "Gestion Email + Gestion Appels Standard, une seule inscription et une seule facture — 3,10 €/mois de moins que séparément (niveau d'appels supérieur et options en supplément)." },
       { code: "secretariat_sur_mesure", nom: "Secrétariat Sur-Mesure", prixLibre: true, prixDefaut: 450, recurrent: true,
         description: "Besoin spécifique, à partir de 450 €/mois indicatif.",
@@ -157,11 +157,11 @@ const CATALOGUE_DEVIS = [
   {
     categorie: "Chatbot",
     items: [
-      { code: "chatbot_niveau1", nom: "Chatbot — Niveau 1 (questions basiques)", prix: 290, recurrent: false, hebergement: 29, hebergementLabel: "abonnement",
+      { code: "chatbot_niveau1", nom: "Chatbot — Niveau 1 (questions basiques)", prix: 390, recurrent: false, hebergement: 29, hebergementLabel: "abonnement",
         description: "Répond aux questions fréquentes et infos pratiques sur le site du client — Setup + 29 €/mois." },
-      { code: "chatbot_niveau2", nom: "Chatbot — Niveau 2 (+ prise de RDV)", prix: 490, recurrent: false, hebergement: 49, hebergementLabel: "abonnement",
+      { code: "chatbot_niveau2", nom: "Chatbot — Niveau 2 (+ prise de RDV)", prix: 590, recurrent: false, hebergement: 49, hebergementLabel: "abonnement",
         description: "Tout le Niveau 1, plus prise de rendez-vous intégrée (Cal.com) — Setup + 49 €/mois." },
-      { code: "chatbot_niveau3", nom: "Chatbot — Niveau 3 (+ devis + urgence)", prix: 890, recurrent: false, hebergement: 89, hebergementLabel: "abonnement",
+      { code: "chatbot_niveau3", nom: "Chatbot — Niveau 3 (+ devis + urgence)", prix: 1190, recurrent: false, hebergement: 89, hebergementLabel: "abonnement",
         description: "Tout le Niveau 2, plus pré-devis calculé selon le barème du client et contact direct de l'artisan en cas d'urgence détectée — Setup + 89 €/mois." }
     ]
   },
