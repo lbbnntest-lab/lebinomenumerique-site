@@ -43,7 +43,7 @@ const CATALOGUE_DEVIS = [
   {
     categorie: "Secrétariat virtuel",
     items: [
-      { code: "gestion_email", nom: "Gestion Email", prix: 89, recurrent: true, planCode: "SECRETARIAT_SOCLE",
+      { code: "gestion_email", nom: "Gestion Email (250 demandes/mois)", prix: 89, recurrent: true, planCode: "SECRETARIAT_SOCLE",
         description: "Tri automatique de vos emails, relance si téléphone manquant, bilan quotidien." },
       { code: "gestion_appels_standard", nom: "Gestion Appels — Standard", prix: 89, recurrent: true, planCode: "TEL_ESSENTIEL",
         description: "Accueil vocal : répond aux questions, prend les messages ; RDV et réservations enregistrés, le pro confirme." },

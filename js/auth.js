@@ -32,7 +32,9 @@ document.addEventListener("DOMContentLoaded", () => {
     recap.style.cssText = "color:var(--gris-texte); font-size:.85rem; margin-top:-8px;";
     recap.textContent = "Options sélectionnées : " + briquesCodes.map(c =>
       ({ SECRETARIAT_UTILISATEUR_SUPP: "Utilisateur supplémentaire (+15€/mois)",
-         SECRETARIAT_SUPPORT_PRIORITAIRE: "Support prioritaire, réponse sous 24h (+12€/mois)" }[c] || c)
+         SECRETARIAT_SUPPORT_PRIORITAIRE: "Support prioritaire, réponse sous 24h (+12€/mois)",
+         SECRETARIAT_VOLUME_400: "Volume + : +400 demandes/mois (+29€/mois)",
+         SECRETARIAT_VOLUME_1200: "Volume ++ : +1200 demandes/mois (+59€/mois)" }[c] || c)
     ).join(", ");
     planInput.insertAdjacentElement("afterend", recap);
   }

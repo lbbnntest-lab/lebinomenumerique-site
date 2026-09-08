@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://lbbnntest-lab.github.io/lebinomenumerique-site/gestion-email.html">
 <link rel="stylesheet" href="css/style.css">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Gestion Email","serviceType":"Secrétariat virtuel — tri des emails","provider":{"@type":"Organization","name":"Le Binôme Numérique"},"areaServed":{"@type":"Country","name":"France"},"description":"Tri automatique des emails professionnels (RDV, devis, urgence, SAV), devis pré-remplis prêts à envoyer, relance automatique, bilan quotidien.","offers":{"@type":"Offer","price":"89","priceCurrency":"EUR","priceSpecification":{"@type":"UnitPriceSpecification","price":"89","priceCurrency":"EUR","unitText":"MONTH"}}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comment être sûr que mes emails seront bien traités ?","acceptedAnswer":{"@type":"Answer","text":"Le tri est réglé sur votre métier, et quelqu'un de l'équipe peut intervenir à tout moment. Le bilan quotidien vous montre exactement ce qui a été fait."}},{"@type":"Question","name":"Que se passe-t-il si je dépasse les 150 demandes ?","acceptedAnswer":{"@type":"Answer","text":"Rien ne se bloque : les demandes au-delà sont facturées 0,50€ pièce, et vous êtes prévenu."}},{"@type":"Question","name":"Et si je veux aussi que le téléphone soit décroché ?","acceptedAnswer":{"@type":"Answer","text":"C'est un service séparé, Gestion Appels, que vous pouvez ajouter quand vous voulez."}},{"@type":"Question","name":"Et si ça ne me convient pas ?","acceptedAnswer":{"@type":"Answer","text":"Sans engagement, résiliation en 2 clics, sans justification."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comment être sûr que mes emails seront bien traités ?","acceptedAnswer":{"@type":"Answer","text":"Le tri est réglé sur votre métier, et quelqu'un de l'équipe peut intervenir à tout moment. Le bilan quotidien vous montre exactement ce qui a été fait."}},{"@type":"Question","name":"Que se passe-t-il si je dépasse les 250 demandes ?","acceptedAnswer":{"@type":"Answer","text":"Rien ne se bloque : soit vous prenez une option Volume (+400 pour 29€/mois, +1200 pour 59€/mois), soit les demandes au-delà sont facturées 0,50€ pièce — et vous êtes prévenu dans tous les cas."}},{"@type":"Question","name":"Et si je veux aussi que le téléphone soit décroché ?","acceptedAnswer":{"@type":"Answer","text":"C'est un service séparé, Gestion Appels, que vous pouvez ajouter quand vous voulez."}},{"@type":"Question","name":"Et si ça ne me convient pas ?","acceptedAnswer":{"@type":"Answer","text":"Sans engagement, résiliation en 2 clics, sans justification."}}]}</script>
 </head>
 <body>
 
@@ -102,7 +102,7 @@
         <li>Devis pré-remplis, prêts à envoyer</li>
         <li>Relance automatique si un numéro de rappel manque</li>
         <li>Bilan quotidien de l'activité</li>
-        <li>150 demandes traitées / mois <small style="color:var(--gris-texte); font-weight:400;">(au-delà : 0,50€/demande, jamais de blocage)</small></li>
+        <li>250 demandes traitées / mois <small style="color:var(--gris-texte); font-weight:400;">(au-delà : 0,50€/demande, jamais de blocage — ou une option Volume ci-dessous)</small></li>
         <li>1 utilisateur inclus</li>
       </ul>
 
@@ -114,6 +114,14 @@
       <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:12px; font-weight:400;">
         <input type="checkbox" class="brique-check" data-code="SECRETARIAT_SUPPORT_PRIORITAIRE" data-prix="12" style="margin-top:3px;">
         <span>Support prioritaire <small style="color:var(--gris-texte);">+12€/mois</small><br><small style="color:var(--gris-texte); font-size:.82rem;">Réponse sous 24h ouvrées au lieu de 48h sur vos demandes de support.</small></span>
+      </label>
+      <label class="brique">
+        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_VOLUME_400" data-prix="29" style="margin-top:3px;">
+        <span>Volume + <small style="color:var(--gris-texte);">+29€/mois</small><br><small style="color:var(--gris-texte); font-size:.82rem;">+400 demandes traitées par mois (650 au total). Pour les activités qui reçoivent beaucoup d'emails.</small></span>
+      </label>
+      <label class="brique">
+        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_VOLUME_1200" data-prix="59" style="margin-top:3px;">
+        <span>Volume ++ <small style="color:var(--gris-texte);">+59€/mois</small><br><small style="color:var(--gris-texte); font-size:.82rem;">+1200 demandes par mois (1450 au total). Pour remplacer un poste de secrétariat à fort volume.</small></span>
       </label>
 
       <p style="margin:4px 0 4px; font-weight:600;">Total : <span id="total-socle-brique">89</span>€ <span style="font-weight:400;">/ mois</span></p>
@@ -146,7 +154,7 @@
   <div class="container" style="max-width:760px;">
   <div class="section-tete"><span class="kicker">FAQ</span><h2>Questions fréquentes</h2></div>
   <div class="faq-item"><h4>Comment être sûr que mes emails seront bien traités ?</h4><p>Le tri est réglé sur votre métier, et quelqu'un de l'équipe peut intervenir à tout moment. Le bilan quotidien vous montre exactement ce qui a été fait.</p></div>
-  <div class="faq-item"><h4>Que se passe-t-il si je dépasse les 150 demandes ?</h4><p>Rien ne se bloque : les demandes au-delà sont facturées 0,50€ pièce, et vous êtes prévenu.</p></div>
+  <div class="faq-item"><h4>Que se passe-t-il si je dépasse les 250 demandes ?</h4><p>Rien ne se bloque : soit vous prenez une option Volume (+400 pour 29€/mois, +1200 pour 59€/mois), soit les demandes au-delà sont facturées 0,50€ pièce — et vous êtes prévenu dans tous les cas.</p></div>
   <div class="faq-item"><h4>Et si je veux aussi que le téléphone soit décroché ?</h4><p>C'est un service séparé, <a href="gestion-appels.html">Gestion Appels</a>, que vous pouvez ajouter quand vous voulez.</p></div>
   <div class="faq-item"><h4>Et si ça ne me convient pas ?</h4><p>Sans engagement, résiliation en 2 clics, sans justification.</p></div>
   </div>

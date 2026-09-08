@@ -34,6 +34,9 @@ window.APP_CONFIG = {
     SECRETARIAT_UTILISATEUR_SUPP: { mensuel: "price_1U642MPYLCUOQdeI0Bj8XQVd" },
     SECRETARIAT_EXPORT_AIRTABLE: { mensuel: "price_1U642NPYLCUOQdeIf2ESjFkw" },
     SECRETARIAT_SUPPORT_PRIORITAIRE: { mensuel: "price_1U642OPYLCUOQdeI5n3EuoYt" },
+    // Options de volume Gestion Email (migration 96) — PRICE IDs À CRÉER EN STRIPE LIVE (A2)
+    SECRETARIAT_VOLUME_400: { mensuel: null },
+    SECRETARIAT_VOLUME_1200: { mensuel: null },
 
     // Accueil Téléphonique IA — 3 niveaux (29/08/2026). Mensuel uniquement.
     // Doivent rester alignés avec plans_tarifaires.stripe_price_id_mensuel (migration 62).
