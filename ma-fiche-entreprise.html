@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Ma fiche entreprise — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .zone-config { max-width: 720px; margin: 0 auto; padding: 32px 20px; }
+  .carte-config { background: var(--blanc); border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .carte-config h3 { margin-top: 0; }
+  .carte-config .aide { color: #666; font-size: 0.88rem; margin: 2px 0 14px; }
+  .champ { margin-bottom: 16px; }
+  .champ label { display: block; font-weight: 600; font-size: 0.92rem; margin-bottom: 4px; }
+  .champ .hint { font-weight: 400; color: #777; font-size: 0.82rem; }
+  .champ input[type=text], .champ textarea {
+    width: 100%; padding: 9px 11px; border: 1px solid #cbd5e1; border-radius: 8px;
+    font: inherit; box-sizing: border-box;
+  }
+  .champ textarea { min-height: 84px; resize: vertical; }
+  .grille-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .grille-2 { grid-template-columns: 1fr; } }
+  #message { padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; display: none; }
+  #message.err { display: block; background: #fdecea; color: #B23A2E; }
+  #message.ok { display: block; background: #eaf5ec; color: #2E7D32; }
+  #etat-chargement { text-align: center; color: #666; padding: 40px 0; }
+  .bloc-etat { display: none; }
+  .prefill-box { background: #f4f6f8; border: 1px solid #dbe1e6; border-radius: 8px; padding: 14px; margin-bottom: 20px; }
+  .prefill-box .ligne { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+  .prefill-box input[type=text] { flex: 1; min-width: 200px; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; }
+  .produits-ligne { font-size: 0.85rem; color: #555; margin-bottom: 18px; }
+  .barre-actions { position: sticky; bottom: 0; background: var(--blanc); border-top: 1px solid #e5e7eb; padding: 14px 0; margin-top: 8px; }
+  details.complement > summary { cursor: pointer; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
+    <nav>
+      <a href="dashboard-client.html">Mon espace</a>
+      <a href="#" onclick="logout()">Se déconnecter</a>
+    </nav>
+  </div>
+</header>
+
+<main class="zone-config">
+  <h1>Ma fiche entreprise</h1>
+  <p style="color:#555;">Ces informations servent à répondre à vos clients — par email, au téléphone et sur votre chatbot. Vous ne les remplissez qu'une fois.</p>
+
+  <div id="message"></div>
+  <div id="etat-chargement">Chargement…</div>
+
+  <div class="bloc-etat" id="bloc-form">
+
+    <p class="produits-ligne" id="produits-ligne"></p>
+
+    <div class="prefill-box" id="prefill-box">
+      <strong>Gagner du temps :</strong> récupérer les informations depuis votre site web.
+      <div class="ligne" id="prefill-site" style="display:none;">
+        <span>Nous avons trouvé votre site fait avec nous.</span>
+        <button type="button" class="btn btn-secondaire" id="btn-prefill-bn">Récupérer depuis mon site</button>
+      </div>
+      <div class="ligne" id="prefill-url">
+        <input type="text" id="f-url-site" placeholder="https://votre-site.fr">
+        <button type="button" class="btn btn-secondaire" id="btn-prefill-url">Récupérer</button>
+      </div>
+      <p class="aide" id="prefill-resultat" style="margin:8px 0 0;"></p>
+    </div>
+
+    <div class="carte-config">
+      <h3>Identité</h3>
+      <div class="champ">
+        <label for="f-raison_sociale">Nom de l'entreprise</label>
+        <input type="text" id="f-raison_sociale">
+      </div>
+      <div class="grille-2">
+        <div class="champ">
+          <label for="f-secteur_activite">Métier / secteur</label>
+          <input type="text" id="f-secteur_activite" placeholder="ex : plombier chauffagiste">
+        </div>
+        <div class="champ">
+          <label for="f-nom_dirigeant">Nom du dirigeant <span class="hint">(optionnel)</span></label>
+          <input type="text" id="f-nom_dirigeant">
+        </div>
+      </div>
+      <div class="champ">
+        <label for="f-adresse">Adresse</label>
+        <input type="text" id="f-adresse">
+      </div>
+      <div class="grille-2">
+        <div class="champ">
+          <label for="f-code_postal">Code postal</label>
+          <input type="text" id="f-code_postal">
+        </div>
+        <div class="champ">
+          <label for="f-ville">Ville</label>
+          <input type="text" id="f-ville">
+        </div>
+      </div>
+      <div class="champ">
+        <label for="f-zone_intervention">Zone d'intervention <span class="hint">(secteur géographique couvert)</span></label>
+        <input type="text" id="f-zone_intervention" placeholder="ex : Dieppe et 30 km autour">
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Disponibilité et prestations</h3>
+      <p class="aide">Ce qui permet de répondre « oui on fait ça », « on est ouvert le samedi », « comptez 48 h »…</p>
+      <div class="champ">
+        <label for="f-horaires">Horaires</label>
+        <textarea id="f-horaires" placeholder="Lundi au vendredi : 8h-12h / 14h-18h&#10;Samedi : 9h-12h&#10;Dimanche : fermé"></textarea>
+      </div>
+      <div class="champ">
+        <label for="f-services_tarifs">Services et tarifs indicatifs</label>
+        <textarea id="f-services_tarifs" placeholder="Dépannage : à partir de 90 € TTC&#10;Installation chauffe-eau : sur devis&#10;Entretien chaudière : 120 € TTC"></textarea>
+      </div>
+      <div class="champ">
+        <label for="f-delais_habituels">Délais habituels</label>
+        <input type="text" id="f-delais_habituels" placeholder="ex : devis sous 48 h, intervention sous 1 semaine">
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Questions fréquentes</h3>
+      <p class="aide">Les questions que vos clients posent souvent, avec la réponse. Une par ligne (ou en paragraphe).</p>
+      <div class="champ">
+        <label for="f-faq" class="hint" style="font-weight:400;">Q : … / R : …</label>
+        <textarea id="f-faq" style="min-height:120px;"></textarea>
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Ton des réponses</h3>
+      <div class="champ">
+        <label for="f-ton_communication">Comment doit-on s'adresser à vos clients ?</label>
+        <input type="text" id="f-ton_communication" placeholder="ex : vouvoiement, direct et chaleureux">
+      </div>
+      <div class="champ">
+        <label for="f-signature_pro">Signature des emails envoyés en votre nom</label>
+        <textarea id="f-signature_pro" placeholder="Jean Dupont&#10;Plomberie Dupont&#10;06 12 34 56 78"></textarea>
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Rendez-vous</h3>
+      <div class="champ">
+        <label for="f-cal_com_link">Lien de prise de rendez-vous <span class="hint">(Cal.com — gratuit)</span></label>
+        <input type="text" id="f-cal_com_link" placeholder="https://cal.com/votre-nom/rdv">
+        <p class="aide" style="margin:4px 0 0;">Si vous avez l'option « Gestion des rendez-vous », ce lien est proposé automatiquement à vos clients qui demandent un rendez-vous par email.</p>
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <h3>Consignes pour les cas courants</h3>
+      <p class="aide">Des règles à suivre quand une question revient. Ex : « si on me demande le week-end : oui en urgence, majoration 20 % » — « je ne fais pas les logements neufs ».</p>
+      <div class="champ">
+        <textarea id="f-consignes_cas_courants" style="min-height:110px;"></textarea>
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <details class="complement">
+        <summary>Complément (pour votre site web)</summary>
+        <div style="margin-top:14px;">
+          <div class="champ">
+            <label for="f-histoire_entreprise">Histoire de l'entreprise</label>
+            <textarea id="f-histoire_entreprise"></textarea>
+          </div>
+          <div class="champ">
+            <label for="f-differenciateur">Ce qui vous distingue</label>
+            <textarea id="f-differenciateur"></textarea>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="barre-actions">
+      <button type="button" class="btn btn-primaire" id="btn-enregistrer">Enregistrer ma fiche</button>
+      <span id="resultat-save" style="margin-left:12px; font-size:0.9rem;"></span>
+    </div>
+  </div>
+</main>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+(function () {
+  var CHAMPS = [
+    'raison_sociale', 'secteur_activite', 'adresse', 'code_postal', 'ville',
+    'zone_intervention', 'horaires', 'services_tarifs', 'faq',
+    'delais_habituels', 'ton_communication', 'signature_pro', 'cal_com_link',
+    'consignes_cas_courants', 'nom_dirigeant', 'histoire_entreprise', 'differenciateur'
+  ];
+  var session = null;
+
+  function $(id) { return document.getElementById(id); }
+  function msg(t, ok) {
+    var el = $('message');
+    el.textContent = t; el.className = ok ? 'ok' : 'err'; el.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function setVal(k, v) { var el = $('f-' + k); if (el) el.value = (v == null ? '' : v); }
+  function getVal(k) { var el = $('f-' + k); return el ? el.value : ''; }
+
+  function remplirFiche(fiche) {
+    CHAMPS.forEach(function (k) { setVal(k, fiche[k]); });
+  }
+
+  function appliquerProposition(fiche_proposee, source) {
+    var n = 0;
+    Object.keys(fiche_proposee || {}).forEach(function (k) {
+      if (CHAMPS.indexOf(k) < 0) return;
+      var el = $('f-' + k);
+      if (!el) return;
+      if (!el.value.trim()) { el.value = fiche_proposee[k]; n++; }
+    });
+    var r = $('prefill-resultat');
+    if (n > 0) {
+      r.style.color = '#2E7D32';
+      r.textContent = n + ' champ' + (n > 1 ? 's' : '') + ' pré-rempli' + (n > 1 ? 's' : '') + '. Relisez et corrigez, puis Enregistrer.';
+    } else {
+      r.style.color = '#92400e';
+      r.textContent = source === 'aucune'
+        ? "Rien à récupérer automatiquement — remplissez la fiche à la main."
+        : "Rien de nouveau trouvé (les champs déjà remplis ne sont pas écrasés).";
+    }
+  }
+
+  async function prefill(body) {
+    var r = $('prefill-resultat');
+    r.style.color = '#555'; r.textContent = 'Récupération en cours…';
+    try {
+      var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/fiche-entreprise-prefill', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.assign({ access_token: session.access_token }, body))
+      });
+      if (!resp.ok) throw new Error('réseau');
+      var data = await resp.json();
+      appliquerProposition(data.fiche_proposee, data.source);
+    } catch (e) {
+      r.style.color = '#B23A2E';
+      r.textContent = "La récupération a échoué. Vous pouvez remplir la fiche à la main.";
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', async function () {
+    session = await requireAuth('connexion.html');
+    if (!session) return;
+
+    try {
+      var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/fiche-entreprise-details', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: session.access_token })
+      });
+      $('etat-chargement').style.display = 'none';
+      if (!resp.ok) throw new Error('réseau');
+      var data = await resp.json();
+
+      remplirFiche(data.fiche || {});
+
+      var p = data.produits || {};
+      var actifs = [];
+      if (p.email) actifs.push('Gestion Email');
+      if (p.appels) actifs.push('Gestion Appels');
+      if (p.chatbot) actifs.push('Chatbot');
+      $('produits-ligne').textContent = actifs.length
+        ? 'Utilisée par : ' + actifs.join(', ') + '.'
+        : 'Cette fiche sera utilisée dès que vous activez Gestion Email, Gestion Appels ou un Chatbot.';
+
+      if (data.a_site) {
+        $('prefill-site').style.display = 'flex';
+        $('prefill-url').style.display = 'none';
+      }
+
+      $('bloc-form').style.display = 'block';
+    } catch (e) {
+      $('etat-chargement').style.display = 'none';
+      msg("Impossible de charger votre fiche. Rechargez la page.", false);
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    $('btn-prefill-bn').addEventListener('click', function () { prefill({}); });
+    $('btn-prefill-url').addEventListener('click', function () {
+      var u = $('f-url-site').value.trim();
+      if (!u) { $('prefill-resultat').style.color = '#92400e'; $('prefill-resultat').textContent = "Entrez l'adresse de votre site."; return; }
+      prefill({ url: u });
+    });
+
+    $('btn-enregistrer').addEventListener('click', async function () {
+      var btn = this;
+      $('message').style.display = 'none';
+      btn.disabled = true; btn.textContent = 'Enregistrement…';
+      var payload = { access_token: session.access_token };
+      CHAMPS.forEach(function (k) { payload[k] = getVal(k).trim() || null; });
+      try {
+        var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/fiche-entreprise-modifier', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!resp.ok) throw new Error('Échec de l\'enregistrement.');
+        $('resultat-save').style.color = '#2E7D32';
+        $('resultat-save').textContent = 'Fiche enregistrée ✓';
+        setTimeout(function () { $('resultat-save').textContent = ''; }, 4000);
+      } catch (e) {
+        $('resultat-save').style.color = '#B23A2E';
+        $('resultat-save').textContent = e.message || 'Erreur';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Enregistrer ma fiche';
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
