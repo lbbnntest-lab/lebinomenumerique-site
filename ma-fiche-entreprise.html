@@ -115,7 +115,7 @@
       </div>
       <div class="champ">
         <label for="f-services_tarifs">Services et tarifs indicatifs</label>
-        <textarea id="f-services_tarifs" placeholder="Dépannage : à partir de 90 € TTC&#10;Installation chauffe-eau : sur devis&#10;Entretien chaudière : 120 € TTC"></textarea>
+        <textarea id="f-services_tarifs" placeholder="Une prestation par ligne, avec un ordre de prix si vous voulez. Ex :&#10;Prestation A : à partir de 90 €&#10;Prestation B : sur devis"></textarea>
       </div>
       <div class="champ">
         <label for="f-delais_habituels">Délais habituels</label>
@@ -140,7 +140,7 @@
       </div>
       <div class="champ">
         <label for="f-signature_pro">Signature des emails envoyés en votre nom</label>
-        <textarea id="f-signature_pro" placeholder="Jean Dupont&#10;Plomberie Dupont&#10;06 12 34 56 78"></textarea>
+        <textarea id="f-signature_pro" placeholder="Votre nom&#10;Nom de l'entreprise&#10;Téléphone"></textarea>
       </div>
     </div>
 
@@ -213,23 +213,29 @@
     CHAMPS.forEach(function (k) { setVal(k, fiche[k]); });
   }
 
-  function appliquerProposition(fiche_proposee, source) {
+  function appliquerProposition(fiche_proposee, source, remplace) {
     var n = 0;
     Object.keys(fiche_proposee || {}).forEach(function (k) {
       if (CHAMPS.indexOf(k) < 0) return;
       var el = $('f-' + k);
       if (!el) return;
-      if (!el.value.trim()) { el.value = fiche_proposee[k]; n++; }
+      var nouveau = String(fiche_proposee[k]);
+      if (remplace) {
+        if (el.value.trim() !== nouveau.trim()) { el.value = nouveau; el.style.background = '#fffbe6'; n++; }
+      } else if (!el.value.trim()) {
+        el.value = nouveau; el.style.background = '#fffbe6'; n++;
+      }
     });
     var r = $('prefill-resultat');
     if (n > 0) {
       r.style.color = '#2E7D32';
-      r.textContent = n + ' champ' + (n > 1 ? 's' : '') + ' pré-rempli' + (n > 1 ? 's' : '') + '. Relisez et corrigez, puis Enregistrer.';
+      r.textContent = n + (remplace ? ' champ' + (n > 1 ? 's' : '') + ' repris' + (n > 1 ? 's' : '') + ' de votre site (surlignés). Relisez, puis Enregistrer.'
+                                    : ' champ' + (n > 1 ? 's' : '') + ' pré-rempli' + (n > 1 ? 's' : '') + '. Relisez et corrigez, puis Enregistrer.');
     } else {
       r.style.color = '#92400e';
       r.textContent = source === 'aucune'
         ? "Rien à récupérer automatiquement — remplissez la fiche à la main."
-        : "Rien de nouveau trouvé (les champs déjà remplis ne sont pas écrasés).";
+        : "Votre fiche est déjà à jour par rapport à votre site.";
     }
   }
 
@@ -243,7 +249,7 @@
       });
       if (!resp.ok) throw new Error('réseau');
       var data = await resp.json();
-      appliquerProposition(data.fiche_proposee, data.source);
+      appliquerProposition(data.fiche_proposee, data.source, data.remplace);
     } catch (e) {
       r.style.color = '#B23A2E';
       r.textContent = "La récupération a échoué. Vous pouvez remplir la fiche à la main.";
