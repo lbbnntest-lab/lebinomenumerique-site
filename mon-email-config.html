@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Connecter ma boîte email — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .zone-config { max-width: 680px; margin: 0 auto; padding: 32px 20px; }
+  .carte-config { background: var(--blanc); border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .adresse-box { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: #f4f6f8; border: 1px solid #dbe1e6; border-radius: 8px; padding: 12px 14px; margin: 10px 0; }
+  .adresse-box code { flex: 1; min-width: 220px; font-size: 0.95rem; font-weight: 600; word-break: break-all; background: none; padding: 0; }
+  .etat-pastille { display: inline-block; padding: 4px 12px; border-radius: 99px; font-size: 0.82rem; font-weight: 600; }
+  .etat-pastille.attente { background: #fef3c7; color: #92400e; }
+  .etat-pastille.actif { background: #eaf5ec; color: #2E7D32; }
+  .etat-pastille.prepa { background: #eef2f7; color: #475569; }
+  ol.etapes { padding-left: 20px; }
+  ol.etapes li { margin-bottom: 10px; }
+  details.fournisseur { border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; }
+  details.fournisseur > summary { cursor: pointer; padding: 12px 14px; font-weight: 600; font-size: 0.92rem; }
+  details.fournisseur > div { padding: 0 14px 14px; font-size: 0.9rem; color: #444; }
+  #message { padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; display: none; }
+  #message.err { display: block; background: #fdecea; color: #B23A2E; }
+  #message.ok { display: block; background: #eaf5ec; color: #2E7D32; }
+  #etat-chargement { text-align: center; color: #666; padding: 40px 0; }
+  .bloc-etat { display: none; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
+    <nav>
+      <a href="dashboard-client.html">Mon espace</a>
+      <a href="#" onclick="logout()">Se déconnecter</a>
+    </nav>
+  </div>
+</header>
+
+<main class="zone-config">
+  <h1>Connecter ma boîte email</h1>
+  <p style="color:#555;">Gestion Email trie automatiquement les emails que vous nous transmettez. Une seule mise en place, à faire une fois.</p>
+
+  <div id="message"></div>
+  <div id="etat-chargement">Chargement…</div>
+
+  <!-- Pas client Gestion Email -->
+  <div class="carte-config bloc-etat" id="bloc-pas-client">
+    <p>Vous n'avez pas encore l'offre <strong>Gestion Email</strong>. Vous pouvez la souscrire depuis votre espace, rubrique « Ajouter un service ».</p>
+    <p><a class="btn btn-primaire" href="dashboard-client.html#offres">Ajouter un service</a></p>
+  </div>
+
+  <!-- Adresse pas encore préparée -->
+  <div class="carte-config bloc-etat" id="bloc-prepa">
+    <span class="etat-pastille prepa">En préparation</span>
+    <p style="margin-top:12px;">Votre adresse de réception est en cours de préparation par notre équipe. Vous recevrez un email dès qu'elle est prête (généralement sous 24h ouvrées).</p>
+  </div>
+
+  <!-- Adresse prête -->
+  <div class="bloc-etat" id="bloc-config">
+    <div class="carte-config">
+      <span class="etat-pastille" id="pastille-etat"></span>
+      <p style="margin-top:12px;" id="texte-etat"></p>
+      <div class="adresse-box">
+        <code id="adresse-ingestion"></code>
+        <button type="button" class="btn btn-secondaire" id="btn-copier">Copier</button>
+      </div>
+      <p style="font-size:0.85rem; color:#666; margin:6px 0 0;">C'est vers cette adresse que vous redirigez (ou faites suivre) les emails à traiter.</p>
+    </div>
+
+    <div class="carte-config">
+      <h3 style="margin-top:0;">Comment connecter votre boîte</h3>
+      <ol class="etapes">
+        <li>Dans les réglages de votre messagerie, ajoutez une <strong>redirection</strong> (ou « transfert ») vers l'adresse ci-dessus.</li>
+        <li>Si votre fournisseur demande une <strong>confirmation</strong> (Gmail envoie un code à l'adresse), pas d'inquiétude : nous recevons ce code et le validons pour vous sous quelques minutes. Si ça bloque plus de 30 min, écrivez-nous.</li>
+        <li>Envoyez-vous un email de test depuis une autre adresse — il doit apparaître dans « Mes demandes » de votre espace en une minute.</li>
+      </ol>
+
+      <p style="font-weight:600; margin-bottom:6px;">Instructions par fournisseur</p>
+      <details class="fournisseur">
+        <summary>Gmail / Google Workspace</summary>
+        <div>Paramètres (roue crantée) → <em>Voir tous les paramètres</em> → onglet <em>Transfert et POP/IMAP</em> → <em>Ajouter une adresse de transfert</em> → collez l'adresse → Gmail envoie un code de confirmation (nous le validons pour vous) → une fois confirmé, cochez <em>Transférer une copie du courrier entrant</em>.</div>
+      </details>
+      <details class="fournisseur">
+        <summary>Outlook / Microsoft 365</summary>
+        <div>Paramètres → <em>Courrier</em> → <em>Transfert</em> → activez <em>Activer le transfert</em> → saisissez l'adresse → Enregistrer. (Outlook ne demande pas de confirmation.)</div>
+      </details>
+      <details class="fournisseur">
+        <summary>OVH / Gandi / autre (cPanel, Zimbra…)</summary>
+        <div>Cherchez « Redirection » ou « Filtres » dans l'interface de votre messagerie ou de votre hébergeur, et ajoutez une redirection de votre adresse pro vers l'adresse ci-dessus. En cas de doute, envoyez-nous le nom de votre fournisseur, on vous guide.</div>
+      </details>
+    </div>
+
+    <div class="carte-config">
+      <button type="button" class="btn btn-primaire" id="btn-verifier">Vérifier la connexion</button>
+      <span id="resultat-verif" style="margin-left:12px; font-size:0.9rem;"></span>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+(function () {
+  function msg(t, ok) {
+    var el = document.getElementById('message');
+    el.textContent = t; el.className = ok ? 'ok' : 'err'; el.style.display = 'block';
+  }
+  function show(id) { document.getElementById(id).style.display = 'block'; }
+
+  var compteId = null;
+
+  async function nbEmailsTraites() {
+    var sb = window.supabaseClient;
+    var { count } = await sb.from('demandes')
+      .select('id', { count: 'exact', head: true })
+      .eq('compte_client_id', compteId)
+      .eq('canal', 'email');
+    return count || 0;
+  }
+
+  function rendreEtat(adresse, nbEmails) {
+    document.getElementById('adresse-ingestion').textContent = adresse;
+    var p = document.getElementById('pastille-etat');
+    var t = document.getElementById('texte-etat');
+    if (nbEmails > 0) {
+      p.className = 'etat-pastille actif'; p.textContent = 'Connectée';
+      t.textContent = nbEmails + ' email' + (nbEmails > 1 ? 's' : '') + ' déjà traité' + (nbEmails > 1 ? 's' : '') + '. Tout fonctionne — vous retrouvez chaque demande dans « Mes demandes ».';
+    } else {
+      p.className = 'etat-pastille attente'; p.textContent = 'En attente du 1er email';
+      t.textContent = "L'adresse est prête. Mettez en place la redirection ci-dessous, puis envoyez-vous un email de test.";
+    }
+    show('bloc-config');
+  }
+
+  document.addEventListener('DOMContentLoaded', async function () {
+    var session = await requireAuth('connexion.html');
+    if (!session) return;
+    var sb = window.supabaseClient;
+
+    var { data: uc } = await sb.from('utilisateurs_comptes')
+      .select('compte_client_id').eq('id', session.user.id).single();
+    if (!uc) { msg("Compte introuvable.", false); document.getElementById('etat-chargement').style.display = 'none'; return; }
+    compteId = uc.compte_client_id;
+
+    var { data: compte } = await sb.from('comptes_clients')
+      .select('adresse_ingestion_email').eq('id', compteId).single();
+
+    var { data: abos } = await sb.from('abonnements')
+      .select('statut, plans_tarifaires(code)').eq('compte_client_id', compteId).eq('statut', 'actif');
+    var aGestionEmail = (abos || []).some(function (a) {
+      var c = a.plans_tarifaires && a.plans_tarifaires.code;
+      return c === 'SECRETARIAT_SOCLE' || c === 'PACK_COMPLET';
+    });
+
+    document.getElementById('etat-chargement').style.display = 'none';
+
+    if (!aGestionEmail) { show('bloc-pas-client'); return; }
+    if (!compte || !compte.adresse_ingestion_email) { show('bloc-prepa'); return; }
+
+    var nb = await nbEmailsTraites();
+    rendreEtat(compte.adresse_ingestion_email, nb);
+
+    document.getElementById('btn-copier').addEventListener('click', function () {
+      navigator.clipboard.writeText(compte.adresse_ingestion_email).then(function () {
+        var b = document.getElementById('btn-copier');
+        b.textContent = 'Copié ✓';
+        setTimeout(function () { b.textContent = 'Copier'; }, 2000);
+      });
+    });
+
+    document.getElementById('btn-verifier').addEventListener('click', async function () {
+      var r = document.getElementById('resultat-verif');
+      r.textContent = 'Vérification…';
+      var n = await nbEmailsTraites();
+      if (n > 0) {
+        r.innerHTML = '<span style="color:#2E7D32;">✅ ' + n + ' email' + (n > 1 ? 's' : '') + ' reçu' + (n > 1 ? 's' : '') + '. La connexion fonctionne.</span>';
+        rendreEtat(compte.adresse_ingestion_email, n);
+      } else {
+        r.innerHTML = '<span style="color:#92400e;">Aucun email reçu pour l\'instant. Vérifiez la redirection, puis envoyez-vous un email de test.</span>';
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
