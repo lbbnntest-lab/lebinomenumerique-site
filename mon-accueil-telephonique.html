@@ -87,24 +87,28 @@
     </div>
 
     <div class="carte-config">
-      <h3>Horaires</h3>
-      <p class="aide">Laissez vide un jour de fermeture, ou écrivez « fermé ». L'assistant ne les annoncera que si vous les renseignez.</p>
-      <div class="grille-horaires" id="grille-horaires"></div>
+      <p style="background:#eef2f7; border-radius:8px; padding:12px 14px; font-size:0.88rem; color:#334155; margin:0;">
+        Les <strong>horaires</strong>, <strong>services &amp; tarifs</strong> et <strong>questions fréquentes</strong> que l'assistant annonce viennent de votre <a href="ma-fiche-entreprise.html">fiche entreprise</a> (commune à l'email, au téléphone et au chatbot). Modifiez-les là-bas ; ci-dessous, c'est en lecture seule.
+      </p>
     </div>
 
     <div class="carte-config">
-      <h3>Services et tarifs</h3>
-      <p class="aide">Texte libre, lu tel quel par l'assistant. Il ne dira jamais un tarif que vous n'avez pas écrit ici.</p>
+      <h3>Horaires <small style="font-weight:400; color:#777;">— fiche entreprise</small></h3>
+      <div class="grille-horaires" id="grille-horaires"></div>
+      <p class="aide" id="horaires-fiche" style="white-space:pre-line;"></p>
+    </div>
+
+    <div class="carte-config">
+      <h3>Services et tarifs <small style="font-weight:400; color:#777;">— fiche entreprise</small></h3>
       <div class="champ">
-        <textarea id="f-services" placeholder="Ex : Détartrage 90 €. Consultation 60 €. Devis gratuit pour les gros travaux."></textarea>
+        <textarea id="f-services" readonly style="background:#f4f6f8;"></textarea>
       </div>
     </div>
 
     <div class="carte-config">
-      <h3>Questions fréquentes</h3>
-      <p class="aide">Les réponses aux questions que vos clients posent le plus souvent.</p>
+      <h3>Questions fréquentes <small style="font-weight:400; color:#777;">— fiche entreprise</small></h3>
       <div class="champ">
-        <textarea id="f-faq" placeholder="Ex : Acceptez-vous la carte ? Oui, sans minimum. Y a-t-il un parking ? Oui, gratuit devant."></textarea>
+        <textarea id="f-faq" readonly style="background:#f4f6f8;"></textarea>
       </div>
     </div>
 
@@ -260,9 +264,22 @@
 
       $('f-conseil').checked = config.conseil_actif !== false;
 
-      rendreHoraires(config.horaires);
-      $('f-services').value = config.services_tarifs || '';
-      $('f-faq').value = config.faq || '';
+      // Horaires / services / FAQ = fiche entreprise (comptes_clients), lecture seule ici.
+      $('grille-horaires').style.display = 'none';
+      try {
+        var ucR = await window.supabaseClient.from('utilisateurs_comptes')
+          .select('compte_client_id').eq('id', session.user.id).single();
+        var fiche = ucR.data ? (await window.supabaseClient.from('comptes_clients')
+          .select('horaires,services_tarifs,faq')
+          .eq('id', ucR.data.compte_client_id).single()).data : null;
+        $('horaires-fiche').textContent = (fiche && fiche.horaires) || 'Non renseignés — à remplir dans votre fiche entreprise.';
+        $('f-services').value = (fiche && fiche.services_tarifs) || config.services_tarifs || '';
+        $('f-faq').value = (fiche && fiche.faq) || config.faq || '';
+      } catch (e) {
+        $('horaires-fiche').textContent = 'Voir votre fiche entreprise.';
+        $('f-services').value = config.services_tarifs || '';
+        $('f-faq').value = config.faq || '';
+      }
 
       $('f-menu-source').value = config.menu_source || 'texte';
       $('f-menu-texte').value = config.menu_texte || '';
@@ -289,12 +306,10 @@
       btn.disabled = true;
       btn.textContent = 'Enregistrement...';
 
+      // horaires / services_tarifs / faq NE sont plus envoyés : gérés dans la fiche entreprise.
       var payload = {
         access_token: session.access_token,
         types_accueil: collecterTypes(),
-        horaires: collecterHoraires(),
-        services_tarifs: $('f-services').value.trim() || null,
-        faq: $('f-faq').value.trim() || null,
         menu_source: $('f-menu-source').value,
         menu_texte: $('f-menu-texte').value.trim() || null,
         annoncer_total: $('f-annoncer-total').checked,

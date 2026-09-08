@@ -59,20 +59,24 @@
     <div class="carte-config">
       <div id="message"></div>
 
+      <p style="background:#eef2f7; border-radius:8px; padding:12px 14px; font-size:0.88rem; color:#334155;">
+        Le <strong>nom</strong>, le <strong>secteur</strong>, le <strong>ton</strong>, les <strong>horaires</strong>, les <strong>services</strong> et la <strong>FAQ</strong> que l'assistant utilise sont ceux de votre <a href="ma-fiche-entreprise.html">fiche entreprise</a> (commune à l'email, au téléphone et au chatbot). Modifiez-les là-bas.
+      </p>
+
       <div class="champ">
-        <label for="f-nom-entreprise">Nom affiché par l'assistant</label>
-        <input type="text" id="f-nom-entreprise">
+        <label for="f-nom-entreprise">Nom affiché par l'assistant <small>(fiche entreprise)</small></label>
+        <input type="text" id="f-nom-entreprise" readonly style="background:#f4f6f8;">
       </div>
       <div class="champ">
-        <label for="f-secteur">Secteur d'activité</label>
-        <input type="text" id="f-secteur">
+        <label for="f-secteur">Secteur d'activité <small>(fiche entreprise)</small></label>
+        <input type="text" id="f-secteur" readonly style="background:#f4f6f8;">
       </div>
       <div class="champ">
-        <label for="f-ton">Ton de l'assistant <small>(optionnel — ex : chaleureux et familier, professionnel et direct...)</small></label>
-        <input type="text" id="f-ton">
+        <label for="f-ton">Ton de l'assistant <small>(fiche entreprise)</small></label>
+        <input type="text" id="f-ton" readonly style="background:#f4f6f8;">
       </div>
       <div class="champ">
-        <label for="f-message-accueil">Message d'accueil</label>
+        <label for="f-message-accueil">Message d'accueil <small>(propre au chatbot)</small></label>
         <input type="text" id="f-message-accueil">
       </div>
       <div class="champ">
@@ -88,8 +92,8 @@
       </div>
 
       <div class="champ" id="bloc-calcom" style="display:none;">
-        <label for="f-cal-com-link">Lien Cal.com pour la prise de RDV</label>
-        <input type="text" id="f-cal-com-link" placeholder="https://cal.com/...">
+        <label for="f-cal-com-link">Lien Cal.com pour la prise de RDV <small>(fiche entreprise)</small></label>
+        <input type="text" id="f-cal-com-link" placeholder="https://cal.com/..." readonly style="background:#f4f6f8;">
       </div>
 
       <div id="bloc-niveau3" style="display:none;">
@@ -289,6 +293,23 @@
       document.getElementById('f-ton').value = config.ton || '';
       document.getElementById('f-message-accueil').value = config.message_accueil || '';
       document.getElementById('f-couleur-widget').value = config.couleur_widget || 'bleu';
+
+      // Champs communs : afficher la valeur de la fiche entreprise (source unique)
+      try {
+        var ucR = await window.supabaseClient.from('utilisateurs_comptes')
+          .select('compte_client_id').eq('id', session.user.id).single();
+        if (ucR.data) {
+          var fR = await window.supabaseClient.from('comptes_clients')
+            .select('raison_sociale,secteur_activite,ton_communication,cal_com_link')
+            .eq('id', ucR.data.compte_client_id).single();
+          if (fR.data) {
+            if (fR.data.raison_sociale) document.getElementById('f-nom-entreprise').value = fR.data.raison_sociale;
+            if (fR.data.secteur_activite) document.getElementById('f-secteur').value = fR.data.secteur_activite;
+            if (fR.data.ton_communication) document.getElementById('f-ton').value = fR.data.ton_communication;
+            if (fR.data.cal_com_link) config.cal_com_link = fR.data.cal_com_link;
+          }
+        }
+      } catch (e) { /* garde les valeurs de wf47 en repli */ }
 
       if (niveauActuel >= 2) {
         document.getElementById('bloc-calcom').style.display = 'block';
