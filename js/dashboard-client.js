@@ -404,10 +404,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tbodyDemandes = document.getElementById("tbody-demandes");
   tbodyDemandes.innerHTML = (demandes || []).length
     ? demandes.map(d => `
-        <tr>
+        <tr${d.suspect ? ' class="ligne-suspecte"' : ""}>
           <td>${new Date(d.created_at).toLocaleDateString("fr-FR")}</td>
-          <td>${echapperHtmlDevis(d.categorie)}</td>
-          <td>${echapperHtmlDevis(d.resume || "")}</td>
+          <td>${d.suspect ? "⚠️ Suspect" : echapperHtmlDevis(d.categorie)}</td>
+          <td>${echapperHtmlDevis(d.resume || "")}${d.suspect && d.motif_suspect ? `<br><small style="color:#b23a2e;">Email potentiellement frauduleux : ${echapperHtmlDevis(d.motif_suspect)}. Ne répondez pas et ne cliquez sur aucun lien sans vérifier.</small>` : ""}</td>
           <td>${echapperHtmlDevis(d.contact_prospect || "")}</td>
           <td><span class="badge badge-${d.statut === 'traite' ? 'actif' : 'essai'}">${echapperHtmlDevis(d.statut)}</span></td>
         </tr>`).join("")
