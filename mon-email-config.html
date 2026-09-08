@@ -98,6 +98,65 @@
       <span id="resultat-verif" style="margin-left:12px; font-size:0.9rem;"></span>
     </div>
   </div>
+
+  <!-- Réglages du traitement des emails -->
+  <div class="bloc-etat" id="bloc-reglages">
+    <h2 style="margin-top:32px;">Réglages du traitement</h2>
+    <p style="color:#555; font-size:0.92rem;">Ce que Gestion Email doit <em>savoir</em> sur votre entreprise (horaires, services, FAQ…) se règle dans <a href="ma-fiche-entreprise.html">Ma fiche entreprise</a>. Ici, c'est le comportement du traitement.</p>
+
+    <div class="carte-config">
+      <h3 style="margin-top:0;">Accusé de réception</h3>
+      <label style="display:flex; align-items:center; gap:8px; font-weight:600;">
+        <input type="checkbox" id="r-accuse-actif"> Répondre automatiquement à l'expéditeur « votre message est bien reçu »
+      </label>
+      <div id="r-accuse-detail" style="margin-top:12px;">
+        <label for="r-accuse-texte" style="font-size:0.88rem; font-weight:600;">Texte de l'accusé <small style="font-weight:400; color:#777;">— <code>{delai}</code> sera remplacé par le délai de la catégorie</small></label>
+        <textarea id="r-accuse-texte" style="width:100%; min-height:70px; padding:9px 11px; border:1px solid #cbd5e1; border-radius:8px; font:inherit; box-sizing:border-box;" placeholder="Bonjour, votre message est bien reçu. Nous revenons vers vous {delai}."></textarea>
+        <p style="font-size:0.88rem; font-weight:600; margin:12px 0 6px;">Délai annoncé par type de demande</p>
+        <div style="display:grid; grid-template-columns:120px 1fr; gap:8px 12px; align-items:center; font-size:0.9rem;">
+          <label for="r-delai-RDV">Rendez-vous</label><input type="text" id="r-delai-RDV" placeholder="sous 24 h" style="padding:7px 10px; border:1px solid #cbd5e1; border-radius:8px; font:inherit;">
+          <label for="r-delai-SAV">SAV</label><input type="text" id="r-delai-SAV" placeholder="sous 48 h" style="padding:7px 10px; border:1px solid #cbd5e1; border-radius:8px; font:inherit;">
+          <label for="r-delai-FACTURATION">Facturation</label><input type="text" id="r-delai-FACTURATION" placeholder="sous 3 jours ouvrés" style="padding:7px 10px; border:1px solid #cbd5e1; border-radius:8px; font:inherit;">
+          <label for="r-delai-AUTRE">Autre</label><input type="text" id="r-delai-AUTRE" placeholder="rapidement" style="padding:7px 10px; border:1px solid #cbd5e1; border-radius:8px; font:inherit;">
+        </div>
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <h3 style="margin-top:0;">Alerte en cas d'urgence</h3>
+      <p style="font-size:0.9rem; color:#555;">Quand un email est classé « urgence », vous recevez un <strong>SMS</strong> immédiat et la demande est épinglée en tête de votre tableau de bord.</p>
+      <label for="r-urgence-numero" style="font-size:0.88rem; font-weight:600;">Votre numéro de mobile</label>
+      <input type="text" id="r-urgence-numero" placeholder="06 12 34 56 78" style="width:100%; max-width:260px; padding:9px 11px; border:1px solid #cbd5e1; border-radius:8px; font:inherit; box-sizing:border-box; display:block; margin-top:4px;">
+      <label style="display:flex; align-items:center; gap:8px; font-size:0.9rem; margin-top:10px;">
+        <input type="checkbox" id="r-urgence-sav"> Alerter aussi pour les demandes de <strong>SAV</strong> urgentes
+      </label>
+    </div>
+
+    <div class="carte-config" id="r-carte-envoi-gere" style="display:none;">
+      <h3 style="margin-top:0;">Envoi géré <small style="font-weight:400; color:#777;">— option active</small></h3>
+      <p style="font-size:0.9rem; color:#555;">Les réponses préparées partent automatiquement en votre nom. L'accusé de réception part tout de suite ; les réponses de fond après un délai pendant lequel vous pouvez encore corriger.</p>
+      <label for="r-delai-grace" style="font-size:0.88rem; font-weight:600;">Délai avant envoi des réponses de fond</label>
+      <select id="r-delai-grace" style="display:block; margin-top:4px; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; font:inherit;">
+        <option value="0">Immédiat</option>
+        <option value="5">5 minutes</option>
+        <option value="15">15 minutes</option>
+        <option value="30">30 minutes</option>
+        <option value="60">1 heure</option>
+      </select>
+      <p style="font-size:0.88rem; font-weight:600; margin:12px 0 6px;">Envoyer automatiquement pour :</p>
+      <div style="display:flex; flex-wrap:wrap; gap:12px; font-size:0.9rem;">
+        <label><input type="checkbox" class="r-eg-cat" value="RDV"> Rendez-vous</label>
+        <label><input type="checkbox" class="r-eg-cat" value="SAV"> SAV</label>
+        <label><input type="checkbox" class="r-eg-cat" value="FACTURATION"> Facturation</label>
+        <label><input type="checkbox" class="r-eg-cat" value="AUTRE"> Autre</label>
+      </div>
+    </div>
+
+    <div class="carte-config">
+      <button type="button" class="btn btn-primaire" id="btn-enregistrer-reglages">Enregistrer les réglages</button>
+      <span id="resultat-reglages" style="margin-left:12px; font-size:0.9rem;"></span>
+    </div>
+  </div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -137,6 +196,79 @@
     show('bloc-config');
   }
 
+  var CATS_DELAI = ['RDV', 'SAV', 'FACTURATION', 'AUTRE'];
+
+  async function chargerReglages(session) {
+    var g = function (id) { return document.getElementById(id); };
+    var data;
+    try {
+      var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/secretariat-config', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: session.access_token })
+      });
+      if (!resp.ok) return;
+      data = await resp.json();
+    } catch (e) { return; }
+
+    var c = data.config || {};
+    g('r-accuse-actif').checked = c.accuse_actif !== false;
+    g('r-accuse-texte').value = (c.accuse_par_categorie && c.accuse_par_categorie._texte) || '';
+    var apc = c.accuse_par_categorie || {};
+    CATS_DELAI.forEach(function (k) {
+      g('r-delai-' + k).value = (apc[k] && apc[k].delai_annonce) || '';
+    });
+    g('r-urgence-numero').value = c.urgence_numero || '';
+    g('r-urgence-sav').checked = (c.urgence_categories || []).indexOf('SAV') >= 0;
+
+    if (data.options && data.options.envoi_gere) {
+      g('r-carte-envoi-gere').style.display = 'block';
+      g('r-delai-grace').value = String(c.envoi_gere_delai_min != null ? c.envoi_gere_delai_min : 15);
+      var egc = c.envoi_gere_categories || [];
+      document.querySelectorAll('.r-eg-cat').forEach(function (cb) { cb.checked = egc.indexOf(cb.value) >= 0; });
+    }
+
+    function toggleAccuse() { g('r-accuse-detail').style.opacity = g('r-accuse-actif').checked ? '1' : '0.45'; }
+    g('r-accuse-actif').addEventListener('change', toggleAccuse); toggleAccuse();
+
+    show('bloc-reglages');
+
+    g('btn-enregistrer-reglages').addEventListener('click', async function () {
+      var btn = this, r = g('resultat-reglages');
+      btn.disabled = true; btn.textContent = 'Enregistrement…';
+      var apcOut = { _texte: g('r-accuse-texte').value.trim() };
+      CATS_DELAI.forEach(function (k) {
+        apcOut[k] = { actif: true, texte: '', delai_annonce: g('r-delai-' + k).value.trim() };
+      });
+      var urgenceCats = ['URGENCE'];
+      if (g('r-urgence-sav').checked) urgenceCats.push('SAV');
+      var payload = {
+        access_token: session.access_token,
+        accuse_actif: g('r-accuse-actif').checked,
+        accuse_par_categorie: apcOut,
+        urgence_numero: g('r-urgence-numero').value.trim() || null,
+        urgence_canal: 'sms',
+        urgence_categories: urgenceCats
+      };
+      if (g('r-carte-envoi-gere').style.display !== 'none') {
+        payload.envoi_gere_delai_min = parseInt(g('r-delai-grace').value, 10);
+        payload.envoi_gere_categories = Array.prototype.slice.call(document.querySelectorAll('.r-eg-cat:checked')).map(function (cb) { return cb.value; });
+      }
+      try {
+        var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/secretariat-config-modifier', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!resp.ok) throw new Error('Échec');
+        r.style.color = '#2E7D32'; r.textContent = 'Réglages enregistrés ✓';
+        setTimeout(function () { r.textContent = ''; }, 4000);
+      } catch (e) {
+        r.style.color = '#B23A2E'; r.textContent = 'Erreur';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Enregistrer les réglages';
+      }
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', async function () {
     var session = await requireAuth('connexion.html');
     if (!session) return;
@@ -160,6 +292,9 @@
     document.getElementById('etat-chargement').style.display = 'none';
 
     if (!aGestionEmail) { show('bloc-pas-client'); return; }
+
+    chargerReglages(session);
+
     if (!compte || !compte.adresse_ingestion_email) { show('bloc-prepa'); return; }
 
     var nb = await nbEmailsTraites();
