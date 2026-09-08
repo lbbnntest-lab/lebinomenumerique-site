@@ -398,15 +398,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("stat-urgentes").textContent =
     (demandes || []).filter(d => d.urgent && d.statut !== "traite").length;
 
+  // Échappement obligatoire : resume / contact_prospect / categorie sont extraits
+  // par l'IA du CONTENU d'un email entrant (donc contrôlables par un tiers) —
+  // sans échappement, un email piégé = XSS stocké dans le dashboard du client.
   const tbodyDemandes = document.getElementById("tbody-demandes");
   tbodyDemandes.innerHTML = (demandes || []).length
     ? demandes.map(d => `
         <tr>
           <td>${new Date(d.created_at).toLocaleDateString("fr-FR")}</td>
-          <td>${d.categorie}</td>
-          <td>${d.resume || ""}</td>
-          <td>${d.contact_prospect || ""}</td>
-          <td><span class="badge badge-${d.statut === 'traite' ? 'actif' : 'essai'}">${d.statut}</span></td>
+          <td>${echapperHtmlDevis(d.categorie)}</td>
+          <td>${echapperHtmlDevis(d.resume || "")}</td>
+          <td>${echapperHtmlDevis(d.contact_prospect || "")}</td>
+          <td><span class="badge badge-${d.statut === 'traite' ? 'actif' : 'essai'}">${echapperHtmlDevis(d.statut)}</span></td>
         </tr>`).join("")
     : `<tr><td colspan="5">Aucune demande pour le moment.</td></tr>`;
 
@@ -452,10 +455,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("tbody-equipe").innerHTML = membres.length
       ? membres.map(m => `
           <tr>
-            <td>${m.prenom || ""} ${m.nom || ""}</td>
-            <td>${m.fonction || "—"}</td>
-            <td>${m.email}</td>
-            <td>${libelleRole[m.role] || m.role}</td>
+            <td>${echapperHtmlDevis(m.prenom || "")} ${echapperHtmlDevis(m.nom || "")}</td>
+            <td>${m.fonction ? echapperHtmlDevis(m.fonction) : "—"}</td>
+            <td>${echapperHtmlDevis(m.email)}</td>
+            <td>${echapperHtmlDevis(libelleRole[m.role] || m.role)}</td>
           </tr>`).join("")
       : `<tr><td colspan="4">Aucun utilisateur.</td></tr>`;
 
