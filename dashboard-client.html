@@ -29,6 +29,7 @@
   .dash-sidebar button.discret { color: #9aa7ba; font-size: .88rem; }
 
   .dash-main { padding: 36px clamp(20px, 4vw, 52px); }
+  .badge-compteur { display: inline-block; min-width: 18px; padding: 1px 6px; margin-left: 4px; border-radius: 99px; background: #B23A2E; color: #fff; font-size: .72rem; font-weight: 700; text-align: center; }
   .dash-panel { max-width: 1180px; margin: 0 auto; }
   .dash-panel > h2 { margin: 0 0 4px; font-size: 1.55rem; }
   .dash-panel > .intro { color: var(--gris-texte); font-size: .92rem; margin: 0 0 26px; }
@@ -132,6 +133,7 @@
   <aside class="dash-sidebar">
     <button data-panel="apercu" class="actif">Vue d'ensemble</button>
     <button data-panel="demandes">Mes demandes</button>
+    <button data-panel="reponses">Réponses à valider <span id="badge-reponses" class="badge-compteur" hidden>0</span></button>
     <button data-panel="devis">Mes devis</button>
     <button data-panel="services">Mes services</button>
     <button data-panel="site">Mon site</button>
@@ -169,10 +171,21 @@
     <section class="dash-panel" data-panel="demandes" hidden>
       <h2>Mes demandes</h2>
       <p class="intro">Les demandes clients captées par votre secrétariat (email, appels, chatbot).</p>
+      <div id="bandeau-urgentes" hidden style="background:#fdecea; border:1px solid #f5c6cb; border-radius:10px; padding:14px 16px; margin-bottom:18px;">
+        <strong style="color:#B23A2E;">⚠️ Demandes urgentes en attente</strong>
+        <ul id="liste-urgentes" style="margin:8px 0 0; padding-left:20px;"></ul>
+      </div>
       <table class="donnees">
         <thead><tr><th>Date</th><th>Catégorie</th><th>Résumé</th><th>Contact</th><th>Statut</th></tr></thead>
         <tbody id="tbody-demandes"><tr><td colspan="5">Chargement…</td></tr></tbody>
       </table>
+    </section>
+
+    <!-- ============ RÉPONSES À VALIDER ============ -->
+    <section class="dash-panel" data-panel="reponses" hidden>
+      <h2>Réponses à valider</h2>
+      <p class="intro">Les brouillons de réponse préparés par votre secrétariat. Relisez, corrigez si besoin, puis envoyez.</p>
+      <div id="liste-reponses"><p class="aide">Chargement…</p></div>
     </section>
 
     <!-- ============ MES DEVIS ============ -->

@@ -395,8 +395,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const demandesMois = (demandes || []).filter(d => new Date(d.created_at) >= debutMois);
   document.getElementById("stat-demandes-mois").textContent = demandesMois.length;
-  document.getElementById("stat-urgentes").textContent =
-    (demandes || []).filter(d => d.urgent && d.statut !== "traite").length;
+  const urgentesEnAttente = (demandes || []).filter(d => d.urgent && d.statut !== "traite" && d.statut !== "archive");
+  document.getElementById("stat-urgentes").textContent = urgentesEnAttente.length;
+
+  // Bandeau rouge en tête de « Mes demandes » : les urgences non traitées, épinglées.
+  const bandeau = document.getElementById("bandeau-urgentes");
+  const listeUrg = document.getElementById("liste-urgentes");
+  if (bandeau && listeUrg) {
+    if (urgentesEnAttente.length) {
+      listeUrg.innerHTML = urgentesEnAttente.map(d =>
+        `<li>${echapperHtmlDevis(d.resume || "Demande urgente")}${d.contact_prospect ? ` — <small>${echapperHtmlDevis(d.contact_prospect)}</small>` : ""}</li>`
+      ).join("");
+      bandeau.hidden = false;
+    } else {
+      bandeau.hidden = true;
+    }
+  }
 
   // Échappement obligatoire : resume / contact_prospect / categorie sont extraits
   // par l'IA du CONTENU d'un email entrant (donc contrôlables par un tiers) —
@@ -609,6 +623,75 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!cible) return;
     const carte = cible.closest("[data-brouillon-id]");
     actionBrouillon(carte, cible.dataset.id, envoyer ? "envoyer" : "rejeter", cible);
+  });
+
+  // ---------- Réponses à valider (brouillons préparés par wf66) ----------
+  async function chargerReponsesAValider() {
+    const conteneur = document.getElementById("liste-reponses");
+    const badge = document.getElementById("badge-reponses");
+    if (!conteneur) return;
+    const { data, error } = await sb
+      .from("reponses_preparees")
+      .select("id, categorie, destinataire, objet, corps, created_at")
+      .eq("compte_client_id", utilisateur.compte_client_id)
+      .eq("statut", "brouillon")
+      .order("created_at", { ascending: false });
+    if (error) { console.error(error); conteneur.innerHTML = `<p class="aide">Impossible de charger les réponses.</p>`; return; }
+    const tous = data || [];
+    if (badge) { badge.textContent = tous.length; badge.hidden = tous.length === 0; }
+    const dateFr = (d) => new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "short" });
+    conteneur.innerHTML = tous.length ? tous.map((r) => `
+      <div class="carte-devis" data-reponse-id="${r.id}" style="margin-bottom:16px;">
+        <div class="carte-devis-entete">
+          <span class="carte-devis-titre">${echapperHtmlDevis(r.categorie || "")} — à : ${echapperHtmlDevis(r.destinataire || "destinataire inconnu")}</span>
+          <span class="carte-devis-meta">${dateFr(r.created_at)}</span>
+        </div>
+        <input class="rep-objet" value="${echapperHtmlDevis(r.objet || "")}" style="width:100%; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; font:inherit; margin:8px 0; box-sizing:border-box;">
+        <textarea class="rep-corps" rows="8" style="width:100%; padding:9px 11px; border:1px solid #cbd5e1; border-radius:8px; font:inherit; box-sizing:border-box;">${echapperHtmlDevis(r.corps || "")}</textarea>
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <button class="btn btn-primaire rep-envoyer" data-id="${r.id}">Envoyer</button>
+          <button class="btn btn-secondaire rep-enregistrer" data-id="${r.id}">Enregistrer les modifications</button>
+          <button class="btn btn-ghost-danger rep-annuler" data-id="${r.id}">Annuler</button>
+          <span class="rep-msg" style="font-size:.85rem;"></span>
+        </div>
+      </div>`).join("") : `<p class="etat-vide">Aucune réponse en attente. Les brouillons apparaissent ici dès qu'un email nécessite une réponse.</p>`;
+  }
+
+  async function actionReponse(carte, id, action, extra) {
+    const msg = carte.querySelector(".rep-msg");
+    const boutons = carte.querySelectorAll("button");
+    if (action === "envoyer" && !window.confirm("Envoyer cette réponse au destinataire, en votre nom ?")) return;
+    if (action === "annuler" && !window.confirm("Annuler ce brouillon ? Il ne sera pas envoyé.")) return;
+    boutons.forEach((b) => (b.disabled = true));
+    if (msg) msg.textContent = "…";
+    const routes = { envoyer: "reponse-envoyer", enregistrer: "reponse-modifier", annuler: "reponse-annuler" };
+    try {
+      const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/${routes[action]}`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.assign({ access_token: session.access_token, id }, extra || {})),
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok || !data.ok) throw new Error(data.error || data.erreur || "Action impossible.");
+      if (action === "enregistrer") { if (msg) { msg.style.color = "#2E7D32"; msg.textContent = "Enregistré ✓"; } boutons.forEach((b) => (b.disabled = false)); return; }
+      carte.style.opacity = "0.5";
+      if (msg) msg.textContent = action === "envoyer" ? "Réponse envoyée." : "Brouillon annulé.";
+      setTimeout(chargerReponsesAValider, 1200);
+    } catch (err) {
+      if (msg) { msg.style.color = "#B23A2E"; msg.textContent = err.message || "Erreur."; }
+      boutons.forEach((b) => (b.disabled = false));
+    }
+  }
+
+  document.getElementById("liste-reponses").addEventListener("click", (e) => {
+    const btn = e.target.closest(".rep-envoyer, .rep-enregistrer, .rep-annuler");
+    if (!btn) return;
+    const carte = btn.closest("[data-reponse-id]");
+    const action = btn.classList.contains("rep-envoyer") ? "envoyer"
+      : btn.classList.contains("rep-enregistrer") ? "enregistrer" : "annuler";
+    const extra = (action === "enregistrer" || action === "envoyer")
+      ? { objet: carte.querySelector(".rep-objet").value, corps: carte.querySelector(".rep-corps").value }
+      : null;
+    actionReponse(carte, btn.dataset.id, action, extra);
   });
 
   // "Mes contenus" (produit Réseaux sociaux, cadré le 24/08/2026) : n'affiché
@@ -834,6 +917,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const nbMembres = await chargerEquipe();
   await chargerMesDevis();
   await chargerDevisBrouillons();
+  await chargerReponsesAValider();
   await chargerMesContenus();
 
   // Seuls le propriétaire et les administrateurs peuvent inviter
