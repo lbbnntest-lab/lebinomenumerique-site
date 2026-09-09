@@ -145,6 +145,14 @@
     var totalEl = document.getElementById('total-socle-brique');
     var lien = document.getElementById('lien-choisir-socle');
     var PRIX_SOCLE = 89;
+    // Un seul palier de volume à la fois (400 OU 1200, pas les deux).
+    var VOLUMES = ['SECRETARIAT_VOLUME_400', 'SECRETARIAT_VOLUME_1200'];
+    function exclureVolumes(source) {
+      if (!source.checked || VOLUMES.indexOf(source.dataset.code) < 0) return;
+      checks.forEach(function (c) {
+        if (c !== source && VOLUMES.indexOf(c.dataset.code) >= 0) c.checked = false;
+      });
+    }
     function maj() {
       var total = PRIX_SOCLE, codes = [];
       checks.forEach(function (c) { if (c.checked) { total += Number(c.dataset.prix); codes.push(c.dataset.code); } });
@@ -153,7 +161,7 @@
       if (codes.length) href += '&briques=' + encodeURIComponent(codes.join(','));
       lien.setAttribute('href', href);
     }
-    checks.forEach(function (c) { c.addEventListener('change', maj); });
+    checks.forEach(function (c) { c.addEventListener('change', function () { exclureVolumes(c); maj(); }); });
   })();
   </script>
   </div>
