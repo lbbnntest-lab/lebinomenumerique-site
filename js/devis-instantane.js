@@ -80,12 +80,12 @@ const CATALOGUE_DEVIS = [
   {
     categorie: "Sites Web",
     items: [
-      { code: "site_essentiel", nom: "Site Essentiel", prix: 490, recurrent: false, hebergement: 15,
-        description: "Site vitrine — Setup + hébergement 15 €/mois." },
-      { code: "site_pro", nom: "Site Pro", prix: 890, recurrent: false, hebergement: 25,
-        description: "Site pro multi-pages — Setup + hébergement 25 €/mois." },
-      { code: "site_ecommerce", nom: "Site E-commerce", prix: 1490, recurrent: false, hebergement: 45,
-        description: "Boutique en ligne jusqu'à 30 produits — Setup + hébergement 45 €/mois." },
+      { code: "site_essentiel", nom: "Site Essentiel", prix: 490, recurrent: false, hebergement: 19,
+        description: "Site vitrine — Setup + hébergement 19 €/mois (modifications de contenu incluses)." },
+      { code: "site_pro", nom: "Site Pro", prix: 890, recurrent: false, hebergement: 39,
+        description: "Site pro multi-pages — Setup + hébergement 39 €/mois (modifications de contenu incluses)." },
+      { code: "site_ecommerce", nom: "Site E-commerce", prix: 1490, recurrent: false, hebergement: 79,
+        description: "Boutique en ligne jusqu'à 30 produits — Setup + hébergement 79 €/mois (mise à jour du catalogue incluse, ~1 intervention/mois)." },
       { code: "site_sur_mesure", nom: "Site Sur-Mesure", prixLibre: true, prixDefaut: 3500, recurrent: false,
         description: "Projet spécifique, sur devis.",
         bareme: {
