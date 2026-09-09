@@ -168,10 +168,10 @@ const CATALOGUE_DEVIS = [
   {
     categorie: "Réseaux sociaux",
     items: [
-      { code: "reseaux_sociaux_standard", nom: "Calendrier de posts IA — Standard", prix: 190, recurrent: false, hebergement: 59, hebergementLabel: "abonnement",
-        description: "8-12 posts/mois générés par Claude (texte + visuel), photos du client privilégiées à une image générique — Setup + 59 €/mois." },
-      { code: "reseaux_sociaux_sur_mesure", nom: "Calendrier de posts IA — Sur-Mesure", prix: 390, recurrent: false, hebergement: 99, hebergementLabel: "abonnement",
-        description: "Ligne éditoriale personnalisée à la marque, visuels sur-mesure — Setup + 99 €/mois." }
+      { code: "reseaux_sociaux_standard", nom: "Calendrier de posts IA — Standard", prix: 190, recurrent: false, hebergement: 89, hebergementLabel: "abonnement",
+        description: "8-12 posts/mois générés (texte + heure + visuel), le client ajoute ses photos, valide et publie lui-même — Setup + 89 €/mois." },
+      { code: "reseaux_sociaux_sur_mesure", nom: "Calendrier de posts IA — Sur-Mesure", prix: 390, recurrent: false, hebergement: 149, hebergementLabel: "abonnement",
+        description: "Ligne éditoriale personnalisée à la marque, visuels sur-mesure — Setup + 149 €/mois." }
     ]
   },
   {

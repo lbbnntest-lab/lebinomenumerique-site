@@ -437,6 +437,44 @@
         </div>
         <p id="bloc-devis-mb-actif" class="aide" style="display:none;">Vous avez déjà un configurateur de devis — <a href="mon-devis-config.html">construisez votre barème et récupérez votre lien</a>.</p>
       </div>
+
+      <div class="dash-bloc">
+        <h3>Calendrier de posts pour vos réseaux sociaux</h3>
+        <p class="aide">Chaque mois, un calendrier de publications rédigées pour votre métier (texte, heure suggérée, visuel). Vous ajoutez vos photos, validez et publiez vous-même. <a href="reseaux-sociaux.html">En savoir plus</a>.</p>
+        <div id="bloc-reseaux" class="carte-offre">
+          <div class="desc-offre" style="color:var(--gris-texte); font-size:.86rem;">Installation réglée une fois, puis un abonnement mensuel (résiliable en 2 clics).</div>
+          <div class="champ" style="margin:12px 0;">
+            <label for="reseaux-formule">Formule</label>
+            <select id="reseaux-formule">
+              <option value="standard">Standard — 8 à 12 posts/mois (190 € puis 89 €/mois)</option>
+              <option value="sur_mesure">Sur-Mesure — + ligne éditoriale & visuels à votre marque (390 € puis 149 €/mois)</option>
+            </select>
+          </div>
+          <div class="champ" style="margin:12px 0;">
+            <label for="reseaux-secteur">Secteur d'activité <small>(oriente le contenu)</small></label>
+            <input type="text" id="reseaux-secteur" maxlength="120">
+          </div>
+          <div class="champ" style="margin:12px 0;">
+            <label>Réseaux ciblés</label>
+            <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:4px;">
+              <label style="font-weight:400;"><input type="checkbox" class="reseaux-cible" value="facebook" checked> Facebook</label>
+              <label style="font-weight:400;"><input type="checkbox" class="reseaux-cible" value="instagram" checked> Instagram</label>
+              <label style="font-weight:400;"><input type="checkbox" class="reseaux-cible" value="linkedin"> LinkedIn</label>
+              <label style="font-weight:400;"><input type="checkbox" class="reseaux-cible" value="google_business"> Google Business</label>
+            </div>
+          </div>
+          <div class="champ" style="margin:12px 0;">
+            <label for="reseaux-nb-posts">Nombre de posts par mois</label>
+            <select id="reseaux-nb-posts">
+              <option value="8">8 posts / mois</option>
+              <option value="12">12 posts / mois</option>
+            </select>
+          </div>
+          <button class="btn btn-primaire" id="btn-reseaux">Souscrire</button>
+          <p id="message-reseaux" style="margin:10px 0 0;"></p>
+        </div>
+        <p id="bloc-reseaux-actif" class="aide" style="display:none;">Vous avez déjà un calendrier de posts — <a href="mon-calendrier-social-config.html">réglez le secteur, le ton, les réseaux et la fréquence</a>.</p>
+      </div>
     </section>
 
   </main>

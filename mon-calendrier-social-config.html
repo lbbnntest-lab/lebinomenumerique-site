@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Mon calendrier de posts — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .zone-config { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
+  .carte-config { background: var(--blanc); border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .champ { margin-bottom: 16px; }
+  .champ label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
+  .champ input, .champ select, .champ textarea { width: 100%; padding: 9px 11px; border: 1px solid #d7d7db; border-radius: 8px; font-size: 0.92rem; font-family: inherit; }
+  #message { padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; display: none; }
+  #message.err { display: block; background: #fdecea; color: #B23A2E; }
+  #message.ok { display: block; background: #eaf5ec; color: #2E7D32; }
+  #etat-chargement, #etat-vide, #etat-erreur { text-align: center; color: #666; padding: 40px 0; }
+  #zone-formulaire { display: none; }
+  .badge-formule { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 0.78rem; font-weight: 600; background: var(--bleu-primaire); color: #fff; margin-left: 8px; }
+  .reseaux-liste { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 4px; }
+  .reseaux-liste label { font-weight: 400; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
+    <nav>
+      <a href="dashboard-client.html">Mon espace</a>
+      <a href="#" onclick="logout()">Se déconnecter</a>
+    </nav>
+  </div>
+</header>
+
+<div class="zone-config">
+  <h2>Mon calendrier de posts <span class="badge-formule" id="badge-formule" style="display:none;"></span></h2>
+  <p class="sous-titre-section">Réglez ce qui oriente la génération de vos posts chaque mois. Vos photos s'ajoutent depuis l'onglet « Mes contenus » de <a href="dashboard-client.html">votre espace</a>.</p>
+
+  <div id="etat-chargement">Chargement…</div>
+  <div id="etat-vide" style="display:none;">Vous n'avez pas encore de calendrier de posts — ajoutez-le depuis <a href="dashboard-client.html#ajouter-offre">votre espace</a> (rubrique « Ajouter une offre »).</div>
+  <div id="etat-erreur" style="display:none;">Une erreur est survenue — réessayez plus tard.</div>
+
+  <div id="zone-formulaire">
+    <div class="carte-config">
+      <div id="message"></div>
+
+      <div class="champ">
+        <label for="f-secteur">Secteur d'activité <small>(oriente le contenu des posts)</small></label>
+        <input type="text" id="f-secteur" maxlength="120" placeholder="Ex : boulangerie-pâtisserie">
+      </div>
+      <div class="champ">
+        <label for="f-ton">Ton et ligne éditoriale <small>(libre)</small></label>
+        <textarea id="f-ton" rows="4" maxlength="600" placeholder="Ex : chaleureux et local, on tutoie, on met en avant le fait-maison, l'équipe, les nouveautés de saison"></textarea>
+      </div>
+      <div class="champ">
+        <label>Réseaux ciblés</label>
+        <div class="reseaux-liste">
+          <label><input type="checkbox" class="reseau" value="facebook"> Facebook</label>
+          <label><input type="checkbox" class="reseau" value="instagram"> Instagram</label>
+          <label><input type="checkbox" class="reseau" value="linkedin"> LinkedIn</label>
+          <label><input type="checkbox" class="reseau" value="google_business"> Google Business</label>
+        </div>
+      </div>
+      <div class="champ">
+        <label for="f-nb-posts">Nombre de posts par mois</label>
+        <select id="f-nb-posts">
+          <option value="8">8 posts / mois</option>
+          <option value="12">12 posts / mois</option>
+        </select>
+      </div>
+
+      <p style="background:#eef2f7; border-radius:8px; padding:12px 14px; font-size:0.85rem; color:#334155;">
+        La formule (Standard / Sur-Mesure) se change en nous écrivant. La publication reste manuelle : les posts générés arrivent dans « Mes contenus », vous les validez puis publiez vous-même.
+      </p>
+
+      <button class="btn btn-primaire" id="btn-enregistrer">Enregistrer les modifications</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+(function () {
+  var session = null;
+
+  function afficherMessage(texte, ok) {
+    var el = document.getElementById('message');
+    el.textContent = texte;
+    el.className = ok ? 'ok' : 'err';
+    el.style.display = 'block';
+  }
+
+  document.addEventListener('DOMContentLoaded', async function () {
+    session = await requireAuth('connexion.html');
+    if (!session) return;
+
+    try {
+      var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/calendrier-social-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: session.access_token })
+      });
+      document.getElementById('etat-chargement').style.display = 'none';
+      if (!resp.ok) throw new Error('reseau');
+
+      var config = await resp.json();
+      if (!config || config.existe === false || !config.id) {
+        document.getElementById('etat-vide').style.display = 'block';
+        return;
+      }
+
+      var badge = document.getElementById('badge-formule');
+      badge.textContent = config.formule === 'sur_mesure' ? 'Sur-Mesure' : 'Standard';
+      badge.style.display = 'inline-block';
+
+      document.getElementById('f-secteur').value = config.secteur_activite || '';
+      document.getElementById('f-ton').value = config.ton || '';
+      document.getElementById('f-nb-posts').value = String(config.nb_posts_mois || 8);
+
+      var cibles = Array.isArray(config.reseaux_cibles) ? config.reseaux_cibles : [];
+      document.querySelectorAll('.reseau').forEach(function (c) {
+        c.checked = cibles.indexOf(c.value) !== -1;
+      });
+
+      document.getElementById('zone-formulaire').style.display = 'block';
+    } catch (err) {
+      document.getElementById('etat-chargement').style.display = 'none';
+      document.getElementById('etat-erreur').style.display = 'block';
+    }
+  });
+
+  document.getElementById('btn-enregistrer').addEventListener('click', async function () {
+    var btn = this;
+    document.getElementById('message').style.display = 'none';
+
+    var reseaux = Array.prototype.slice.call(document.querySelectorAll('.reseau:checked')).map(function (c) { return c.value; });
+    if (reseaux.length === 0) { afficherMessage('Choisissez au moins un réseau.', false); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement...';
+
+    var payload = {
+      access_token: session.access_token,
+      secteur_activite: document.getElementById('f-secteur').value.trim() || null,
+      ton: document.getElementById('f-ton').value.trim() || null,
+      reseaux_cibles: reseaux,
+      nb_posts_mois: parseInt(document.getElementById('f-nb-posts').value, 10)
+    };
+
+    try {
+      var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/calendrier-social-modifier', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!resp.ok) throw new Error("Échec de l'enregistrement.");
+      afficherMessage('Modifications enregistrées. Elles s’appliqueront à la prochaine génération.', true);
+    } catch (err) {
+      afficherMessage(err.message || 'Une erreur est survenue.', false);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enregistrer les modifications';
+    }
+  });
+})();
+</script>
+</body>
+</html>

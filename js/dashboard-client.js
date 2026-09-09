@@ -382,6 +382,62 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // ---------- Réseaux sociaux (calendrier de posts) : ajout self-service ----------
+  const blocReseaux = document.getElementById("bloc-reseaux");
+  const blocReseauxActif = document.getElementById("bloc-reseaux-actif");
+  const btnReseaux = document.getElementById("btn-reseaux");
+  const messageReseaux = document.getElementById("message-reseaux");
+
+  if (blocReseaux && btnReseaux) {
+    document.getElementById("reseaux-secteur").value = compte?.secteur_activite || "";
+
+    const { data: optionsReseaux } = await sb
+      .from("options_actives")
+      .select("statut, options_produit!inner(produit_parent)")
+      .eq("compte_client_id", utilisateur.compte_client_id)
+      .eq("statut", "active")
+      .eq("options_produit.produit_parent", "reseaux_sociaux");
+
+    if ((optionsReseaux || []).length > 0) {
+      blocReseaux.style.display = "none";
+      if (blocReseauxActif) blocReseauxActif.style.display = "block";
+    } else if (!peutSouscrire) {
+      btnReseaux.disabled = true;
+      messageReseaux.innerHTML = `<span class="sous-titre-section">Seul le propriétaire ou un administrateur peut souscrire.</span>`;
+    } else {
+      btnReseaux.addEventListener("click", async () => {
+        messageReseaux.innerHTML = "";
+        const reseaux = Array.from(document.querySelectorAll(".reseaux-cible:checked")).map((c) => c.value);
+        if (reseaux.length === 0) {
+          messageReseaux.innerHTML = `<p class="message-erreur">Choisissez au moins un réseau.</p>`;
+          return;
+        }
+        btnReseaux.disabled = true;
+        btnReseaux.textContent = "Redirection vers le paiement...";
+        try {
+          const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/reseaux-ajouter`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              access_token: session.access_token,
+              formule: document.getElementById("reseaux-formule").value,
+              secteur_activite: document.getElementById("reseaux-secteur").value.trim() || null,
+              reseaux_cibles: reseaux,
+              nb_posts_mois: parseInt(document.getElementById("reseaux-nb-posts").value, 10)
+            })
+          });
+          const result = await resp.json();
+          if (!resp.ok) throw new Error(result.erreur || "Échec de la souscription.");
+          window.location.href = result.checkout_url;
+        } catch (err) {
+          messageReseaux.innerHTML = `<p class="message-erreur">${err.message}</p>`;
+          btnReseaux.disabled = false;
+          btnReseaux.textContent = "Souscrire";
+        }
+      });
+    }
+  }
+
   const debutMois = new Date();
   debutMois.setDate(1);
   debutMois.setHours(0, 0, 0, 0);
