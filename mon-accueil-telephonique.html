@@ -58,6 +58,21 @@
 
     <div class="carte-config" id="carte-numero" style="display:none;">
       <div class="info-numero" id="info-numero"></div>
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer; font-weight:600; font-size:0.9rem;">Comment activer le renvoi d'appel</summary>
+        <div style="font-size:0.86rem; color:#444; margin-top:10px; line-height:1.55;">
+          <p>Vous gardez votre numéro habituel. Vous mettez simplement un <strong>renvoi d'appel</strong> vers votre numéro d'accueil : quand un client vous appelle et que vous ne décrochez pas, l'assistant prend le relais.</p>
+          <p style="font-weight:600; margin-bottom:4px;">Depuis un mobile (codes standard, la plupart des opérateurs) :</p>
+          <ul style="margin:0 0 10px 0; padding-left:18px;">
+            <li><strong>Renvoi si pas de réponse</strong> (recommandé) : composez <code id="code-noreply">**61*VOTRE-NUMÉRO#</code> puis appel</li>
+            <li><strong>Renvoi si occupé</strong> : <code id="code-busy">**67*VOTRE-NUMÉRO#</code> puis appel</li>
+            <li><strong>Renvoi si injoignable</strong> : <code id="code-unreach">**62*VOTRE-NUMÉRO#</code> puis appel</li>
+            <li><strong>Renvoi systématique</strong> (tous les appels, ne sonne jamais chez vous) : <code id="code-all">**21*VOTRE-NUMÉRO#</code> puis appel</li>
+            <li><strong>Tout annuler</strong> : <code>##002#</code> puis appel</li>
+          </ul>
+          <p>Depuis une <strong>ligne fixe</strong> ou une box (Orange, Free, SFR, Bouygues…) : le renvoi se règle dans l'espace client de votre opérateur ou l'appli de la box, rubrique « Téléphonie » → « Renvoi d'appel ». En cas de doute, votre conseiller vous accompagne.</p>
+        </div>
+      </details>
     </div>
 
     <div class="carte-config">
@@ -246,8 +261,15 @@
       var carteNum = $('carte-numero');
       carteNum.style.display = 'block';
       $('info-numero').innerHTML = config.numero_dedie
-        ? 'Votre numéro d\'accueil : <code>' + config.numero_dedie + '</code>'
+        ? 'Votre numéro d\'accueil : <code>' + config.numero_dedie + '</code> — mettez un renvoi d\'appel de votre ligne vers ce numéro (ci-dessous).'
         : 'Votre numéro dédié est en cours d\'attribution — votre conseiller vous le communiquera. Vous pouvez déjà tout configurer ici.';
+      if (config.numero_dedie) {
+        var n = String(config.numero_dedie).replace(/[^0-9+]/g, '');
+        [['code-noreply', '**61*'], ['code-busy', '**67*'], ['code-unreach', '**62*'], ['code-all', '**21*']].forEach(function (p) {
+          var el = document.getElementById(p[0]);
+          if (el) el.textContent = p[1] + n + '#';
+        });
+      }
 
       var types = Array.isArray(config.types_accueil) ? config.types_accueil : ['message'];
       $('t-rdv').checked = types.indexOf('rdv') >= 0;
