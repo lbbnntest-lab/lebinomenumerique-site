@@ -188,7 +188,10 @@ document.addEventListener("DOMContentLoaded", () => {
       chatbot_cal_com_link: niveauChatbot >= 2 ? lienCalComChatbot : null,
       // Option SEO ("" | "audit" | "audit_suivi"). Facturation à câbler dans
       // wf14 (prix Stripe "Mise en avant Google" à créer).
-      option_seo: document.getElementById("option_seo").value || null
+      option_seo: document.getElementById("option_seo").value || null,
+      // Option Configurateur de devis ("" | "starter" | "pro"). Facturation +
+      // provisioning câblés dans wf14 (prix Stripe SITE_DEVIS_MB_* à créer au Live).
+      option_devis_mb: document.getElementById("option_devis_mb").value || null
     };
 
     try {
