@@ -1,12 +1,13 @@
 // Parcours d'achat self-service du chatbot vendu seul (Lot 1, 31/08/2026).
 // Envoie la demande à wf52 (webhook chatbot-mb-checkout) qui renvoie l'URL Stripe.
 // Le compte client + la config chatbots_clients sont créés après paiement par
-// la branche Stripe de wf52. Voir MASTER_PLAN.md §E-ter.
+// la branche Stripe de wf52. Présentation : js/wizard.js.
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const niveauParam = params.get("niveau");
   const codeAffiliationParam = params.get("code_affiliation");
 
+  const form = document.getElementById("form-checkout-chatbot");
   const selectNiveau = document.getElementById("niveau");
   const champCalcom = document.getElementById("champ-calcom");
   const champUrgence = document.getElementById("champ-urgence");
@@ -15,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (niveauParam && ["1", "2", "3"].includes(niveauParam)) selectNiveau.value = niveauParam;
   if (codeAffiliationParam) document.getElementById("code_affiliation").value = codeAffiliationParam;
+
+  const PRIX = { 1: [390, 29], 2: [590, 49], 3: [1190, 89] };
 
   function majNiveau() {
     const n = parseInt(selectNiveau.value, 10);
@@ -25,16 +28,45 @@ document.addEventListener("DOMContentLoaded", () => {
   majNiveau();
   selectNiveau.addEventListener("change", majNiveau);
 
-  document.getElementById("form-checkout-chatbot").addEventListener("submit", async (e) => {
+  // Étapes : 0 offre · 1 assistant · 2 coordonnées · 3 récap.
+  window.wizardValiderEtape = function (idx) {
+    if (idx === 1) {
+      const n = parseInt(selectNiveau.value, 10);
+      if (n >= 2 && !inputCalcom.value.trim()) {
+        return `Le Niveau ${n} nécessite un lien Cal.com pour la prise de rendez-vous.`;
+      }
+    }
+    return true;
+  };
+
+  window.wizardRecap = function () {
+    const n = parseInt(selectNiveau.value, 10);
+    const [setup, mensuel] = PRIX[n] || PRIX[1];
+    return {
+      lignes: [
+        { k: "Formule", v: "Chatbot Niveau " + n },
+        { k: "Couleur du widget", v: document.getElementById("couleur_widget").selectedOptions[0].text },
+        { k: "Assistant de", v: document.getElementById("nom_entreprise").value.trim() || "—" },
+        { k: "Email", v: document.getElementById("email").value.trim() || "—" },
+        { k: "Installation (une fois)", v: setup + " €" },
+        { k: "Abonnement", v: mensuel + " € / mois" }
+      ],
+      total: setup + " €",
+      totalLabel: "À régler maintenant",
+      note: "Puis " + mensuel + " € / mois. Après le paiement, vous recevez la ligne de code à coller sur votre site."
+    };
+  };
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const zoneMessage = document.getElementById("zone-message");
-    const btn = document.getElementById("btn-submit");
+    const btn = form.querySelector(".wiz-payer");
     zoneMessage.innerHTML = "";
 
     const niveau = parseInt(selectNiveau.value, 10);
     const lienCalcom = inputCalcom.value.trim();
     if (niveau >= 2 && !lienCalcom) {
-      zoneMessage.innerHTML = `<p class="message-erreur">Le Niveau ${niveau} nécessite un lien Cal.com pour la prise de rendez-vous.</p>`;
+      zoneMessage.innerHTML = `<p class="message-erreur">Le Niveau ${niveau} nécessite un lien Cal.com (étape « Votre assistant »).</p>`;
       return;
     }
 

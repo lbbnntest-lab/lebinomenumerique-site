@@ -35,8 +35,58 @@ document.addEventListener("DOMContentLoaded", () => {
     banniere.className = "message-succes";
     banniere.style.cssText = "margin:0 0 16px;";
     banniere.textContent = "Ce site sera rattaché à votre espace client (" + params.get("email") + ").";
-    document.getElementById("form-checkout-siteweb")?.prepend(banniere);
+    const cible = document.querySelector(".wiz-carte");
+    if (cible) cible.insertBefore(banniere, cible.querySelector(".wiz-step"));
   }
+
+  // ---- récap + validation d'étape pour le wizard ----
+  const PRIX_SITE = { SITE_ESSENTIEL: [490, 19], SITE_PRO: [890, 39], SITE_ECOMMERCE: [1490, 79] };
+  const PRIX_CHATBOT = { 1: 29, 2: 49, 3: 89 };
+  const PRIX_DEVIS_MB = { starter: 29, pro: 59 };
+  const SEO_SETUP = 390;
+  const SEO_SUIVI = { setup_seo: 69, setup_geo: 69, setup_combine: 119 };
+
+  window.wizardValiderEtape = function (idx) {
+    if (idx === 0) {
+      const n = parseInt(document.getElementById("option_chatbot_niveau").value, 10);
+      if (n >= 2 && !document.getElementById("chatbot_cal_com_link").value.trim()) {
+        return `Le Niveau ${n} de l'assistant IA nécessite un lien Cal.com pour la prise de RDV.`;
+      }
+    }
+    return true;
+  };
+
+  window.wizardRecap = function () {
+    const pack = document.getElementById("code_reference");
+    const [setup, heberg] = PRIX_SITE[pack.value] || PRIX_SITE.SITE_ESSENTIEL;
+    const nChat = parseInt(document.getElementById("option_chatbot_niveau").value, 10) || 0;
+    const devisMb = document.getElementById("option_devis_mb").value;
+    const seo = document.getElementById("option_seo").value;
+
+    const lignes = [
+      { k: "Formule", v: pack.selectedOptions[0].text.split("—")[0].trim() },
+      { k: "Création du site (une fois)", v: setup + " €" },
+      { k: "Hébergement", v: heberg + " € / mois" }
+    ];
+    let payerMaintenant = setup;
+    let mensuel = heberg;
+    if (nChat > 0) { lignes.push({ k: "Assistant IA Niveau " + nChat, v: "+ " + PRIX_CHATBOT[nChat] + " € / mois" }); mensuel += PRIX_CHATBOT[nChat]; }
+    if (PRIX_DEVIS_MB[devisMb]) { lignes.push({ k: "Configurateur de devis", v: "+ " + PRIX_DEVIS_MB[devisMb] + " € / mois" }); mensuel += PRIX_DEVIS_MB[devisMb]; }
+    if (seo) {
+      lignes.push({ k: "Visibilité — setup (une fois)", v: "+ " + SEO_SETUP + " €" });
+      payerMaintenant += SEO_SETUP;
+      if (SEO_SUIVI[seo]) { lignes.push({ k: "Visibilité — suivi", v: "+ " + SEO_SUIVI[seo] + " € / mois" }); mensuel += SEO_SUIVI[seo]; }
+    }
+    lignes.push({ k: "Entreprise", v: document.getElementById("raison_sociale").value.trim() || "—" });
+    lignes.push({ k: "Email", v: document.getElementById("email").value.trim() || "—" });
+
+    return {
+      lignes: lignes,
+      total: payerMaintenant + " €",
+      totalLabel: "À régler maintenant",
+      note: "Puis " + mensuel + " € / mois. Votre site vous est présenté pour validation avant la mise en ligne."
+    };
+  };
 
   function ajouterLigneProduit() {
     if (listeProduits.children.length >= MAX_PRODUITS) return;
@@ -142,10 +192,11 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter((a) => a.auteur && a.texte);
   }
 
-  document.getElementById("form-checkout-siteweb").addEventListener("submit", async (e) => {
+  const form = document.getElementById("form-checkout-siteweb");
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const zoneMessage = document.getElementById("zone-message");
-    const btn = document.getElementById("btn-submit");
+    const btn = form.querySelector(".wiz-payer");
     zoneMessage.innerHTML = "";
     btn.disabled = true;
     btn.textContent = "Préparation du paiement...";

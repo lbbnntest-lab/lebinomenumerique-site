@@ -1,20 +1,41 @@
 // Parcours d'achat self-service du Devis marque blanche vendu seul (03/09/2026).
 // Envoie la demande à wf59 (webhook devis-mb-checkout) qui renvoie l'URL Stripe.
 // Le compte client + la config devis_marque_blanche_clients sont créés après
-// paiement par la branche Stripe de wf59. Modèle : checkout-chatbot.js.
+// paiement par la branche Stripe de wf59. Présentation : js/wizard.js.
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const formuleParam = params.get("formule");
   const codeAffiliationParam = params.get("code_affiliation") || params.get("code");
 
+  const form = document.getElementById("form-checkout-devis-mb");
   const selectFormule = document.getElementById("formule");
   if (formuleParam && ["starter", "pro"].includes(formuleParam)) selectFormule.value = formuleParam;
   if (codeAffiliationParam) document.getElementById("code_affiliation").value = codeAffiliationParam;
 
-  document.getElementById("form-checkout-devis-mb").addEventListener("submit", async (e) => {
+  const PRIX = { starter: [290, 29], pro: [490, 59] };
+
+  window.wizardRecap = function () {
+    const f = selectFormule.value === "pro" ? "pro" : "starter";
+    const [setup, mensuel] = PRIX[f];
+    return {
+      lignes: [
+        { k: "Formule", v: f === "pro" ? "Pro" : "Starter" },
+        { k: "Entreprise", v: document.getElementById("nom_entreprise").value.trim() || "—" },
+        { k: "Demandes envoyées à", v: document.getElementById("email_notification_leads").value.trim() || "—" },
+        { k: "Email", v: document.getElementById("email").value.trim() || "—" },
+        { k: "Installation (une fois)", v: setup + " €" },
+        { k: "Abonnement", v: mensuel + " € / mois" }
+      ],
+      total: setup + " €",
+      totalLabel: "À régler maintenant",
+      note: "Puis " + mensuel + " € / mois. Après le paiement, vous recevez le lien de votre page de devis et un accès pour construire votre barème."
+    };
+  };
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const zoneMessage = document.getElementById("zone-message");
-    const btn = document.getElementById("btn-submit");
+    const btn = form.querySelector(".wiz-payer");
     zoneMessage.innerHTML = "";
     btn.disabled = true;
     btn.textContent = "Préparation du paiement...";

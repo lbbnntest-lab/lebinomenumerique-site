@@ -67,19 +67,28 @@
 
     btnPrec.addEventListener('click', function () { aller(i - 1); });
     btnSuiv.addEventListener('click', function () {
-      if (!validerEtape(steps[i])) return;
+      if (!validerEtape(steps[i], i)) return;
       aller(i + 1);
     });
 
-    function validerEtape(step) {
+    function validerEtape(step, idx) {
       var champs = step.querySelectorAll('input, select, textarea');
       for (var k = 0; k < champs.length; k++) {
         var c = champs[k];
-        if (c.disabled || c.type === 'hidden') continue;
+        if (c.disabled || c.type === 'hidden' || c.offsetParent === null) continue;
         // ne pas bloquer sur un champ dans un <details> replié
         var det = c.closest('details');
         if (det && !det.open) continue;
         if (!c.checkValidity()) { c.reportValidity(); return false; }
+      }
+      // validateur métier optionnel fourni par la page : renvoie true | message d'erreur
+      if (typeof window.wizardValiderEtape === 'function') {
+        var r = window.wizardValiderEtape(idx);
+        if (r !== true && r != null) {
+          var zone = form.querySelector('#zone-message') || form.querySelector('.wiz-msg');
+          if (zone) zone.innerHTML = '<p class="message-erreur">' + echap(r) + '</p>';
+          return false;
+        }
       }
       return true;
     }
@@ -138,6 +147,8 @@
         p.classList.toggle('active', idx === i);
         p.classList.toggle('faite', idx < i);
       });
+      var zone = form.querySelector('#zone-message') || form.querySelector('.wiz-msg');
+      if (zone) zone.innerHTML = '';
       var pct = Math.round(((i + 1) / steps.length) * 100);
       barre.style.width = pct + '%';
       compteur.innerHTML = 'Étape ' + (i + 1) + ' sur ' + steps.length +

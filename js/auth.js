@@ -27,32 +27,67 @@ document.addEventListener("DOMContentLoaded", () => {
   if (planParam) planInput.value = planParam;
   if (codeAffiliationParam) document.getElementById("code_affiliation").value = codeAffiliationParam;
 
+  const LIBELLE_BRIQUE = {
+    SECRETARIAT_UTILISATEUR_SUPP: "Utilisateur supplémentaire (+15 €/mois)",
+    SECRETARIAT_SUPPORT_PRIORITAIRE: "Support prioritaire, réponse sous 24h (+12 €/mois)",
+    SECRETARIAT_VOLUME_400: "Volume + : +400 demandes/mois (+29 €/mois)",
+    SECRETARIAT_VOLUME_1200: "Volume ++ : +1200 demandes/mois (+59 €/mois)"
+  };
   if (briquesCodes.length) {
-    const recap = document.createElement("p");
-    recap.style.cssText = "color:var(--gris-texte); font-size:.85rem; margin-top:-8px;";
-    recap.textContent = "Options sélectionnées : " + briquesCodes.map(c =>
-      ({ SECRETARIAT_UTILISATEUR_SUPP: "Utilisateur supplémentaire (+15€/mois)",
-         SECRETARIAT_SUPPORT_PRIORITAIRE: "Support prioritaire, réponse sous 24h (+12€/mois)",
-         SECRETARIAT_VOLUME_400: "Volume + : +400 demandes/mois (+29€/mois)",
-         SECRETARIAT_VOLUME_1200: "Volume ++ : +1200 demandes/mois (+59€/mois)" }[c] || c)
-    ).join(", ");
-    planInput.insertAdjacentElement("afterend", recap);
+    const champ = document.getElementById("champ-briques");
+    const recap = document.getElementById("briques-recap");
+    if (champ && recap) {
+      champ.style.display = "";
+      recap.textContent = briquesCodes.map(c => LIBELLE_BRIQUE[c] || c).join(" · ");
+    }
+  }
+
+  // Résumé de l'offre choisie (étape 1 du wizard).
+  const LIBELLE_PLAN = {
+    SECRETARIAT_SOCLE: "Gestion Email — 89 €/mois (250 demandes/mois incluses)",
+    PACK_COMPLET: "Pack Complet — Gestion Email + Gestion Appels, 168 €/mois (−10 € de remise)",
+    TEL_ESSENTIEL: "Gestion Appels — Standard, 89 €/mois",
+    TEL_PRO: "Gestion Appels — Avancé, 149 €/mois",
+    TEL_SURMESURE: "Gestion Appels — Sur-Mesure, 199 €/mois"
+  };
+  const resume = document.getElementById("wiz-offre-resume");
+  if (resume) {
+    resume.innerHTML = "<strong>Votre abonnement</strong><br>" +
+      (LIBELLE_PLAN[planInput.value] || planInput.value || "Abonnement Le Binôme Numérique");
   }
 
   // SECRETARIAT_SOCLE, ses briques et les plans TEL_* n'ont qu'un Price ID
-  // mensuel pour l'instant (voir config.js) — masquer le choix de cycle pour
-  // éviter d'envoyer un stripe_price_id undefined si l'utilisateur choisit
-  // trimestriel/annuel.
+  // mensuel pour l'instant (voir config.js) — masquer le choix de cycle.
   if (planInput.value === "SECRETARIAT_SOCLE" || planInput.value === "PACK_COMPLET" || planInput.value.startsWith("TEL_")) {
     const cycle = document.getElementById("cycle_facturation");
     cycle.value = "mensuel";
     cycle.closest(".champ").classList.add("hidden");
   }
 
-  document.getElementById("form-inscription").addEventListener("submit", async (e) => {
+  window.wizardRecap = function () {
+    const lignes = [
+      { k: "Abonnement", v: LIBELLE_PLAN[planInput.value] || planInput.value || "—" }
+    ];
+    if (briquesCodes.length) {
+      lignes.push({ k: "Options", v: briquesCodes.map(c => (LIBELLE_BRIQUE[c] || c).replace(/\s*\(.*\)$/, "")).join(", ") });
+    }
+    const cycleEl = document.getElementById("cycle_facturation");
+    if (cycleEl && !cycleEl.closest(".champ").classList.contains("hidden")) {
+      lignes.push({ k: "Facturation", v: cycleEl.selectedOptions[0].text });
+    }
+    lignes.push({ k: "Entreprise", v: document.getElementById("raison_sociale").value.trim() || "—" });
+    lignes.push({ k: "Email", v: document.getElementById("email").value.trim() || "—" });
+    return {
+      lignes: lignes,
+      note: "Vous serez redirigé vers le paiement sécurisé Stripe. Un email de confirmation vous sera envoyé."
+    };
+  };
+
+  const formInscription = document.getElementById("form-inscription");
+  formInscription.addEventListener("submit", async (e) => {
     e.preventDefault();
     const zoneMessage = document.getElementById("zone-message");
-    const btn = document.getElementById("btn-submit");
+    const btn = formInscription.querySelector(".wiz-payer") || document.getElementById("btn-submit");
     zoneMessage.innerHTML = "";
     btn.disabled = true;
     btn.textContent = "Création du compte...";

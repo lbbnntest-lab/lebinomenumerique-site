@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Commander mon site web — Le Binôme Numérique</title>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/wizard.css">
 </head>
 <body>
 
@@ -14,198 +15,204 @@
   </div>
 </header>
 
-<div class="carte">
-  <h2>Commander votre site web</h2>
-  <p style="color:var(--gris-texte); font-size:.9rem;">
-    Un forfait de création réglé une fois, puis un abonnement Hébergement (SSL + maintenance) obligatoire et facturé chaque mois — voir le détail des prix sur la page d'accueil.
-  </p>
+<div class="wiz" style="max-width:600px;">
+  <form id="form-checkout-siteweb" data-wizard data-titre="Commander votre site web" data-cta="Continuer vers le paiement">
+    <div class="wiz-carte">
+      <div class="wiz-tete"></div>
 
-  <form id="form-checkout-siteweb">
-    <div class="champ">
-      <label>Formule</label>
-      <select id="code_reference" required>
-        <option value="SITE_ESSENTIEL">Site Essentiel — 490€ + 19€/mois</option>
-        <option value="SITE_PRO">Site Pro — 890€ + 39€/mois</option>
-        <option value="SITE_ECOMMERCE">Site E-commerce — 1490€ + 79€/mois</option>
-      </select>
-    </div>
+      <!-- Étape 1 — Formule & options -->
+      <section class="wiz-step" data-titre="Formule">
+        <p class="wiz-sous">Un forfait de création réglé une fois, puis un abonnement Hébergement mensuel (SSL, maintenance et vos modifications de contenu incluses).</p>
+        <div class="champ">
+          <label for="code_reference">Formule</label>
+          <select id="code_reference" data-recap="Formule" required>
+            <option value="SITE_ESSENTIEL">Site Essentiel — 490 € + 19 €/mois</option>
+            <option value="SITE_PRO">Site Pro — 890 € + 39 €/mois</option>
+            <option value="SITE_ECOMMERCE">Site E-commerce — 1490 € + 79 €/mois</option>
+          </select>
+        </div>
 
-    <div>
-      <div class="champ">
-        <label>Raison sociale</label>
-        <input type="text" id="raison_sociale">
-      </div>
-      <div class="champ">
-        <label>SIRET (14 chiffres)</label>
-        <input type="text" id="siret" pattern="[0-9]{14}" maxlength="14" required>
-      </div>
-      <div class="champ">
-        <label>Secteur d'activité</label>
-        <input type="text" id="secteur_activite" placeholder="Plomberie, conseil, artisanat..." required>
-      </div>
-    </div>
+        <p style="font-weight:600; margin:20px 0 4px;">Options <small style="font-weight:400; color:var(--gris-texte);">(facultatif)</small></p>
+        <div class="champ">
+          <label for="option_chatbot_niveau">Assistant IA sur mon site</label>
+          <select id="option_chatbot_niveau">
+            <option value="0">Aucun assistant</option>
+            <option value="1">Niveau 1 — questions + capture du contact (+29 €/mois)</option>
+            <option value="2">Niveau 2 — + prise de RDV (+49 €/mois)</option>
+            <option value="3">Niveau 3 — + devis auto + alerte urgence (+89 €/mois)</option>
+          </select>
+        </div>
+        <div id="champ-chatbot-calcom" class="champ hidden">
+          <label for="chatbot_cal_com_link">Lien Cal.com pour la prise de RDV <small>(requis Niveaux 2 et 3)</small></label>
+          <input type="url" id="chatbot_cal_com_link" placeholder="https://cal.com/...">
+        </div>
+        <p id="note-chatbot-n3" class="champ hidden" style="font-size:.85rem; color:var(--gris-texte); margin-top:-8px;">
+          Le barème de calcul du devis se configure depuis votre espace client après l'achat.
+        </p>
+        <div class="champ">
+          <label for="option_devis_mb">Configurateur de devis à votre marque</label>
+          <select id="option_devis_mb">
+            <option value="">Non</option>
+            <option value="starter">Starter — estimation en ligne, demandes par email (+29 €/mois)</option>
+            <option value="pro">Pro — + PDF de devis téléchargeable & mentions légales (+59 €/mois)</option>
+          </select>
+          <p style="font-size:.82rem; color:var(--gris-texte); margin-top:6px;">Un bouton « Demander un devis » ajouté à votre site. Sans frais d'installation. Le barème se règle depuis votre espace après l'achat.</p>
+        </div>
+        <div class="champ">
+          <label for="option_seo">Visibilité renforcée (SEO + GEO)</label>
+          <select id="option_seo">
+            <option value="">Non</option>
+            <option value="setup">Setup Visibilité seul (+390 €, une fois)</option>
+            <option value="setup_seo">Setup + suivi SEO (+390 € une fois, puis +69 €/mois)</option>
+            <option value="setup_geo">Setup + suivi GEO — assistants IA (+390 € une fois, puis +69 €/mois)</option>
+            <option value="setup_combine">Setup + suivi combiné SEO & GEO (+390 € une fois, puis +119 €/mois)</option>
+          </select>
+          <p style="font-size:.82rem; color:var(--gris-texte); margin-top:6px;">Audit, corrections sur votre site, fiche Google Business, optimisation pour Google et les assistants IA. Réalisé après la mise en ligne.</p>
+        </div>
+      </section>
 
-    <div class="champ">
-      <label>Prénom</label>
-      <input type="text" id="prenom" required>
-    </div>
-    <div class="champ">
-      <label>Nom</label>
-      <input type="text" id="nom" required>
-    </div>
-    <div class="champ">
-      <label>Email</label>
-      <input type="email" id="email" required>
-    </div>
-    <div class="champ">
-      <label>Téléphone</label>
-      <input type="tel" id="telephone" required>
-    </div>
-    <div class="champ">
-      <label>Code d'affiliation commercial <small>(optionnel)</small></label>
-      <input type="text" id="code_affiliation">
-    </div>
+      <!-- Étape 2 — Votre entreprise -->
+      <section class="wiz-step" data-titre="Votre entreprise">
+        <div class="champ">
+          <label for="raison_sociale">Raison sociale</label>
+          <input type="text" id="raison_sociale" data-recap="Entreprise">
+        </div>
+        <div class="champ">
+          <label for="siret">SIRET <small>(14 chiffres)</small></label>
+          <input type="text" id="siret" pattern="[0-9]{14}" maxlength="14" required>
+        </div>
+        <div class="champ">
+          <label for="secteur_activite">Secteur d'activité</label>
+          <input type="text" id="secteur_activite" placeholder="Plomberie, conseil, artisanat, restaurant..." required data-recap="Secteur">
+        </div>
+      </section>
 
-    <hr style="margin:24px 0; border:none; border-top:1px solid #e5e7eb;">
-    <p style="font-weight:600; margin-bottom:12px;">Personnalisation de votre site</p>
-    <p style="color:var(--gris-texte); font-size:.85rem; margin-bottom:16px;">
-      Ces informations permettent à notre IA de rédiger un contenu adapté à votre activité, plutôt qu'un texte générique.
-    </p>
+      <!-- Étape 3 — Vos coordonnées -->
+      <section class="wiz-step" data-titre="Vos coordonnées">
+        <div class="champ">
+          <label for="prenom">Prénom</label>
+          <input type="text" id="prenom" required>
+        </div>
+        <div class="champ">
+          <label for="nom">Nom</label>
+          <input type="text" id="nom" required>
+        </div>
+        <div class="champ">
+          <label for="email">Email</label>
+          <input type="email" id="email" required data-recap="Email">
+        </div>
+        <div class="champ">
+          <label for="telephone">Téléphone</label>
+          <input type="tel" id="telephone" required>
+        </div>
+        <details class="wiz-optionnel">
+          <summary>Code d'affiliation commercial (optionnel)</summary>
+          <div class="champ">
+            <label for="code_affiliation">Code d'affiliation</label>
+            <input type="text" id="code_affiliation">
+          </div>
+        </details>
+      </section>
 
-    <div class="champ">
-      <label>Couleur préférée <small>(optionnel)</small></label>
-      <select id="couleur_preferee">
-        <option value="">Pas de préférence</option>
-        <option value="bleu">Bleu</option>
-        <option value="vert">Vert</option>
-        <option value="rouge">Rouge</option>
-        <option value="orange">Orange</option>
-        <option value="jaune">Jaune</option>
-        <option value="violet">Violet</option>
-        <option value="rose">Rose</option>
-        <option value="noir">Noir</option>
-        <option value="gris">Gris</option>
-        <option value="marron">Marron</option>
-        <option value="turquoise">Turquoise</option>
-      </select>
-    </div>
-    <div class="champ">
-      <label>Qu'est-ce qui doit être mis en avant sur votre site ? <small>(optionnel)</small></label>
-      <textarea id="contenu_supplementaire" rows="3" maxlength="480" placeholder="Ex : nos 20 ans d'expérience, notre intervention rapide, notre atelier ouvert le samedi..."></textarea>
-    </div>
-    <div class="champ">
-      <label>Nom du dirigeant <small>(optionnel, affiché en signature sur la page À propos)</small></label>
-      <input type="text" id="nom_dirigeant">
-    </div>
-    <div class="champ">
-      <label>L'histoire de votre entreprise <small>(optionnel — depuis quand, comment ça a commencé...)</small></label>
-      <textarea id="histoire_entreprise" rows="3" maxlength="600" placeholder="Ex : Créée en 2015 par..., nous intervenons depuis..."></textarea>
-    </div>
-    <div class="champ">
-      <label>Année de création <small>(optionnel — affichée en repère sur le site : « Depuis 1998 »)</small></label>
-      <input type="number" id="annee_creation" min="1900" max="2026" placeholder="Ex : 1998">
-    </div>
-    <div class="champ">
-      <label>Ce qui vous différencie de la concurrence <small>(optionnel)</small></label>
-      <textarea id="differenciateur" rows="2" maxlength="400"></textarea>
-    </div>
-    <div class="champ" id="champ-zone-intervention">
-      <label>Zone d'intervention <small>(optionnel)</small></label>
-      <input type="text" id="zone_intervention" placeholder="Ex : Paris et la petite couronne">
-    </div>
-    <div class="champ">
-      <label>Horaires <small>(optionnel)</small></label>
-      <input type="text" id="horaires" placeholder="Ex : Lun-Ven 8h-18h, Sam sur RDV">
-    </div>
-    <div class="champ">
-      <label>Lien vers votre logo <small>(optionnel)</small></label>
-      <input type="url" id="logo_url" placeholder="https://...">
-    </div>
-    <div class="champ">
-      <label>Lien vers vos photos <small>(optionnel — fiche Google, Instagram, Drive...)</small></label>
-      <input type="url" id="photos_url" placeholder="https://...">
-    </div>
-    <div class="champ">
-      <label>Avis clients <small>(optionnel — jamais reformulés, affichés tels quels sur le site, max 3)</small></label>
-      <div id="liste-avis"></div>
-      <button type="button" class="btn btn-secondaire" id="btn-ajouter-avis">+ Ajouter un avis</button>
-    </div>
-    <div id="champs-restaurant" class="hidden">
-      <div class="champ">
-        <label>Vos plats phares <small>(quelques lignes — la carte complète va dans le PDF ci-dessous)</small></label>
-        <textarea id="carte_texte" rows="4" maxlength="480" placeholder="Ex :&#10;Entrées&#10;Six huîtres — 14 €&#10;Velouté du jour — 8 €&#10;&#10;Plats&#10;Marmite dieppoise — 24 €"></textarea>
-      </div>
-      <div class="champ">
-        <label>Lien vers votre carte complète en PDF <small>(optionnel)</small></label>
-        <input type="url" id="menu_pdf_url" placeholder="https://...">
-      </div>
-    </div>
+      <!-- Étape 4 — Personnalisation -->
+      <section class="wiz-step" data-titre="Personnalisation">
+        <p class="wiz-sous"><strong>Facultatif.</strong> Plus vous en dites, plus le texte de votre site vous ressemble — mais notre IA sait aussi partir de peu. Vous pourrez tout modifier avant la mise en ligne.</p>
 
-    <div id="champs-catalogue" class="hidden">
-      <hr style="margin:24px 0; border:none; border-top:1px solid #e5e7eb;">
-      <p style="font-weight:600; margin-bottom:6px;">Votre catalogue produits</p>
-      <p style="color:var(--gris-texte); font-size:.85rem; margin-bottom:16px;">
-        Ajoutez vos produits (jusqu'à 30) — ils seront directement intégrés à votre site, sans étape manuelle de notre côté.
-        La <strong>catégorie</strong> est optionnelle : si vous en renseignez au moins deux, le site affiche des onglets (ex : Entrées / Plats / Desserts).
-      </p>
-      <datalist id="liste-categories-produits">
-        <option value="Entrées"></option>
-        <option value="Plats"></option>
-        <option value="Desserts"></option>
-        <option value="Boissons"></option>
-        <option value="À emporter"></option>
-        <option value="Nouveautés"></option>
-      </datalist>
-      <div id="liste-produits"></div>
-      <button type="button" class="btn btn-secondaire" id="btn-ajouter-produit" style="margin-bottom:20px;">+ Ajouter un produit</button>
-    </div>
+        <details class="wiz-optionnel" open>
+          <summary>Contenu &amp; identité</summary>
+          <div class="champ">
+            <label for="couleur_preferee">Couleur préférée</label>
+            <select id="couleur_preferee">
+              <option value="">Pas de préférence</option>
+              <option value="bleu">Bleu</option><option value="vert">Vert</option><option value="rouge">Rouge</option>
+              <option value="orange">Orange</option><option value="jaune">Jaune</option><option value="violet">Violet</option>
+              <option value="rose">Rose</option><option value="noir">Noir</option><option value="gris">Gris</option>
+              <option value="marron">Marron</option><option value="turquoise">Turquoise</option>
+            </select>
+          </div>
+          <div class="champ">
+            <label for="contenu_supplementaire">Qu'est-ce qui doit être mis en avant sur votre site ?</label>
+            <textarea id="contenu_supplementaire" rows="3" maxlength="480" placeholder="Ex : nos 20 ans d'expérience, notre intervention rapide, notre atelier ouvert le samedi..."></textarea>
+          </div>
+          <div class="champ">
+            <label for="nom_dirigeant">Nom du dirigeant <small>(signature sur la page À propos)</small></label>
+            <input type="text" id="nom_dirigeant">
+          </div>
+          <div class="champ">
+            <label for="histoire_entreprise">L'histoire de votre entreprise</label>
+            <textarea id="histoire_entreprise" rows="3" maxlength="600" placeholder="Ex : Créée en 2015 par..., nous intervenons depuis..."></textarea>
+          </div>
+          <div class="champ">
+            <label for="annee_creation">Année de création <small>(« Depuis 1998 »)</small></label>
+            <input type="number" id="annee_creation" min="1900" max="2026" placeholder="Ex : 1998">
+          </div>
+          <div class="champ">
+            <label for="differenciateur">Ce qui vous différencie de la concurrence</label>
+            <textarea id="differenciateur" rows="2" maxlength="400"></textarea>
+          </div>
+          <div class="champ" id="champ-zone-intervention">
+            <label for="zone_intervention">Zone d'intervention</label>
+            <input type="text" id="zone_intervention" placeholder="Ex : Paris et la petite couronne">
+          </div>
+          <div class="champ">
+            <label for="horaires">Horaires</label>
+            <input type="text" id="horaires" placeholder="Ex : Lun-Ven 8h-18h, Sam sur RDV">
+          </div>
+        </details>
 
-    <hr style="margin:24px 0; border:none; border-top:1px solid #e5e7eb;">
-    <p style="font-weight:600; margin-bottom:6px;">Options</p>
-    <div class="champ">
-      <label>Assistant IA sur mon site</label>
-      <select id="option_chatbot_niveau">
-        <option value="0">Aucun assistant</option>
-        <option value="1">Niveau 1 — questions + capture du contact (+29€/mois)</option>
-        <option value="2">Niveau 2 — + prise de RDV (+49€/mois)</option>
-        <option value="3">Niveau 3 — + devis auto + alerte urgence (+89€/mois)</option>
-      </select>
-    </div>
-    <div id="champ-chatbot-calcom" class="champ hidden">
-      <label>Lien Cal.com pour la prise de RDV <small>(requis pour les Niveaux 2 et 3)</small></label>
-      <input type="url" id="chatbot_cal_com_link" placeholder="https://cal.com/...">
-    </div>
-    <p id="note-chatbot-n3" class="champ hidden" style="font-size:.85rem; color:var(--gris-texte); margin-top:-8px;">
-      Le barème de calcul du devis se configure depuis votre espace client après l'achat.
-    </p>
+        <details class="wiz-optionnel">
+          <summary>Images &amp; avis</summary>
+          <div class="champ">
+            <label for="logo_url">Lien vers votre logo</label>
+            <input type="url" id="logo_url" placeholder="https://...">
+          </div>
+          <div class="champ">
+            <label for="photos_url">Lien vers vos photos <small>(fiche Google, Instagram, Drive...)</small></label>
+            <input type="url" id="photos_url" placeholder="https://...">
+          </div>
+          <div class="champ">
+            <label>Avis clients <small>(jamais reformulés, affichés tels quels, max 3)</small></label>
+            <div id="liste-avis"></div>
+            <button type="button" class="btn btn-secondaire" id="btn-ajouter-avis">+ Ajouter un avis</button>
+          </div>
+        </details>
 
-    <div class="champ">
-      <label>Configurateur de devis à votre marque</label>
-      <select id="option_devis_mb">
-        <option value="">Non</option>
-        <option value="starter">Starter — estimation en ligne à votre marque, demandes reçues par email (+29€/mois)</option>
-        <option value="pro">Pro — formule Starter + PDF de devis téléchargeable & mentions légales personnalisées (+59€/mois)</option>
-      </select>
-      <p style="font-size:.82rem; color:var(--gris-texte); margin-top:6px;">Une page de devis en ligne à votre marque, avec votre barème. Un bouton « Demander un devis » est ajouté à votre site. Sans frais d'installation (compris dans la création du site). Le barème se règle depuis votre espace client après l'achat.</p>
-    </div>
+        <div id="champs-restaurant" class="hidden">
+          <div class="champ">
+            <label>Vos plats phares <small>(quelques lignes — la carte complète va dans le PDF ci-dessous)</small></label>
+            <textarea id="carte_texte" rows="4" maxlength="480" placeholder="Ex :&#10;Entrées&#10;Six huîtres — 14 €&#10;Velouté du jour — 8 €&#10;&#10;Plats&#10;Marmite dieppoise — 24 €"></textarea>
+          </div>
+          <div class="champ">
+            <label for="menu_pdf_url">Lien vers votre carte complète en PDF</label>
+            <input type="url" id="menu_pdf_url" placeholder="https://...">
+          </div>
+        </div>
 
-    <div class="champ">
-      <label>Visibilité renforcée (SEO + GEO)</label>
-      <select id="option_seo">
-        <option value="">Non</option>
-        <option value="setup">Setup Visibilité seul (+390€, une fois)</option>
-        <option value="setup_seo">Setup + suivi SEO (+390€ une fois, puis +69€/mois)</option>
-        <option value="setup_geo">Setup + suivi GEO — assistants IA (+390€ une fois, puis +69€/mois)</option>
-        <option value="setup_combine">Setup + suivi combiné SEO & GEO (+390€ une fois, puis +119€/mois)</option>
-      </select>
-      <p style="font-size:.82rem; color:var(--gris-texte); margin-top:6px;">Audit, corrections appliquées sur votre site, fiche Google Business, optimisation pour Google et pour les assistants IA (ChatGPT, Claude, Gemini). Réalisé après la mise en ligne.</p>
-    </div>
+        <div id="champs-catalogue" class="hidden">
+          <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+          <p style="font-weight:600; margin-bottom:6px;">Votre catalogue produits</p>
+          <p style="color:var(--gris-texte); font-size:.85rem; margin-bottom:14px;">
+            Jusqu'à 30 produits, directement intégrés à votre site. La <strong>catégorie</strong> est optionnelle : au moins deux et le site affiche des onglets.
+          </p>
+          <datalist id="liste-categories-produits">
+            <option value="Entrées"></option><option value="Plats"></option><option value="Desserts"></option>
+            <option value="Boissons"></option><option value="À emporter"></option><option value="Nouveautés"></option>
+          </datalist>
+          <div id="liste-produits"></div>
+          <button type="button" class="btn btn-secondaire" id="btn-ajouter-produit" style="margin-bottom:8px;">+ Ajouter un produit</button>
+        </div>
+      </section>
 
-    <button type="submit" class="btn btn-primaire" style="width:100%;" id="btn-submit">Continuer vers le paiement</button>
-    <p style="text-align:center; margin-top:12px; font-size:.85rem; color:var(--gris-texte);">
-      Paiement sécurisé par Stripe. L'abonnement Hébergement est résiliable depuis votre espace client, sans effet rétroactif sur le site déjà livré.
-    </p>
-    <div id="zone-message"></div>
+      <!-- Étape 5 — Récapitulatif -->
+      <section class="wiz-step" data-titre="Récapitulatif" data-recap>
+        <p class="wiz-sous">Vérifiez votre commande avant le paiement sécurisé.</p>
+        <div class="wiz-recap" data-wiz-recap></div>
+      </section>
+
+      <div class="wiz-nav"></div>
+      <div class="wiz-msg" id="zone-message"></div>
+      <p class="wiz-secure">Paiement sécurisé par Stripe. L'abonnement Hébergement est résiliable depuis votre espace client, sans effet rétroactif sur le site déjà livré.</p>
+    </div>
   </form>
 </div>
 
@@ -213,6 +220,7 @@
 
 <script src="js/config.js"></script>
 <script src="js/cookie-consent.js"></script>
+<script src="js/wizard.js"></script>
 <script src="js/checkout-siteweb.js"></script>
 <script src="js/chatbot-widget.js"></script>
 </body>
