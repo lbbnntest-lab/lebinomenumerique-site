@@ -43,8 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const PRIX_SITE = { SITE_ESSENTIEL: [490, 19], SITE_PRO: [890, 39], SITE_ECOMMERCE: [1490, 79] };
   const PRIX_CHATBOT = { 1: 29, 2: 49, 3: 89 };
   const PRIX_DEVIS_MB = { starter: 29, pro: 59 };
-  const SEO_SETUP = 390;
-  const SEO_SUIVI = { setup_seo: 69, setup_geo: 69, setup_combine: 119 };
+  // Visibilité en option d'un site (migration 104) : 0 setup, juste un mensuel.
+  const SEO_SUIVI = { setup_seo: 79, setup_geo: 79, setup_combine: 129 };
+  const SEO_LABEL = { setup_seo: "Visibilité — suivi SEO", setup_geo: "Visibilité — suivi GEO", setup_combine: "Visibilité — suivi SEO + GEO" };
 
   window.wizardValiderEtape = function (idx) {
     if (idx === 0) {
@@ -72,10 +73,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let mensuel = heberg;
     if (nChat > 0) { lignes.push({ k: "Assistant IA Niveau " + nChat, v: "+ " + PRIX_CHATBOT[nChat] + " € / mois" }); mensuel += PRIX_CHATBOT[nChat]; }
     if (PRIX_DEVIS_MB[devisMb]) { lignes.push({ k: "Configurateur de devis", v: "+ " + PRIX_DEVIS_MB[devisMb] + " € / mois" }); mensuel += PRIX_DEVIS_MB[devisMb]; }
-    if (seo) {
-      lignes.push({ k: "Visibilité — setup (une fois)", v: "+ " + SEO_SETUP + " €" });
-      payerMaintenant += SEO_SETUP;
-      if (SEO_SUIVI[seo]) { lignes.push({ k: "Visibilité — suivi", v: "+ " + SEO_SUIVI[seo] + " € / mois" }); mensuel += SEO_SUIVI[seo]; }
+    if (SEO_SUIVI[seo]) {
+      lignes.push({ k: SEO_LABEL[seo], v: "+ " + SEO_SUIVI[seo] + " € / mois" });
+      mensuel += SEO_SUIVI[seo];
     }
     lignes.push({ k: "Entreprise", v: document.getElementById("raison_sociale").value.trim() || "—" });
     lignes.push({ k: "Email", v: document.getElementById("email").value.trim() || "—" });
