@@ -1,0 +1,195 @@
+/* ============================================================================
+   wizard.css — assistant de commande en étapes (checkout / inscription).
+   Utilisé par : checkout-siteweb / -chatbot / -devis-mb / -reseaux-sociaux,
+   inscription.html. Piloté par js/wizard.js.
+   ========================================================================== */
+
+.wiz {
+  max-width: 560px;
+  margin: 32px auto 48px;
+  padding: 0 16px;
+}
+.wiz-carte {
+  background: var(--blanc);
+  border-radius: var(--radius);
+  box-shadow: var(--ombre-douce);
+  padding: 28px 26px 22px;
+}
+
+/* ---- en-tête : titre + progression ---- */
+.wiz-tete { margin-bottom: 22px; }
+.wiz-tete h1 {
+  font-family: var(--font-titres);
+  font-size: 1.32rem;
+  margin: 0 0 4px;
+  color: var(--bleu-nuit);
+}
+.wiz-compteur {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--bleu-primaire);
+  letter-spacing: .02em;
+}
+.wiz-compteur .wiz-etape-nom { color: var(--gris-texte); font-weight: 500; }
+
+.wiz-barre {
+  height: 5px;
+  border-radius: 999px;
+  background: #e9edf1;
+  margin: 12px 0 2px;
+  overflow: hidden;
+}
+.wiz-barre-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--degrade-primaire);
+  width: 0;
+  transition: width .35s cubic-bezier(.16, 1, .3, 1);
+}
+
+/* pastilles d'étapes (masquées en très petit écran) */
+.wiz-pastilles {
+  display: flex;
+  gap: 6px;
+  margin-top: 14px;
+}
+.wiz-pastille {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: .7rem;
+  color: #9aa5b1;
+  text-align: center;
+  line-height: 1.15;
+  cursor: default;
+}
+.wiz-pastille .rond {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: #e9edf1;
+  color: #9aa5b1;
+  font-weight: 700;
+  font-size: .78rem;
+  transition: background .25s, color .25s, transform .25s;
+}
+.wiz-pastille.faite .rond { background: var(--bleu-clair); color: var(--bleu-primaire); }
+.wiz-pastille.faite { color: var(--gris-texte); cursor: pointer; }
+.wiz-pastille.active .rond {
+  background: var(--degrade-primaire);
+  color: #fff;
+  transform: scale(1.12);
+  box-shadow: 0 6px 16px rgba(27, 111, 136, .32);
+}
+.wiz-pastille.active { color: var(--bleu-nuit); font-weight: 600; }
+.wiz-pastille .rond::after { content: attr(data-num); }
+.wiz-pastille.faite .rond::after { content: "✓"; }
+
+/* ---- étapes ---- */
+.wiz-step { display: none; animation: wiz-fade .3s cubic-bezier(.16, 1, .3, 1); }
+.wiz-step.is-active { display: block; }
+@keyframes wiz-fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wiz-step { animation: none; }
+  .wiz-barre-fill { transition: none; }
+}
+
+.wiz-step h2 {
+  font-family: var(--font-titres);
+  font-size: 1.06rem;
+  margin: 0 0 4px;
+  color: var(--bleu-nuit);
+}
+.wiz-step .wiz-sous {
+  font-size: .86rem;
+  color: var(--gris-texte);
+  margin: 0 0 18px;
+}
+.wiz-step .champ:last-of-type { margin-bottom: 8px; }
+
+/* bloc optionnel replié */
+.wiz-optionnel > summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: .9rem;
+  color: var(--bleu-primaire);
+  padding: 10px 0;
+  list-style: none;
+}
+.wiz-optionnel > summary::-webkit-details-marker { display: none; }
+.wiz-optionnel > summary::before { content: "＋ "; }
+.wiz-optionnel[open] > summary::before { content: "－ "; }
+.wiz-optionnel[open] > summary { margin-bottom: 10px; }
+
+/* ---- récapitulatif ---- */
+.wiz-recap { margin: 4px 0 8px; }
+.wiz-recap-ligne {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px 0;
+  border-bottom: 1px solid #eef1f4;
+  font-size: .9rem;
+}
+.wiz-recap-ligne:last-child { border-bottom: none; }
+.wiz-recap-ligne .k { color: var(--gris-texte); }
+.wiz-recap-ligne .v { font-weight: 600; text-align: right; color: var(--bleu-nuit); }
+.wiz-recap-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 2px solid #e9edf1;
+}
+.wiz-recap-total .k { font-weight: 600; }
+.wiz-recap-total .v { font-family: var(--font-titres); font-size: 1.3rem; color: var(--bleu-primaire); }
+.wiz-recap-note { font-size: .8rem; color: var(--gris-texte); margin-top: 8px; }
+
+/* ---- navigation ---- */
+.wiz-nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 22px;
+}
+.wiz-nav .wiz-prec {
+  background: none;
+  border: none;
+  color: var(--gris-texte);
+  font-weight: 600;
+  font-size: .9rem;
+  cursor: pointer;
+  padding: 12px 6px;
+}
+.wiz-nav .wiz-prec:hover { color: var(--bleu-primaire); }
+.wiz-nav .wiz-suiv,
+.wiz-nav .wiz-payer {
+  margin-left: auto;
+  min-width: 160px;
+}
+.wiz-nav .wiz-prec[hidden],
+.wiz-nav .wiz-suiv[hidden],
+.wiz-nav .wiz-payer[hidden] { display: none !important; }
+
+.wiz-msg { margin-top: 14px; }
+.wiz-msg .message-erreur,
+.wiz-msg .message-succes { margin: 0; }
+
+.wiz-secure {
+  text-align: center;
+  font-size: .8rem;
+  color: var(--gris-texte);
+  margin-top: 14px;
+}
+
+@media (max-width: 480px) {
+  .wiz-carte { padding: 22px 18px 18px; }
+  .wiz-pastille .rond { width: 22px; height: 22px; }
+  .wiz-pastille span { display: none; }
+}
