@@ -87,6 +87,15 @@
         </div>
       </div>
       <div class="champ">
+        <label>Logo <span class="hint">(PNG, JPG, WEBP ou SVG — 2 Mo max)</span></label>
+        <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+          <img id="apercu-logo" alt="" style="max-height:56px; max-width:160px; border-radius:6px; background:#f4f6f8; display:none;">
+          <input type="file" id="f-logo-fichier" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+          <button type="button" class="btn btn-secondaire" id="btn-envoyer-logo">Envoyer le logo</button>
+        </div>
+        <p class="aide" id="msg-logo" style="margin:6px 0 0;"></p>
+      </div>
+      <div class="champ">
         <label for="f-adresse">Adresse</label>
         <input type="text" id="f-adresse">
       </div>
@@ -270,6 +279,9 @@
       var data = await resp.json();
 
       remplirFiche(data.fiche || {});
+      if (data.fiche && data.fiche.logo_url) {
+        var ap = $('apercu-logo'); ap.src = data.fiche.logo_url; ap.style.display = 'inline-block';
+      }
 
       var p = data.produits || {};
       var actifs = [];
@@ -293,6 +305,38 @@
   });
 
   document.addEventListener('DOMContentLoaded', function () {
+    // ---- upload du logo ----
+    var fLogo = $('f-logo-fichier');
+    if (fLogo) fLogo.addEventListener('change', function () {
+      var f = fLogo.files[0];
+      if (f) { var ap = $('apercu-logo'); ap.src = URL.createObjectURL(f); ap.style.display = 'inline-block'; }
+    });
+    $('btn-envoyer-logo').addEventListener('click', async function () {
+      var btn = this, m = $('msg-logo');
+      var f = fLogo.files[0];
+      if (!f) { m.style.color = '#92400e'; m.textContent = 'Choisissez un fichier image.'; return; }
+      if (f.size > 2 * 1024 * 1024) { m.style.color = '#B23A2E'; m.textContent = 'Image trop lourde (2 Mo max).'; return; }
+      btn.disabled = true; btn.textContent = 'Envoi…'; m.style.color = '#555'; m.textContent = '';
+      try {
+        var b64 = await new Promise(function (res, rej) {
+          var r = new FileReader(); r.onload = function () { res(r.result); }; r.onerror = rej; r.readAsDataURL(f);
+        });
+        var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/fiche-entreprise-logo', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access_token: session.access_token, image_base64: b64, nom_fichier: f.name })
+        });
+        var data = await resp.json();
+        if (!resp.ok || !data.logo_url) throw new Error(data.error || 'Échec de l\'envoi du logo.');
+        $('apercu-logo').src = data.logo_url + '?t=' + Date.now();
+        m.style.color = '#2E7D32'; m.textContent = 'Logo enregistré ✓ — il sera repris à la prochaine mise à jour de votre site.';
+        fLogo.value = '';
+      } catch (e) {
+        m.style.color = '#B23A2E'; m.textContent = e.message || 'Une erreur est survenue.';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Envoyer le logo';
+      }
+    });
+
     $('btn-prefill-bn').addEventListener('click', function () { prefill({}); });
     $('btn-prefill-url').addEventListener('click', function () {
       var u = $('f-url-site').value.trim();
