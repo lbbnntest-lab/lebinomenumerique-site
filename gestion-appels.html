@@ -175,6 +175,14 @@
     var checks = document.querySelectorAll('.pack-brique-check');
     var totalEl = document.getElementById('pack-total');
     var lien = document.getElementById('lien-choisir-pack');
+    // Un seul palier de volume à la fois (400 OU 1200) — même garde que gestion-email.html.
+    var VOLUMES = ['SECRETARIAT_VOLUME_400', 'SECRETARIAT_VOLUME_1200'];
+    function exclureVolumes(source) {
+      if (!source.checked || VOLUMES.indexOf(source.dataset.code) < 0) return;
+      checks.forEach(function (c) {
+        if (c !== source && VOLUMES.indexOf(c.dataset.code) >= 0) c.checked = false;
+      });
+    }
     function maj() {
       var telCode = selectTel.value;
       var total = PRIX_EMAIL_BASE + PRIX_TEL[telCode] - REMISE_PACK;
@@ -186,7 +194,7 @@
       lien.setAttribute('href', href);
     }
     selectTel.addEventListener('change', maj);
-    checks.forEach(function (c) { c.addEventListener('change', maj); });
+    checks.forEach(function (c) { c.addEventListener('change', function () { exclureVolumes(c); maj(); }); });
   })();
   </script>
 </section>

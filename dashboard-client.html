@@ -355,6 +355,24 @@
         <p id="message-ajout-offre" style="margin-top:10px;"></p>
       </div>
 
+      <div class="dash-bloc" id="dash-bloc-volume" hidden>
+        <h3>Volume Gestion Email</h3>
+        <p class="aide">Le forfait Gestion Email traite 250 demandes par mois. Si vous en recevez davantage, ajoutez un palier de volume — cumulable avec le Pack Complet. <a href="gestion-email.html#offre">En savoir plus</a>.</p>
+        <div id="bloc-volume" class="carte-offre">
+          <div class="desc-offre" style="color:var(--gris-texte); font-size:.86rem;">Un seul palier à la fois. Abonnement mensuel, résiliable en 2 clics depuis le portail de facturation.</div>
+          <div class="champ" style="margin:12px 0;">
+            <label for="volume-palier">Palier</label>
+            <select id="volume-palier">
+              <option value="400">Volume + — +400 demandes/mois (650 au total, +29 €/mois)</option>
+              <option value="1200">Volume ++ — +1200 demandes/mois (1450 au total, +59 €/mois)</option>
+            </select>
+          </div>
+          <button class="btn btn-primaire" id="btn-volume">Souscrire</button>
+          <p id="message-volume" style="margin:10px 0 0;"></p>
+        </div>
+        <p id="bloc-volume-actif" class="aide" style="display:none;"></p>
+      </div>
+
       <div class="dash-bloc">
         <h3>Visibilité renforcée — SEO + GEO</h3>
         <p class="aide">Référencement Google et présence dans les réponses des assistants IA (ChatGPT, Claude, Gemini) : audit, corrections sur votre site, fiche Google Business, puis un rapport chaque mois. <a href="visibilite.html">En savoir plus</a>.</p>

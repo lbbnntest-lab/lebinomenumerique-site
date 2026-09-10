@@ -438,6 +438,67 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // ---------- Volume Gestion Email : ajout / upgrade self-service (wf71) ----------
+  const dashBlocVolume = document.getElementById("dash-bloc-volume");
+  const blocVolume = document.getElementById("bloc-volume");
+  const blocVolumeActif = document.getElementById("bloc-volume-actif");
+  const btnVolume = document.getElementById("btn-volume");
+  const messageVolume = document.getElementById("message-volume");
+  const selectVolume = document.getElementById("volume-palier");
+  const aGestionEmail = codesDejaSouscrits.has("SECRETARIAT_SOCLE") || codesDejaSouscrits.has("PACK_COMPLET");
+
+  if (dashBlocVolume && btnVolume && aGestionEmail) {
+    dashBlocVolume.hidden = false;
+    const optionVolumeActive = listeOptionsRecurrentes.find(
+      o => (o.options_produit?.code || "").startsWith("SECRETARIAT_VOLUME_")
+    );
+    const palierActuel = optionVolumeActive?.options_produit?.code || null;
+
+    if (palierActuel === "SECRETARIAT_VOLUME_1200") {
+      blocVolume.style.display = "none";
+      blocVolumeActif.style.display = "block";
+      blocVolumeActif.innerHTML = 'Palier actuel : <strong>Volume ++</strong> (1450 demandes/mois) — palier maximum. Pour repasser à un palier inférieur ou retirer l\'option, utilisez le portail de facturation (<button class="btn-lien" data-panel="facturation" style="all:unset; cursor:pointer; color:var(--bleu-primaire); text-decoration:underline;">Abonnement &amp; factures</button>).';
+    } else {
+      if (palierActuel === "SECRETARIAT_VOLUME_400") {
+        const opt400 = selectVolume.querySelector('option[value="400"]');
+        if (opt400) opt400.remove();
+        blocVolume.querySelector(".desc-offre").textContent =
+          "Palier actuel : Volume + (650 demandes/mois). Vous pouvez passer à Volume ++ — l'ajustement de facturation est calculé au prorata.";
+        btnVolume.textContent = "Passer à Volume ++";
+      }
+      if (!peutSouscrire) {
+        btnVolume.disabled = true;
+        messageVolume.innerHTML = `<span class="sous-titre-section">Seul le propriétaire ou un administrateur peut modifier les options.</span>`;
+      } else {
+        btnVolume.addEventListener("click", async () => {
+          messageVolume.innerHTML = "";
+          const label = btnVolume.textContent;
+          btnVolume.disabled = true;
+          btnVolume.textContent = "Traitement…";
+          try {
+            const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/secretariat-volume-ajouter`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ access_token: session.access_token, palier: selectVolume.value })
+            });
+            const result = await resp.json();
+            if (!resp.ok) throw new Error(result.erreur || "Échec de la demande.");
+            if (result.checkout_url) {
+              window.location.href = result.checkout_url;
+            } else {
+              messageVolume.innerHTML = `<p class="message-succes">${result.message || "C'est fait."} La page va se recharger.</p>`;
+              setTimeout(() => window.location.reload(), 1800);
+            }
+          } catch (err) {
+            messageVolume.innerHTML = `<p class="message-erreur">${err.message}</p>`;
+            btnVolume.disabled = false;
+            btnVolume.textContent = label;
+          }
+        });
+      }
+    }
+  }
+
   const debutMois = new Date();
   debutMois.setDate(1);
   debutMois.setHours(0, 0, 0, 0);

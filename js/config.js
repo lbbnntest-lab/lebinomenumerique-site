@@ -34,9 +34,10 @@ window.APP_CONFIG = {
     SECRETARIAT_UTILISATEUR_SUPP: { mensuel: "price_1U642MPYLCUOQdeI0Bj8XQVd" },
     SECRETARIAT_EXPORT_AIRTABLE: { mensuel: "price_1U642NPYLCUOQdeIf2ESjFkw" },
     SECRETARIAT_SUPPORT_PRIORITAIRE: { mensuel: "price_1U642OPYLCUOQdeI5n3EuoYt" },
-    // Options de volume Gestion Email (migration 96) — PRICE IDs À CRÉER EN STRIPE LIVE (A2)
-    SECRETARIAT_VOLUME_400: { mensuel: null },
-    SECRETARIAT_VOLUME_1200: { mensuel: null },
+    // Options de volume Gestion Email (migration 96 + 106). Price IDs Stripe TEST
+    // (créés le 10/09/2026) — 🔒 à recréer en LIVE le jour du Kbis + réappliquer migration 106.
+    SECRETARIAT_VOLUME_400: { mensuel: "price_1UE9BIPYLCUOQdeIOvgV0dMd" },
+    SECRETARIAT_VOLUME_1200: { mensuel: "price_1UE9BzPYLCUOQdeI7Bc5flwE" },
 
     // Accueil Téléphonique IA — 3 niveaux (29/08/2026). Mensuel uniquement.
     // Doivent rester alignés avec plans_tarifaires.stripe_price_id_mensuel (migration 62).
