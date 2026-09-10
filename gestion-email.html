@@ -107,34 +107,50 @@
         <li>1 utilisateur inclus</li>
       </ul>
 
-      <p style="font-weight:600; margin:16px 0 8px;">Options cumulables <small style="color:var(--gris-texte); font-weight:400;">(à la carte)</small></p>
-      <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:10px; font-weight:400;">
-        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_UTILISATEUR_SUPP" data-prix="15" style="margin-top:3px;">
-        <span>Utilisateur supplémentaire <small style="color:var(--gris-texte);">+15€/mois</small><br><small style="color:var(--gris-texte); font-size:.82rem;">Un 2ᵉ accès au compte — pour votre associé, votre conjoint ou un salarié qui doit aussi voir le tri des emails.</small></span>
-      </label>
-      <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:12px; font-weight:400;">
-        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_SUPPORT_PRIORITAIRE" data-prix="12" style="margin-top:3px;">
-        <span>Support prioritaire <small style="color:var(--gris-texte);">+12€/mois</small><br><small style="color:var(--gris-texte); font-size:.82rem;">Réponse sous 24h ouvrées au lieu de 48h sur vos demandes de support.</small></span>
-      </label>
-      <label class="brique">
-        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_VOLUME_400" data-prix="29" style="margin-top:3px;">
-        <span>Volume + <small style="color:var(--gris-texte);">+29€/mois</small><br><small style="color:var(--gris-texte); font-size:.82rem;">+400 demandes traitées par mois (650 au total). Pour les activités qui reçoivent beaucoup d'emails.</small></span>
-      </label>
-      <label class="brique">
-        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_VOLUME_1200" data-prix="59" style="margin-top:3px;">
-        <span>Volume ++ <small style="color:var(--gris-texte);">+59€/mois</small><br><small style="color:var(--gris-texte); font-size:.82rem;">+1200 demandes par mois (1450 au total). Pour remplacer un poste de secrétariat à fort volume.</small></span>
-      </label>
-      <label class="brique">
-        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_ENVOI_GERE" data-prix="29" style="margin-top:3px;">
-        <span>Envoi géré <small style="color:var(--gris-texte);">+29€/mois</small><br><small style="color:var(--gris-texte); font-size:.82rem;">On envoie les réponses à votre place, en votre nom. Accusés immédiats, réponses de fond après un court délai pendant lequel vous pouvez encore corriger. Sans l'option, tout reste en brouillon à valider.</small></span>
-      </label>
-      <label class="brique">
-        <input type="checkbox" class="brique-check" data-code="SECRETARIAT_RDV_CALCOM" data-prix="19" style="margin-top:3px;">
-        <span>Gestion des rendez-vous <small style="color:var(--gris-texte);">+19€/mois</small><br><small style="color:var(--gris-texte); font-size:.82rem;">Vous connectez votre agenda Cal.com : les demandes de rendez-vous par email reçoivent une réponse avec votre lien de réservation.</small></span>
-      </label>
-
-      <p style="margin:4px 0 4px; font-weight:600;">Total : <span id="total-socle-brique">89</span>€ <span style="font-weight:400;">/ mois</span></p>
-      <p style="margin:0 0 16px; color:var(--gris-texte); font-size:.85rem;">Existe aussi séparément : onboarding personnalisé (149€ HT, une fois), pour un paramétrage sur-mesure des règles de tri.</p>
+      <div class="opt-bloc">
+        <p class="opt-bloc-titre">Options à la carte</p>
+        <p class="opt-bloc-sous">Ajoutez seulement ce qui vous sert. Cumulables, sauf les deux paliers Volume (un seul à la fois).</p>
+        <div class="opt-liste">
+          <label class="opt-item">
+            <input type="checkbox" class="brique-check" data-code="SECRETARIAT_UTILISATEUR_SUPP" data-prix="15">
+            <span class="opt-nom">Utilisateur supplémentaire</span>
+            <span class="opt-prix">+15 €/mois</span>
+            <span class="opt-desc">Un 2ᵉ accès au compte — pour votre associé, votre conjoint ou un salarié qui doit aussi voir le tri des emails.</span>
+          </label>
+          <label class="opt-item">
+            <input type="checkbox" class="brique-check" data-code="SECRETARIAT_SUPPORT_PRIORITAIRE" data-prix="12">
+            <span class="opt-nom">Support prioritaire</span>
+            <span class="opt-prix">+12 €/mois</span>
+            <span class="opt-desc">Réponse sous 24 h ouvrées au lieu de 48 h sur vos demandes de support.</span>
+          </label>
+          <label class="opt-item">
+            <input type="checkbox" class="brique-check" data-code="SECRETARIAT_VOLUME_400" data-prix="29">
+            <span class="opt-nom">Volume +</span>
+            <span class="opt-prix">+29 €/mois</span>
+            <span class="opt-desc">+400 demandes traitées par mois (650 au total). Pour les activités qui reçoivent beaucoup d'emails.</span>
+          </label>
+          <label class="opt-item">
+            <input type="checkbox" class="brique-check" data-code="SECRETARIAT_VOLUME_1200" data-prix="59">
+            <span class="opt-nom">Volume ++</span>
+            <span class="opt-prix">+59 €/mois</span>
+            <span class="opt-desc">+1200 demandes par mois (1450 au total). Pour remplacer un poste de secrétariat à fort volume.</span>
+          </label>
+          <label class="opt-item">
+            <input type="checkbox" class="brique-check" data-code="SECRETARIAT_ENVOI_GERE" data-prix="29">
+            <span class="opt-nom">Envoi géré</span>
+            <span class="opt-prix">+29 €/mois</span>
+            <span class="opt-desc">On envoie les réponses à votre place, en votre nom. Accusés immédiats, réponses de fond après un court délai pendant lequel vous pouvez encore corriger. Sans l'option, tout reste en brouillon à valider.</span>
+          </label>
+          <label class="opt-item">
+            <input type="checkbox" class="brique-check" data-code="SECRETARIAT_RDV_CALCOM" data-prix="19">
+            <span class="opt-nom">Gestion des rendez-vous</span>
+            <span class="opt-prix">+19 €/mois</span>
+            <span class="opt-desc">Vous connectez votre agenda Cal.com : les demandes de rendez-vous par email reçoivent une réponse avec votre lien de réservation.</span>
+          </label>
+        </div>
+        <p class="opt-total">Total : <span id="total-socle-brique" style="font-weight:700;">89</span> € <span>/ mois</span></p>
+        <p style="margin:0 0 16px; color:var(--gris-texte); font-size:.82rem;">Existe aussi séparément : onboarding personnalisé (149 € HT, une fois), pour un paramétrage sur-mesure des règles de tri.</p>
+      </div>
       <a class="btn btn-primaire" id="lien-choisir-socle" href="inscription.html?type=B2B&plan=SECRETARIAT_SOCLE" style="display:block; text-align:center;">Choisir cette offre</a>
     </div>
   </div>
