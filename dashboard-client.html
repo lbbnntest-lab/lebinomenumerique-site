@@ -356,21 +356,36 @@
       </div>
 
       <div class="dash-bloc" id="dash-bloc-volume" hidden>
-        <h3>Volume Gestion Email</h3>
-        <p class="aide">Le forfait Gestion Email traite 250 demandes par mois. Si vous en recevez davantage, ajoutez un palier de volume — cumulable avec le Pack Complet. <a href="gestion-email.html#offre">En savoir plus</a>.</p>
-        <div id="bloc-volume" class="carte-offre">
-          <div class="desc-offre" style="color:var(--gris-texte); font-size:.86rem;">Un seul palier à la fois. Abonnement mensuel, résiliable en 2 clics depuis le portail de facturation.</div>
+        <h3>Options Gestion Email</h3>
+        <p class="aide">Personnalisez votre secrétariat e-mail. Chaque option est un abonnement mensuel, résiliable en 2 clics depuis le portail de facturation. <a href="gestion-email.html#offre">En savoir plus</a>.</p>
+
+        <div id="bloc-volume" class="carte-offre" style="margin-bottom:12px;">
+          <div class="desc-offre" style="color:var(--gris-texte); font-size:.86rem;"><strong>Volume</strong> — le forfait traite 250 demandes/mois ; ajoutez un palier si vous en recevez plus (un seul à la fois).</div>
           <div class="champ" style="margin:12px 0;">
             <label for="volume-palier">Palier</label>
             <select id="volume-palier">
-              <option value="400">Volume + — +400 demandes/mois (650 au total, +29 €/mois)</option>
-              <option value="1200">Volume ++ — +1200 demandes/mois (1450 au total, +59 €/mois)</option>
+              <option value="volume_400">Volume + — +400 demandes/mois (650 au total, +29 €/mois)</option>
+              <option value="volume_1200">Volume ++ — +1200 demandes/mois (1450 au total, +59 €/mois)</option>
             </select>
           </div>
           <button class="btn btn-primaire" id="btn-volume">Souscrire</button>
           <p id="message-volume" style="margin:10px 0 0;"></p>
         </div>
         <p id="bloc-volume-actif" class="aide" style="display:none;"></p>
+
+        <div id="bloc-envoigere" class="carte-offre" style="margin-bottom:12px;">
+          <div class="desc-offre" style="color:var(--gris-texte); font-size:.86rem;"><strong>Envoi géré</strong> — +29 €/mois. On envoie les réponses préparées à votre place, en votre nom : accusé immédiat, réponse de fond après un court délai pendant lequel vous pouvez encore corriger. Sans l'option, tout reste en brouillon à valider.</div>
+          <button class="btn btn-primaire" id="btn-envoigere" style="margin-top:12px;">Souscrire</button>
+          <p id="message-envoigere" style="margin:10px 0 0;"></p>
+        </div>
+        <p id="bloc-envoigere-actif" class="aide" style="display:none;">Envoi géré actif — réglez le délai et les catégories concernées dans <a href="mon-email-config.html">Réglages du traitement</a>.</p>
+
+        <div id="bloc-rdvcalcom" class="carte-offre">
+          <div class="desc-offre" style="color:var(--gris-texte); font-size:.86rem;"><strong>Gestion des rendez-vous</strong> — +19 €/mois. Les demandes de RDV par email reçoivent une réponse avec votre lien de réservation Cal.com.</div>
+          <button class="btn btn-primaire" id="btn-rdvcalcom" style="margin-top:12px;">Souscrire</button>
+          <p id="message-rdvcalcom" style="margin:10px 0 0;"></p>
+        </div>
+        <p id="bloc-rdvcalcom-actif" class="aide" style="display:none;">Gestion des rendez-vous active — renseignez votre lien Cal.com dans <a href="ma-fiche-entreprise.html">Ma fiche entreprise</a>.</p>
       </div>
 
       <div class="dash-bloc">

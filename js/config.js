@@ -38,6 +38,10 @@ window.APP_CONFIG = {
     // (créés le 10/09/2026) — 🔒 à recréer en LIVE le jour du Kbis + réappliquer migration 106.
     SECRETARIAT_VOLUME_400: { mensuel: "price_1UE9BIPYLCUOQdeIOvgV0dMd" },
     SECRETARIAT_VOLUME_1200: { mensuel: "price_1UE9BzPYLCUOQdeI7Bc5flwE" },
+    // Options « Envoi géré » et « Gestion des RDV (Cal.com) » (migration 100 + 107).
+    // Price IDs Stripe TEST (10/09/2026) — 🔒 recréer en LIVE + réappliquer migration 107.
+    SECRETARIAT_ENVOI_GERE: { mensuel: "price_1UEAlcPYLCUOQdeIErWJLcz2" },
+    SECRETARIAT_RDV_CALCOM: { mensuel: "price_1UEAoCPYLCUOQdeIw0nTerpe" },
 
     // Accueil Téléphonique IA — 3 niveaux (29/08/2026). Mensuel uniquement.
     // Doivent rester alignés avec plans_tarifaires.stripe_price_id_mensuel (migration 62).

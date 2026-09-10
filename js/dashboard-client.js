@@ -438,21 +438,50 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // ---------- Volume Gestion Email : ajout / upgrade self-service (wf71) ----------
+  // ---------- Options Gestion Email : ajout / upgrade self-service (wf71) ----------
   const dashBlocVolume = document.getElementById("dash-bloc-volume");
-  const blocVolume = document.getElementById("bloc-volume");
-  const blocVolumeActif = document.getElementById("bloc-volume-actif");
-  const btnVolume = document.getElementById("btn-volume");
-  const messageVolume = document.getElementById("message-volume");
-  const selectVolume = document.getElementById("volume-palier");
   const aGestionEmail = codesDejaSouscrits.has("SECRETARIAT_SOCLE") || codesDejaSouscrits.has("PACK_COMPLET");
 
-  if (dashBlocVolume && btnVolume && aGestionEmail) {
+  if (dashBlocVolume && aGestionEmail) {
     dashBlocVolume.hidden = false;
-    const optionVolumeActive = listeOptionsRecurrentes.find(
-      o => (o.options_produit?.code || "").startsWith("SECRETARIAT_VOLUME_")
+    const codesOptActives = new Set(
+      listeOptionsRecurrentes.map(o => o.options_produit?.code).filter(Boolean)
     );
-    const palierActuel = optionVolumeActive?.options_produit?.code || null;
+
+    // Envoie une demande à wf71 : redirige vers Stripe (ajout) ou recharge (upgrade in-place).
+    const soumettreOption = async (action, btn, msgEl) => {
+      msgEl.innerHTML = "";
+      const label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "Traitement…";
+      try {
+        const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/secretariat-volume-ajouter`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ access_token: session.access_token, action })
+        });
+        const result = await resp.json();
+        if (!resp.ok) throw new Error(result.erreur || "Échec de la demande.");
+        if (result.checkout_url) {
+          window.location.href = result.checkout_url;
+        } else {
+          msgEl.innerHTML = `<p class="message-succes">${result.message || "C'est fait."} La page va se recharger.</p>`;
+          setTimeout(() => window.location.reload(), 1800);
+        }
+      } catch (err) {
+        msgEl.innerHTML = `<p class="message-erreur">${err.message}</p>`;
+        btn.disabled = false;
+        btn.textContent = label;
+      }
+    };
+
+    // Palier de volume (400 / 1200, upgrade only)
+    const blocVolume = document.getElementById("bloc-volume");
+    const blocVolumeActif = document.getElementById("bloc-volume-actif");
+    const btnVolume = document.getElementById("btn-volume");
+    const messageVolume = document.getElementById("message-volume");
+    const selectVolume = document.getElementById("volume-palier");
+    const palierActuel = [...codesOptActives].find(c => c.startsWith("SECRETARIAT_VOLUME_")) || null;
 
     if (palierActuel === "SECRETARIAT_VOLUME_1200") {
       blocVolume.style.display = "none";
@@ -460,7 +489,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       blocVolumeActif.innerHTML = 'Palier actuel : <strong>Volume ++</strong> (1450 demandes/mois) — palier maximum. Pour repasser à un palier inférieur ou retirer l\'option, utilisez le portail de facturation (<button class="btn-lien" data-panel="facturation" style="all:unset; cursor:pointer; color:var(--bleu-primaire); text-decoration:underline;">Abonnement &amp; factures</button>).';
     } else {
       if (palierActuel === "SECRETARIAT_VOLUME_400") {
-        const opt400 = selectVolume.querySelector('option[value="400"]');
+        const opt400 = selectVolume.querySelector('option[value="volume_400"]');
         if (opt400) opt400.remove();
         blocVolume.querySelector(".desc-offre").textContent =
           "Palier actuel : Volume + (650 demandes/mois). Vous pouvez passer à Volume ++ — l'ajustement de facturation est calculé au prorata.";
@@ -470,33 +499,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         btnVolume.disabled = true;
         messageVolume.innerHTML = `<span class="sous-titre-section">Seul le propriétaire ou un administrateur peut modifier les options.</span>`;
       } else {
-        btnVolume.addEventListener("click", async () => {
-          messageVolume.innerHTML = "";
-          const label = btnVolume.textContent;
-          btnVolume.disabled = true;
-          btnVolume.textContent = "Traitement…";
-          try {
-            const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/secretariat-volume-ajouter`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ access_token: session.access_token, palier: selectVolume.value })
-            });
-            const result = await resp.json();
-            if (!resp.ok) throw new Error(result.erreur || "Échec de la demande.");
-            if (result.checkout_url) {
-              window.location.href = result.checkout_url;
-            } else {
-              messageVolume.innerHTML = `<p class="message-succes">${result.message || "C'est fait."} La page va se recharger.</p>`;
-              setTimeout(() => window.location.reload(), 1800);
-            }
-          } catch (err) {
-            messageVolume.innerHTML = `<p class="message-erreur">${err.message}</p>`;
-            btnVolume.disabled = false;
-            btnVolume.textContent = label;
-          }
-        });
+        btnVolume.addEventListener("click", () => soumettreOption(selectVolume.value, btnVolume, messageVolume));
       }
     }
+
+    // Options simples : Envoi géré, Gestion des rendez-vous (Cal.com)
+    [
+      { code: "SECRETARIAT_ENVOI_GERE", action: "envoi_gere", bloc: "bloc-envoigere", btn: "btn-envoigere", msg: "message-envoigere", actif: "bloc-envoigere-actif" },
+      { code: "SECRETARIAT_RDV_CALCOM", action: "rdv_calcom", bloc: "bloc-rdvcalcom", btn: "btn-rdvcalcom", msg: "message-rdvcalcom", actif: "bloc-rdvcalcom-actif" }
+    ].forEach(o => {
+      const bloc = document.getElementById(o.bloc);
+      const btn = document.getElementById(o.btn);
+      const msg = document.getElementById(o.msg);
+      const actifEl = document.getElementById(o.actif);
+      if (!bloc || !btn) return;
+      if (codesOptActives.has(o.code)) {
+        bloc.style.display = "none";
+        if (actifEl) actifEl.style.display = "block";
+      } else if (!peutSouscrire) {
+        btn.disabled = true;
+        msg.innerHTML = `<span class="sous-titre-section">Seul le propriétaire ou un administrateur peut modifier les options.</span>`;
+      } else {
+        btn.addEventListener("click", () => soumettreOption(o.action, btn, msg));
+      }
+    });
   }
 
   const debutMois = new Date();
