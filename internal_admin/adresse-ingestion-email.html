@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adresse d'ingestion email — Le Binôme Numérique</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --couleur-principale: #1F6F78;
+    --couleur-texte: #1a1a1a;
+    --couleur-fond-clair: #f7f7f8;
+    --couleur-bordure: #e2e2e4;
+    --couleur-danger: #B23A2E;
+    --couleur-ok: #2E7D32;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--couleur-texte);
+    background: var(--couleur-fond-clair);
+    line-height: 1.5;
+  }
+  header { background: #1a1a1a; color: #fff; padding: 20px 24px; }
+  header h1 { margin: 0; font-size: 1.3rem; }
+  header p { margin: 4px 0 0; color: #ccc; font-size: 0.9rem; }
+  main { max-width: 620px; margin: 0 auto; padding: 24px; }
+  .carte { background: #fff; border: 1px solid var(--couleur-bordure); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+  .carte h2 { margin-top: 0; font-size: 1.1rem; }
+  .note { color: #555; font-size: 0.88rem; }
+  .champ { margin-bottom: 14px; }
+  .champ label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+  .champ input {
+    width: 100%; padding: 9px 11px; border: 1px solid var(--couleur-bordure); border-radius: 6px;
+    font-size: 0.92rem; font-family: inherit;
+  }
+  .champ-cle { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .champ-cle input { flex: 1; min-width: 240px; padding: 10px 12px; border: 1px solid var(--couleur-bordure); border-radius: 6px; font-size: 0.95rem; }
+  .ligne-recherche { display: flex; gap: 10px; flex-wrap: wrap; }
+  .ligne-recherche input { flex: 1; min-width: 220px; }
+  .btn {
+    border: none; border-radius: 6px; padding: 10px 20px; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; background: var(--couleur-principale); color: #fff;
+  }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  #message { padding: 12px 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; display: none; }
+  #message.err { display: block; background: #fdecea; color: var(--couleur-danger); }
+  #message.ok { display: block; background: #eaf5ec; color: var(--couleur-ok); }
+  .badge { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #555; color: #fff; }
+  .badge.ok { background: var(--couleur-ok); }
+  .badge.non { background: #999; }
+  .fiche-compte dt { font-size: 0.78rem; color: #666; margin-top: 10px; }
+  .fiche-compte dd { margin: 2px 0 0; font-size: 0.94rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Le Binôme Numérique — Adresse d'ingestion email</h1>
+  <p>Rattacher l'adresse CloudMailin d'un client à son compte, sans passer par du SQL.</p>
+</header>
+
+<main>
+  <div id="message"></div>
+
+  <div class="carte" id="carte-cle">
+    <h2>Clé d'accès</h2>
+    <p class="note">Page interne non indexée. Colle la clé admin une seule fois — elle reste ensuite enregistrée dans ce navigateur.</p>
+    <div class="champ-cle">
+      <input type="password" id="f-cle" placeholder="Clé admin">
+      <button class="btn" id="btn-valider-cle">Continuer</button>
+    </div>
+  </div>
+
+  <div id="zone-outil" style="display:none;">
+
+    <div class="carte">
+      <h2>Chercher un compte</h2>
+      <p class="note">Recherche par email exact (celui du compte, pas forcément celui de la boîte à rediriger).</p>
+      <div class="ligne-recherche">
+        <input type="email" id="f-email" placeholder="email@client.fr">
+        <button class="btn" id="btn-chercher">Chercher</button>
+      </div>
+    </div>
+
+    <div class="carte" id="carte-fiche" style="display:none;">
+      <h2>Compte trouvé</h2>
+      <dl class="fiche-compte">
+        <dt>Entreprise</dt><dd id="f-raison-sociale">—</dd>
+        <dt>Statut du compte</dt><dd id="f-statut">—</dd>
+        <dt>Gestion Email</dt><dd><span class="badge" id="f-badge-ge">—</span></dd>
+        <dt>Adresse d'ingestion actuelle</dt><dd id="f-adresse-actuelle">—</dd>
+      </dl>
+
+      <div class="champ" style="margin-top:18px;">
+        <label for="f-nouvelle-adresse">Nouvelle adresse (celle donnée par CloudMailin)</label>
+        <input type="text" id="f-nouvelle-adresse" placeholder="xxxxxxxx@cloudmailin.net">
+      </div>
+      <button class="btn" id="btn-enregistrer">Enregistrer</button>
+    </div>
+
+    <div class="carte" id="carte-introuvable" style="display:none;">
+      <p class="note">Aucun compte avec cet email.</p>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  var URL_CHERCHER = 'https://lbn.app.n8n.cloud/webhook/admin-ingestion-chercher';
+  var URL_ENREGISTRER = 'https://lbn.app.n8n.cloud/webhook/admin-ingestion-enregistrer';
+  var CLE_STOCKAGE = 'lbn_admin_cle_ingestion_email';
+
+  var elMessage = document.getElementById('message');
+  var elCarteCle = document.getElementById('carte-cle');
+  var elZoneOutil = document.getElementById('zone-outil');
+  var elCarteFiche = document.getElementById('carte-fiche');
+  var elCarteIntrouvable = document.getElementById('carte-introuvable');
+
+  function afficherMessage(texte, ok) {
+    elMessage.textContent = texte;
+    elMessage.className = ok ? 'ok' : 'err';
+    elMessage.style.display = 'block';
+  }
+  function masquerMessage() { elMessage.style.display = 'none'; }
+
+  var cleActuelle = null;
+  var compteActuel = null;
+
+  function surCleIncorrecte() {
+    localStorage.removeItem(CLE_STOCKAGE);
+    elCarteCle.style.display = 'block';
+    elZoneOutil.style.display = 'none';
+    afficherMessage('Clé incorrecte — réessaie.', false);
+  }
+
+  function chercher() {
+    masquerMessage();
+    var email = document.getElementById('f-email').value.trim();
+    if (!email) return;
+    elCarteFiche.style.display = 'none';
+    elCarteIntrouvable.style.display = 'none';
+
+    var btn = document.getElementById('btn-chercher');
+    btn.disabled = true; btn.textContent = 'Recherche…';
+
+    fetch(URL_CHERCHER + '?cle=' + encodeURIComponent(cleActuelle) + '&email=' + encodeURIComponent(email))
+      .then(function (r) {
+        if (r.status === 403) throw new Error('cle');
+        if (!r.ok) throw new Error('reseau');
+        return r.json();
+      })
+      .then(function (data) {
+        var resultats = data.resultats || [];
+        if (resultats.length === 0) {
+          elCarteIntrouvable.style.display = 'block';
+          return;
+        }
+        compteActuel = resultats[0];
+        document.getElementById('f-raison-sociale').textContent = compteActuel.raison_sociale || '—';
+        document.getElementById('f-statut').textContent = compteActuel.statut || '—';
+        var badge = document.getElementById('f-badge-ge');
+        badge.textContent = compteActuel.a_gestion_email ? 'Actif' : 'Aucun';
+        badge.className = 'badge ' + (compteActuel.a_gestion_email ? 'ok' : 'non');
+        document.getElementById('f-adresse-actuelle').textContent = compteActuel.adresse_ingestion_email || 'Aucune';
+        document.getElementById('f-nouvelle-adresse').value = compteActuel.adresse_ingestion_email || '';
+        elCarteFiche.style.display = 'block';
+        if (!compteActuel.a_gestion_email) {
+          afficherMessage("Ce compte n'a pas d'abonnement Gestion Email actif — vérifie avant d'enregistrer une adresse.", false);
+        }
+      })
+      .catch(function (err) {
+        if (err.message === 'cle') surCleIncorrecte();
+        else afficherMessage('Recherche impossible — réessaie.', false);
+      })
+      .finally(function () {
+        btn.disabled = false; btn.textContent = 'Chercher';
+      });
+  }
+
+  function enregistrer() {
+    masquerMessage();
+    if (!compteActuel) return;
+    var adresse = document.getElementById('f-nouvelle-adresse').value.trim();
+    var btn = document.getElementById('btn-enregistrer');
+    btn.disabled = true; btn.textContent = 'Enregistrement…';
+
+    fetch(URL_ENREGISTRER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cle: cleActuelle, compte_client_id: compteActuel.id, adresse: adresse || null })
+    })
+      .then(function (r) {
+        if (r.status === 403) throw new Error('cle');
+        return r.json().then(function (data) { return { statut: r.status, data: data }; });
+      })
+      .then(function (res) {
+        if (res.statut >= 200 && res.statut < 300 && res.data.ok) {
+          afficherMessage('Adresse enregistrée ✓', true);
+          document.getElementById('f-adresse-actuelle').textContent = adresse || 'Aucune';
+          compteActuel.adresse_ingestion_email = adresse || null;
+        } else {
+          throw new Error(res.data.erreur || 'Échec de l\\'enregistrement.');
+        }
+      })
+      .catch(function (err) {
+        if (err.message === 'cle') surCleIncorrecte();
+        else afficherMessage(err.message, false);
+      })
+      .finally(function () {
+        btn.disabled = false; btn.textContent = 'Enregistrer';
+      });
+  }
+
+  document.getElementById('btn-chercher').addEventListener('click', chercher);
+  document.getElementById('f-email').addEventListener('keydown', function (e) { if (e.key === 'Enter') chercher(); });
+  document.getElementById('btn-enregistrer').addEventListener('click', enregistrer);
+
+  document.getElementById('btn-valider-cle').addEventListener('click', function () {
+    var cle = document.getElementById('f-cle').value.trim();
+    if (!cle) return;
+    localStorage.setItem(CLE_STOCKAGE, cle);
+    cleActuelle = cle;
+    elCarteCle.style.display = 'none';
+    elZoneOutil.style.display = 'block';
+  });
+
+  var cleEnregistree = localStorage.getItem(CLE_STOCKAGE);
+  if (cleEnregistree) {
+    cleActuelle = cleEnregistree;
+    elCarteCle.style.display = 'none';
+    elZoneOutil.style.display = 'block';
+  }
+})();
+</script>
+
+</body>
+</html>
