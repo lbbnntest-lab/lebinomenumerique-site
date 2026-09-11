@@ -116,6 +116,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("stat-statut").textContent = compte?.statut || "—";
   document.getElementById("stat-plan").textContent = nomsActifs.length ? nomsActifs.join(" + ") : "Aucun";
 
+  // `abonnements.statut` est en français ('actif'/'résilié'...) mais `options_actives.statut`
+  // utilise 'active'/'annulee' (contrainte de la table depuis l'origine, migration 29) — on
+  // ne traduit qu'à l'affichage, jamais la valeur stockée (des dizaines de workflows la lisent
+  // et l'écrivent telle quelle).
+  const libelleStatutOption = (s) => (s === "active" ? "actif" : s === "annulee" ? "annulé" : s);
   const lignesAbo = listeAbonnements.map(a => `
         <tr>
           <td>${a.plans_tarifaires?.nom || "—"}</td>
@@ -126,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <tr>
           <td>${o.options_produit?.nom || "—"}${o.quantite > 1 ? ` ×${o.quantite}` : ""}</td>
           <td>Mensuel</td>
-          <td><span class="badge badge-actif">${o.statut}</span></td>
+          <td><span class="badge badge-actif">${libelleStatutOption(o.statut)}</span></td>
         </tr>`);
   const toutesLignes = [...lignesAbo, ...lignesOptions];
   const htmlAbos = toutesLignes.length
