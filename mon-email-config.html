@@ -259,18 +259,28 @@
     show('bloc-reglages');
     show('bloc-reprise');
 
+    function fichierEnBase64(fichier) {
+      return new Promise(function (resolve, reject) {
+        var lecteur = new FileReader();
+        lecteur.onload = function () { resolve(lecteur.result); };
+        lecteur.onerror = reject;
+        lecteur.readAsDataURL(fichier);
+      });
+    }
+
     g('btn-importer-reprise').addEventListener('click', async function () {
       var btn = this, r = g('resultat-reprise');
       var fichier = g('r-fichier-mbox').files[0];
       if (!fichier) { r.innerHTML = '<span style="color:#B23A2E;">Choisissez d\'abord un fichier.</span>'; return; }
       r.innerHTML = '';
-      btn.disabled = true; btn.textContent = 'Import en cours…';
+      btn.disabled = true; btn.textContent = 'Lecture du fichier…';
       try {
-        var fd = new FormData();
-        fd.append('access_token', session.access_token);
-        fd.append('fichier', fichier);
+        var fichierBase64 = await fichierEnBase64(fichier);
+        btn.textContent = 'Import en cours…';
         var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/reprise-email-importer', {
-          method: 'POST', body: fd
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access_token: session.access_token, fichier_base64: fichierBase64 })
         });
         var data = await resp.json().catch(function () { return {}; });
         if (!resp.ok) throw new Error(data.erreur || 'Échec de l\'import.');
