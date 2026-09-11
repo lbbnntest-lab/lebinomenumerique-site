@@ -42,9 +42,10 @@ window.APP_CONFIG = {
     // Price IDs Stripe TEST (10/09/2026) — 🔒 recréer en LIVE + réappliquer migration 107.
     SECRETARIAT_ENVOI_GERE: { mensuel: "price_1UEAlcPYLCUOQdeIErWJLcz2" },
     SECRETARIAT_RDV_CALCOM: { mensuel: "price_1UEAoCPYLCUOQdeIw0nTerpe" },
-    // Onboarding personnalisé, one-shot 149 € (migration 108) — PRIX À CRÉER EN STRIPE TEST.
+    // Onboarding personnalisé, one-shot 149 € (migration 108). Price ID Stripe TEST
+    // (créé le 10/09/2026) — 🔒 recréer en LIVE + réappliquer migration 108.
     // INFORMATIF : wf72 lit options_produit côté serveur, ce front n'envoie rien de tarifaire.
-    SECRETARIAT_ONBOARDING_PERSO: { one_shot: null },
+    SECRETARIAT_ONBOARDING_PERSO: { one_shot: "price_1UEQPVPYLCUOQdeIsORZIphR" },
 
     // Accueil Téléphonique IA — 3 niveaux (29/08/2026). Mensuel uniquement.
     // Doivent rester alignés avec plans_tarifaires.stripe_price_id_mensuel (migration 62).
