@@ -585,7 +585,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     .order("created_at", { ascending: false })
     .limit(20);
 
-  const demandesMois = (demandes || []).filter(d => new Date(d.created_at) >= debutMois);
+  // Reprise du stock d'emails (wf74) : `created_at` = date d'INSERTION (import),
+  // pas la vraie date de l'email — sinon un import de plusieurs semaines de
+  // retard s'afficherait comme "aujourd'hui" et fausserait le compteur du mois.
+  // On affiche la vraie date (donnees_brutes.date_email) pour ces demandes-là.
+  function dateEffective(d) {
+    if (d.source === "reprise_installation" && d.donnees_brutes && d.donnees_brutes.date_email) {
+      const dt = new Date(d.donnees_brutes.date_email);
+      if (!isNaN(dt)) return dt;
+    }
+    return new Date(d.created_at);
+  }
+
+  const demandesMois = (demandes || []).filter(d => dateEffective(d) >= debutMois);
   document.getElementById("stat-demandes-mois").textContent = demandesMois.length;
   const urgentesEnAttente = (demandes || []).filter(d => d.urgent && d.statut !== "traite" && d.statut !== "archive");
   document.getElementById("stat-urgentes").textContent = urgentesEnAttente.length;
@@ -611,9 +623,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   tbodyDemandes.innerHTML = (demandes || []).length
     ? demandes.map(d => `
         <tr${d.suspect ? ' class="ligne-suspecte"' : ""}>
-          <td>${new Date(d.created_at).toLocaleDateString("fr-FR")}</td>
+          <td>${dateEffective(d).toLocaleDateString("fr-FR")}</td>
           <td>${d.suspect ? "⚠️ Suspect" : echapperHtmlDevis(d.categorie)}</td>
-          <td>${echapperHtmlDevis(d.resume || "")}${d.suspect && d.motif_suspect ? `<br><small style="color:#b23a2e;">Email potentiellement frauduleux : ${echapperHtmlDevis(d.motif_suspect)}. Ne répondez pas et ne cliquez sur aucun lien sans vérifier.</small>` : ""}</td>
+          <td>${d.source === "reprise_installation" ? '<span class="badge" style="background:#888; margin-right:6px;">Reprise</span>' : ""}${echapperHtmlDevis(d.resume || "")}${d.suspect && d.motif_suspect ? `<br><small style="color:#b23a2e;">Email potentiellement frauduleux : ${echapperHtmlDevis(d.motif_suspect)}. Ne répondez pas et ne cliquez sur aucun lien sans vérifier.</small>` : ""}</td>
           <td>${echapperHtmlDevis(d.contact_prospect || "")}</td>
           <td><span class="badge badge-${d.statut === 'traite' ? 'actif' : 'essai'}">${echapperHtmlDevis(d.statut)}</span></td>
         </tr>`).join("")

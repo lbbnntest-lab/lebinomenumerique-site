@@ -157,6 +157,32 @@
       <span id="resultat-reglages" style="margin-left:12px; font-size:0.9rem;"></span>
     </div>
   </div>
+
+  <!-- Reprise du stock d'emails à l'installation -->
+  <div class="bloc-etat" id="bloc-reprise">
+    <h2 style="margin-top:32px;">Reprendre mon ancienne boîte</h2>
+    <p style="color:#555; font-size:0.92rem;">Retrouvez dans « Mes demandes » les emails reçus avant votre installation — les <strong>30 derniers jours</strong>. Aucun envoi ni relance automatique n'a lieu sur ces anciennes demandes.</p>
+
+    <div class="carte-config">
+      <p style="font-weight:600; margin-bottom:6px;">1. Exportez votre ancienne boîte (fichier .mbox)</p>
+      <details class="fournisseur">
+        <summary>Gmail / Google Workspace</summary>
+        <div><a href="https://takeout.google.com/" target="_blank" rel="noopener">Google Takeout</a> → décochez tout sauf « Mail » → cliquez sur « Tous les messages Mail inclus » et gardez seulement les 30 derniers jours si possible → créez l'export → téléchargez le fichier <code>.mbox</code> (dans le <code>.zip</code> reçu par email).</div>
+      </details>
+      <details class="fournisseur">
+        <summary>Outlook / Microsoft 365</summary>
+        <div>Outlook ne propose pas d'export .mbox natif : utilisez <a href="https://www.google.com/search?q=exporter+outlook+en+mbox" target="_blank" rel="noopener">un convertisseur .pst vers .mbox</a>, ou écrivez-nous, on vous guide selon votre cas.</div>
+      </details>
+      <p style="font-size:0.85rem; color:#666; margin:10px 0 0;">Ça peut prendre de quelques minutes à quelques heures selon Google/Microsoft — l'email d'export arrive quand c'est prêt.</p>
+    </div>
+
+    <div class="carte-config">
+      <p style="font-weight:600; margin-bottom:6px;">2. Déposez le fichier ici</p>
+      <input type="file" id="r-fichier-mbox" accept=".mbox,.eml,text/plain">
+      <p style="margin-top:14px;"><button type="button" class="btn btn-primaire" id="btn-importer-reprise">Importer</button></p>
+      <p id="resultat-reprise" style="margin:10px 0 0; font-size:0.9rem;"></p>
+    </div>
+  </div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -231,6 +257,30 @@
     g('r-accuse-actif').addEventListener('change', toggleAccuse); toggleAccuse();
 
     show('bloc-reglages');
+    show('bloc-reprise');
+
+    g('btn-importer-reprise').addEventListener('click', async function () {
+      var btn = this, r = g('resultat-reprise');
+      var fichier = g('r-fichier-mbox').files[0];
+      if (!fichier) { r.innerHTML = '<span style="color:#B23A2E;">Choisissez d\'abord un fichier.</span>'; return; }
+      r.innerHTML = '';
+      btn.disabled = true; btn.textContent = 'Import en cours…';
+      try {
+        var fd = new FormData();
+        fd.append('access_token', session.access_token);
+        fd.append('fichier', fichier);
+        var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/reprise-email-importer', {
+          method: 'POST', body: fd
+        });
+        var data = await resp.json().catch(function () { return {}; });
+        if (!resp.ok) throw new Error(data.erreur || 'Échec de l\'import.');
+        r.innerHTML = '<span style="color:#2E7D32;">' + (data.message || 'Import lancé.') + '</span>';
+      } catch (e) {
+        r.innerHTML = '<span style="color:#B23A2E;">' + (e.message || 'Erreur — réessayez.') + '</span>';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Importer';
+      }
+    });
 
     g('btn-enregistrer-reglages').addEventListener('click', async function () {
       var btn = this, r = g('resultat-reglages');
