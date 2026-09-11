@@ -202,7 +202,7 @@
           document.getElementById('f-adresse-actuelle').textContent = adresse || 'Aucune';
           compteActuel.adresse_ingestion_email = adresse || null;
         } else {
-          throw new Error(res.data.erreur || 'Échec de l\\'enregistrement.');
+          throw new Error(res.data.erreur || "Échec de l'enregistrement.");
         }
       })
       .catch(function (err) {
