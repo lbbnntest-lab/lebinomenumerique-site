@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Onboarding personnalisé — Le Binôme Numérique</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .zone-config { max-width: 680px; margin: 0 auto; padding: 32px 20px; }
+  .carte-config { background: var(--blanc); border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .carte-config label { display: block; font-weight: 600; margin: 16px 0 6px; font-size: .92rem; }
+  .carte-config label:first-child { margin-top: 0; }
+  .carte-config textarea { width: 100%; padding: 10px 12px; border: 1px solid #d7d7db; border-radius: 8px; font-family: inherit; font-size: .92rem; min-height: 80px; resize: vertical; }
+  .carte-config small { display: block; color: var(--gris-texte); font-weight: 400; margin-top: 2px; }
+  #message { padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; display: none; }
+  #message.err { display: block; background: #fdecea; color: #B23A2E; }
+  #etat-chargement { text-align: center; color: #666; padding: 40px 0; }
+  .bloc-etat { display: none; }
+  #note-existant { display: none; background: #eef6f8; border-radius: 8px; padding: 10px 14px; font-size: .86rem; color: var(--bleu-primaire); margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="logo"><img src="img/logo-icon.png" alt="" width="68" height="36">Le Binôme Numérique</div>
+    <nav>
+      <a href="dashboard-client.html">Mon espace</a>
+      <a href="#" onclick="logout()">Se déconnecter</a>
+    </nav>
+  </div>
+</header>
+
+<main class="zone-config">
+  <h1>Onboarding personnalisé</h1>
+  <p style="color:#555;">Répondez à 3 questions simples : nous rédigeons pour vous les consignes de traitement de votre secrétariat e-mail, prises en compte immédiatement.</p>
+
+  <div id="message"></div>
+  <div id="etat-chargement">Chargement…</div>
+
+  <!-- Pas client Gestion Email -->
+  <div class="carte-config bloc-etat" id="bloc-pas-client">
+    <p>Vous n'avez pas encore l'offre <strong>Gestion Email</strong>. Vous pouvez la souscrire depuis votre espace, rubrique « Ajouter un service ».</p>
+    <p><a class="btn btn-primaire" href="dashboard-client.html#offres">Ajouter un service</a></p>
+  </div>
+
+  <!-- Gestion Email oui, mais option pas achetée -->
+  <div class="carte-config bloc-etat" id="bloc-pas-achete">
+    <p>Cette page est réservée aux clients ayant souscrit l'option <strong>Onboarding personnalisé</strong> (149 € HT, une fois).</p>
+    <p><a class="btn btn-primaire" href="dashboard-client.html#offres">Ajouter un service</a></p>
+  </div>
+
+  <!-- Questionnaire -->
+  <div class="bloc-etat" id="bloc-questionnaire">
+    <div id="note-existant">Vous avez déjà des consignes enregistrées — répondre au questionnaire les remplacera par une version rédigée à partir de vos réponses.</div>
+
+    <form id="form-questionnaire" class="carte-config">
+      <label for="q1">Quels sont les 3 à 5 types d'emails que vous recevez le plus souvent, et comment voulez-vous qu'on y réponde ?</label>
+      <small>Ex. « Demandes de devis plomberie → je rappelle sous 24h » · « Questions sur les horaires → répondre directement »</small>
+      <textarea id="q1" required></textarea>
+
+      <label for="q2">Des expéditeurs ou mots-clés à toujours traiter en priorité / urgence ? <small style="display:inline;">(optionnel)</small></label>
+      <textarea id="q2" placeholder="Ex. tout email mentionnant « fuite d'eau » ou « panne »"></textarea>
+
+      <label for="q3">Autre chose à savoir sur votre façon de travailler ? <small style="display:inline;">(optionnel)</small></label>
+      <textarea id="q3" placeholder="Ex. ne jamais donner de prix ferme par email, toujours renvoyer vers un devis sur place"></textarea>
+
+      <p style="margin-top:18px;"><button type="submit" class="btn btn-primaire" id="btn-generer">Générer mes consignes</button></p>
+    </form>
+
+    <div id="resultat"></div>
+  </div>
+</main>
+
+<footer class="site">© 2026 Le Binôme Numérique · <a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cookie-consent.js"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+(function () {
+  function msg(t, ok) {
+    var el = document.getElementById('message');
+    el.textContent = t; el.className = ok ? 'ok' : 'err'; el.style.display = 'block';
+  }
+  function show(id) { document.getElementById(id).style.display = 'block'; }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', async function () {
+    var session = await requireAuth('connexion.html');
+    if (!session) return;
+    var sb = window.supabaseClient;
+
+    var { data: uc } = await sb.from('utilisateurs_comptes')
+      .select('compte_client_id').eq('id', session.user.id).single();
+    if (!uc) { document.getElementById('etat-chargement').style.display = 'none'; msg('Compte introuvable.', false); return; }
+    var compteId = uc.compte_client_id;
+
+    var { data: abos } = await sb.from('abonnements')
+      .select('statut, plans_tarifaires(code)').eq('compte_client_id', compteId).eq('statut', 'actif');
+    var aGestionEmail = (abos || []).some(function (a) {
+      var c = a.plans_tarifaires && a.plans_tarifaires.code;
+      return c === 'SECRETARIAT_SOCLE' || c === 'PACK_COMPLET';
+    });
+
+    document.getElementById('etat-chargement').style.display = 'none';
+    if (!aGestionEmail) { show('bloc-pas-client'); return; }
+
+    var { data: opts } = await sb.from('options_actives')
+      .select('statut, options_produit!inner(code)')
+      .eq('compte_client_id', compteId)
+      .eq('options_produit.code', 'SECRETARIAT_ONBOARDING_PERSO');
+    var achete = (opts || []).some(function (o) { return o.statut === 'active'; });
+    if (!achete) { show('bloc-pas-achete'); return; }
+
+    var { data: fiche } = await sb.from('comptes_clients')
+      .select('consignes_cas_courants').eq('id', compteId).single();
+    if (fiche && fiche.consignes_cas_courants && fiche.consignes_cas_courants.trim()) {
+      document.getElementById('note-existant').style.display = 'block';
+    }
+    show('bloc-questionnaire');
+
+    document.getElementById('form-questionnaire').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var btn = document.getElementById('btn-generer');
+      var zone = document.getElementById('resultat');
+      zone.innerHTML = '';
+      btn.disabled = true; btn.textContent = 'Rédaction en cours…';
+      try {
+        var resp = await fetch(window.APP_CONFIG.N8N_BASE_URL + '/onboarding-perso-generer', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_token: session.access_token,
+            types_emails: document.getElementById('q1').value.trim(),
+            priorites: document.getElementById('q2').value.trim(),
+            autre: document.getElementById('q3').value.trim()
+          })
+        });
+        var result = await resp.json();
+        if (!resp.ok) throw new Error(result.erreur || 'Échec de la génération.');
+        zone.innerHTML = '<div class="carte-config" style="border-color:#2E7D32;">'
+          + '<p style="font-weight:600; color:#2E7D32; margin:0 0 10px;">C\'est enregistré ✓</p>'
+          + '<p style="white-space:pre-wrap; margin:0 0 14px;">' + escapeHtml(result.consignes) + '</p>'
+          + '<p style="color:#666; font-size:.86rem; margin:0;">Ces consignes sont déjà prises en compte par votre secrétariat. Modifiables à tout moment dans <a href="ma-fiche-entreprise.html">Ma fiche entreprise</a> ou en renvoyant ce questionnaire.</p>'
+          + '</div>';
+      } catch (err) {
+        zone.innerHTML = '<p style="color:#B23A2E;">' + err.message + '</p>';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Générer mes consignes';
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -530,6 +530,50 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // ---------- Onboarding personnalisé Gestion Email : achat one-shot (wf72) ----------
+  const dashBlocOnboardingPerso = document.getElementById("dash-bloc-onboarding-perso");
+  const blocOnboardingPerso = document.getElementById("bloc-onboarding-perso");
+  const blocOnboardingPersoActif = document.getElementById("bloc-onboarding-perso-actif");
+  const btnOnboardingPerso = document.getElementById("btn-onboarding-perso");
+  const messageOnboardingPerso = document.getElementById("message-onboarding-perso");
+
+  if (dashBlocOnboardingPerso && btnOnboardingPerso && aGestionEmail) {
+    dashBlocOnboardingPerso.hidden = false;
+    const { data: optionsOnboardingPerso } = await sb
+      .from("options_actives")
+      .select("statut, options_produit!inner(code)")
+      .eq("compte_client_id", utilisateur.compte_client_id)
+      .eq("options_produit.code", "SECRETARIAT_ONBOARDING_PERSO");
+
+    if ((optionsOnboardingPerso || []).some(o => o.statut === "active")) {
+      blocOnboardingPerso.style.display = "none";
+      blocOnboardingPersoActif.style.display = "block";
+    } else if (!peutSouscrire) {
+      btnOnboardingPerso.disabled = true;
+      messageOnboardingPerso.innerHTML = `<span class="sous-titre-section">Seul le propriétaire ou un administrateur peut souscrire.</span>`;
+    } else {
+      btnOnboardingPerso.addEventListener("click", async () => {
+        messageOnboardingPerso.innerHTML = "";
+        btnOnboardingPerso.disabled = true;
+        btnOnboardingPerso.textContent = "Redirection vers le paiement...";
+        try {
+          const resp = await fetch(`${window.APP_CONFIG.N8N_BASE_URL}/onboarding-perso-ajouter`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ access_token: session.access_token })
+          });
+          const result = await resp.json();
+          if (!resp.ok) throw new Error(result.erreur || "Échec de la souscription.");
+          window.location.href = result.checkout_url;
+        } catch (err) {
+          messageOnboardingPerso.innerHTML = `<p class="message-erreur">${err.message}</p>`;
+          btnOnboardingPerso.disabled = false;
+          btnOnboardingPerso.textContent = "Souscrire";
+        }
+      });
+    }
+  }
+
   const debutMois = new Date();
   debutMois.setDate(1);
   debutMois.setHours(0, 0, 0, 0);
