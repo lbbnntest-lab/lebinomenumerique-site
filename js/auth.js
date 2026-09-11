@@ -33,7 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
     SECRETARIAT_VOLUME_400: "Volume + : +400 demandes/mois (+29 €/mois)",
     SECRETARIAT_VOLUME_1200: "Volume ++ : +1200 demandes/mois (+59 €/mois)",
     SECRETARIAT_ENVOI_GERE: "Envoi géré : on envoie les réponses en votre nom (+29 €/mois)",
-    SECRETARIAT_RDV_CALCOM: "Gestion des rendez-vous (Cal.com) (+19 €/mois)"
+    SECRETARIAT_RDV_CALCOM: "Gestion des rendez-vous (Cal.com) (+19 €/mois)",
+    SECRETARIAT_ONBOARDING_PERSO: "Onboarding personnalisé (149 € HT, une fois)"
   };
   if (briquesCodes.length) {
     const champ = document.getElementById("champ-briques");
@@ -154,8 +155,14 @@ document.addEventListener("DOMContentLoaded", () => {
         // Briques à la carte (catalogue B2B "socle + briques") : chaque code est
         // résolu vers son Price ID mensuel — pas de cycle trimestriel/annuel pour
         // l'instant sur les briques, voir config.js.
+        // .mensuel pour les briques récurrentes ; repli sur .one_shot pour une brique ponctuelle
+        // (ex. Onboarding personnalisé) — Stripe accepte 1 prix non récurrent mélangé aux lignes
+        // récurrentes d'une session mode=subscription (déjà utilisé par wf14 : setup + hébergement).
         briques: briquesCodes
-          .map(code => ({ code, stripe_price_id: window.APP_CONFIG.STRIPE_PRICES[code]?.mensuel }))
+          .map(code => {
+            const prix = window.APP_CONFIG.STRIPE_PRICES[code] || {};
+            return { code, stripe_price_id: prix.mensuel || prix.one_shot };
+          })
           .filter(b => b.stripe_price_id),
         auth_user_id: authUserId
       };
