@@ -235,18 +235,26 @@ header.site .cta:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgb
 /* Icônes vectorielles (12/09/2026, remplacent les emojis) : pas de fond, la couleur
    de l'icône elle-même (currentColor dans le SVG) porte la différenciation de palier. */
 .icone-carte {
-  width: 40px; height: 40px; color: var(--bleu-primaire);
+  width: 44px; height: 44px; color: var(--bleu-primaire);
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 12px;
 }
-.icone-carte svg { width: 100%; height: 100%; }
+.icone-carte svg {
+  width: 100%; height: 100%;
+  filter: drop-shadow(0 2px 4px rgba(20,30,40,.16));
+}
 /* Variantes de palier : sur une offre à plusieurs niveaux, l'icône du niveau
    intermédiaire passe en argenté, celle du niveau supérieur en or (ou diamant
    au-dessus de l'or pour un 4e palier, ex. Sites Web "Sur-Mesure") — le niveau de
-   base garde la couleur "classique" par défaut ci-dessus. */
+   base garde la couleur "classique" par défaut ci-dessus. Le halo de couleur derrière
+   chaque icône (drop-shadow teintée) donne un léger effet de brillance métallique
+   sans revenir à un fond plein. */
 .icone-carte--argente { color: #8b93a0; }
+.icone-carte--argente svg { filter: drop-shadow(0 2px 6px rgba(139,147,160,.55)); }
 .icone-carte--or { color: #c99a34; }
+.icone-carte--or svg { filter: drop-shadow(0 2px 6px rgba(201,154,52,.5)); }
 .icone-carte--diamant { color: #2fb6cf; }
+.icone-carte--diamant svg { filter: drop-shadow(0 2px 6px rgba(47,182,207,.5)); }
 
 /* ---------- Aperçus (remplacent la prose pure par un exemple concret) ---------- */
 .apercu-mockup { background: var(--blanc); border-radius: var(--radius); box-shadow: var(--ombre-douce); max-width: 420px; margin: 28px auto 0; overflow: hidden; }
