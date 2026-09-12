@@ -464,11 +464,12 @@
         <p class="aide">Une page de devis en ligne à votre marque, avec votre barème, que vos clients remplissent seuls (ou vous sur place). <a href="configurateur-devis.html">En savoir plus</a>.</p>
         <div id="bloc-devis-mb" class="carte-offre">
           <div class="desc-offre" style="color:var(--gris-texte); font-size:.86rem;">Installation réglée une fois, puis un abonnement mensuel (résiliable en 2 clics).</div>
+          <p id="devismb-remise-info" class="message-succes" style="display:none; margin:10px 0 0;">Installation offerte : vous avez déjà Gestion Email, il ne reste que l'abonnement mensuel.</p>
           <div class="champ" style="margin:12px 0;">
             <label for="devismb-formule">Formule</label>
             <select id="devismb-formule">
-              <option value="starter">Starter — estimation en ligne (290 € puis 29 €/mois)</option>
-              <option value="pro">Pro — + PDF téléchargeable à votre marque (490 € puis 59 €/mois)</option>
+              <option value="starter" data-avec-setup="Starter — estimation en ligne (290 € puis 29 €/mois)" data-sans-setup="Starter — estimation en ligne (29 €/mois, installation offerte)">Starter — estimation en ligne (290 € puis 29 €/mois)</option>
+              <option value="pro" data-avec-setup="Pro — + PDF téléchargeable à votre marque (490 € puis 59 €/mois)" data-sans-setup="Pro — + PDF téléchargeable à votre marque (59 €/mois, installation offerte)">Pro — + PDF téléchargeable à votre marque (490 € puis 59 €/mois)</option>
             </select>
           </div>
           <div class="champ" style="margin:12px 0;">

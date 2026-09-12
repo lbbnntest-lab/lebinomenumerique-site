@@ -345,6 +345,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("devismb-nom").value = compte?.raison_sociale || "";
     document.getElementById("devismb-email-leads").value = utilisateur?.email || compte?.email || "";
 
+    // Remise Gestion Email (12/09) : installation offerte si le compte a deja
+    // Gestion Email ou Pack Complet actif (wf59 applique la meme regle cote serveur).
+    const clientAGestionEmail = codesDejaSouscrits.has("SECRETARIAT_SOCLE") || codesDejaSouscrits.has("PACK_COMPLET");
+    if (clientAGestionEmail) {
+      const infoRemise = document.getElementById("devismb-remise-info");
+      if (infoRemise) infoRemise.style.display = "block";
+      document.querySelectorAll("#devismb-formule option").forEach((opt) => {
+        opt.textContent = opt.dataset.sansSetup || opt.textContent;
+      });
+    }
+
     const { data: optionsDevisMb } = await sb
       .from("options_actives")
       .select("statut, options_produit!inner(produit_parent)")
