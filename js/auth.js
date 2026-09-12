@@ -34,7 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
     SECRETARIAT_VOLUME_1200: "Volume ++ : +1200 demandes/mois (+59 €/mois)",
     SECRETARIAT_ENVOI_GERE: "Envoi géré : on envoie les réponses en votre nom (+29 €/mois)",
     SECRETARIAT_RDV_CALCOM: "Gestion des rendez-vous (Cal.com) (+19 €/mois)",
-    SECRETARIAT_ONBOARDING_PERSO: "Onboarding personnalisé (149 € HT, une fois)"
+    SECRETARIAT_ONBOARDING_PERSO: "Onboarding personnalisé (149 € HT, une fois)",
+    DEVIS_MB_SUIVI_STARTER: "Configurateur de devis (+29 €/mois, installation offerte)"
   };
   if (briquesCodes.length) {
     const champ = document.getElementById("champ-briques");
